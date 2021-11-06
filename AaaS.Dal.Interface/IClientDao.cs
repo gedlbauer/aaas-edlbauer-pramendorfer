@@ -9,6 +9,7 @@ namespace AaaS.Dal.Interface
 {
     public interface IClientDao
     {
+        //test
         IAsyncEnumerable<Client> FindAllAsync();
 
         Task<Client> FindByIdAsync(int id);
