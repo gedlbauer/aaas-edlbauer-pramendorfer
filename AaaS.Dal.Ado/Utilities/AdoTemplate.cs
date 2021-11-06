@@ -18,7 +18,7 @@ namespace AaaS.Dal.Ado.Utilities
             this.connectionFactory = connectionFactory;
         }
 
-        public async Task<IEnumerable<T>> QueryAsync<T>(string sql, Func<IDataRecord, T> rowMapper, params QueryParameter[] queryParameter)
+        public async IAsyncEnumerable<T> QueryAsync<T>(string sql, Func<IDataRecord, T> rowMapper, params QueryParameter[] queryParameter)
         {
             await using var connection = await connectionFactory.CreateConnectionAsync();
             await using var cmd = connection.CreateCommand();
@@ -28,14 +28,12 @@ namespace AaaS.Dal.Ado.Utilities
             AddParameters(cmd, queryParameter);
 
             var executeReaderTask = cmd.ExecuteReaderAsync();
-            var items = new List<T>();
 
             await using var reader = await executeReaderTask;
             while (reader.Read())
             {
-                items.Add(rowMapper(reader));
+                yield return rowMapper(reader);
             }
-            return items;
         }
 
         private void AddParameters(DbCommand cmd, QueryParameter[] queryParameters)
@@ -51,7 +49,7 @@ namespace AaaS.Dal.Ado.Utilities
 
         public async Task<T> QuerySingleAsync<T>(string sql, Func<IDataRecord, T> mapRowToPerson, params QueryParameter[] queryParameter)
         {
-            return (await QueryAsync(sql, mapRowToPerson, queryParameter)).SingleOrDefault();
+            return await QueryAsync(sql, mapRowToPerson, queryParameter).SingleOrDefaultAsync();
         }
 
 

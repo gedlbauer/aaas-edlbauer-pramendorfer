@@ -28,19 +28,7 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestInsert()
         {
-            Client client = new Client { ApiKey = "test-ksdfeydfsdfd", Name = "test-user" };
-
-            await clientDao.InsertAsync(client);
-
-            client.Id.Should().BeGreaterThan(0);
-        }
-
-        [Fact]
-        [AutoRollback]
-        public async Task TestFindById()
-        {
-            Client client = new Client { ApiKey = "test1", Name = "test-user" };
-            Client client2 = new Client { ApiKey = "test2", Name = "test-user2" };
+            Client client = new Client { ApiKey = "test-keysdfd", Name = "test-user" };
             await clientDao.InsertAsync(client);
             await clientDao.InsertAsync(client2);
 

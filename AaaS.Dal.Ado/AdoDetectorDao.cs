@@ -24,15 +24,22 @@ namespace AaaS.Dal.Ado
         protected abstract string LastInsertedIdQuery { get; }
         public async IAsyncEnumerable<Detector> FindAllAsync()
         {
-            yield break;
+            var detectors = template.QueryAsync(
+                "SELECT * FROM Detector d " +
+                "JOIN Object o ON (o.id = d.object_id) ",
+                MapRowToDetector);
+            await foreach (var detector in detectors)
+            {
+                yield return detector;
+            }
         }
 
         public async Task<Detector> FindByIdAsync(int id)
         {
             return await template.QuerySingleAsync(
-                "SELECT * FROM Object o" +
-                "WHERE id = @id" +
-                "JOIN Detector d ON (o.id = d.object_id)"
+                "SELECT * FROM Detector d " +
+                "JOIN Object o ON (o.id = d.object_id) " +
+                "WHERE o.id = @id "
                 , MapRowToDetector,
                 new QueryParameter("@id", id)
                 );
@@ -41,8 +48,8 @@ namespace AaaS.Dal.Ado
         public static Detector MapRowToDetector(IDataRecord record)
         {
             string typeName = (string)record["type"];
-            var assembly = Assembly.GetCallingAssembly();
-            var detector = (Detector)assembly.CreateInstance(typeName);
+            var type = Type.GetType(typeName);
+            var detector = (Detector) Activator.CreateInstance(type);
             return detector;
         }
     }
