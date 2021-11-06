@@ -25,7 +25,7 @@ namespace AaaS.Dal.Tests
         {
             DbConnection connection = dbProviderFactory.CreateConnection();
             connection.ConnectionString = ConnectionString;
-            await connection.OpenAsync();
+            await connection.OpenAsync();         
             return connection;
         }
     }

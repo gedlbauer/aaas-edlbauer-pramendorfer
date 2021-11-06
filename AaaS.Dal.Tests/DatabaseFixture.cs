@@ -1,4 +1,5 @@
 ﻿using AaaS.Common;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +12,13 @@ namespace AaaS.Dal.Tests
     public class DatabaseFixture : IDisposable
     {
         public IConnectionFactory ConnectionFactory { get; private set; }
-        private TransactionScope _transactionScope;
+
         public DatabaseFixture()
         {
-            _transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             ConnectionFactory = new TestConnectionFactory();
-           
         }
 
-        public void Dispose()
-        {
-            _transactionScope.Dispose();
-            // ... clean up test data from the database ...
-        }
+        public void Dispose() { }
 
     }
 }
