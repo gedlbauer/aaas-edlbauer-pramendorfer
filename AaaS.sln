@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.Dal.Ado", "AaaS.Dal.Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.Common", "AaaS.Common\AaaS.Common.csproj", "{160B4FF0-5467-4785-9B4F-E47C22F7CF99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.Dal.Tests", "AaaS.Dal.Tests\AaaS.Dal.Tests.csproj", "{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{160B4FF0-5467-4785-9B4F-E47C22F7CF99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{160B4FF0-5467-4785-9B4F-E47C22F7CF99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{160B4FF0-5467-4785-9B4F-E47C22F7CF99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
