@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Core.Dal.Utils
+namespace AaaS.Common
 {
     public class DbUtil
     {

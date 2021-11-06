@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace AaaS.Core.Dal.Utils
+namespace AaaS.Common
 {
     public class DefaultConnectionFactory : IConnectionFactory
     {

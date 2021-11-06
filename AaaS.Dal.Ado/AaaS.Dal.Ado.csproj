@@ -4,4 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AaaS.Dal.Interface\AaaS.Dal.Interface.csproj" />
+  </ItemGroup>
+
 </Project>

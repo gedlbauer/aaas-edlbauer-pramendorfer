@@ -1,4 +1,4 @@
-﻿namespace AaaS.Core.Dal.Utils
+﻿namespace AaaS.Common
 {
   public class QueryParameter
   {

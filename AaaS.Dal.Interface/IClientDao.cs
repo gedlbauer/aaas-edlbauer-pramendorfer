@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Core.Dal.Ado
+namespace AaaS.Dal.Interface
 {
-    public class MSSQLClientDao : AdoClientDao
+    public interface IClientDao
     {
+
     }
 }

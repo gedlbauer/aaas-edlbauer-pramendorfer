@@ -1,12 +1,13 @@
-﻿using System;
+﻿using AaaS.Dal.Interface;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Core.Dal.Interfaces
+namespace AaaS.Dal.Ado
 {
-    public interface IClientDao
+    public abstract class AdoClientDao : IClientDao
     {
     }
 }

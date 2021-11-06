@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using System.Threading.Tasks;
 
-namespace AaaS.Core.Dal.Utils
+namespace AaaS.Common
 {
     public interface IConnectionFactory
     {
