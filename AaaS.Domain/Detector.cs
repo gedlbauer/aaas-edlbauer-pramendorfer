@@ -8,6 +8,7 @@ namespace AaaS.Domain
 {
     public abstract class Detector
     {
+        public Detector() { }
         public int Id { get; set; }
         public Client Client { get; set; }
         public IAction Action { get; set; }

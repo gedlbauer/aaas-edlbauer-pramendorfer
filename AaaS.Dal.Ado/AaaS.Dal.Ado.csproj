@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AaaS.Common\AaaS.Common.csproj" />
     <ProjectReference Include="..\AaaS.Dal.Interface\AaaS.Dal.Interface.csproj" />
   </ItemGroup>
 

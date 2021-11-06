@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Domain
 {
-    public class Type
+    public class LogType
     {
         public int Id { get; set; }
         public string Name { get; set; }

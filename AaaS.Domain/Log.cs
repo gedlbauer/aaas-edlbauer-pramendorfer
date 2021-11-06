@@ -8,7 +8,7 @@ namespace AaaS.Domain
 {
     public class Log : Telemetry
     {
-        public Type Type { get; set; }
+        public LogType Type { get; set; }
         public string Message { get; set; }
     }
 }
