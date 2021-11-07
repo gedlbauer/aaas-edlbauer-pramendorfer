@@ -29,9 +29,16 @@ namespace AaaS.Dal.Ado
               Name = (string)row["name"],
           };
 
-        public IAsyncEnumerable<Client> FindAllAsync()
+        public async IAsyncEnumerable<Client> FindAllAsync()
         {
-            throw new NotImplementedException();
+            var clients = template.QueryAsync(
+                "select * from Client",
+                MapRowToClient);
+
+            await foreach (var client in clients)
+            {
+                yield return client;
+            }
         }
 
         public async Task<Client> FindByIdAsync(int id)
@@ -49,9 +56,13 @@ namespace AaaS.Dal.Ado
                  new QueryParameter("@key", client.ApiKey)));
         }
 
-        public Task<bool> UpdateAsync(Client person)
+        public async Task<bool> UpdateAsync(Client client)
         {
-            throw new NotImplementedException();
+            int result = await template.ExecuteAsync("update client set name=@name, api_key=@key where id=@id",
+                new QueryParameter("@name", client.Name),
+                new QueryParameter("@key", client.ApiKey),
+                new QueryParameter("@id", client.Id));
+            return result == 1;
         }
     }
 }
