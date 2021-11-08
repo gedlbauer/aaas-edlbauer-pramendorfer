@@ -13,6 +13,7 @@ using Xunit;
 
 namespace AaaS.Dal.Tests
 {
+    [Collection("SeededDb")]
     public class ClientTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;
@@ -39,8 +40,7 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestUpdate()
         {
-            Client client = new Client { ApiKey = "test-key-test", Name = "test-user" };
-            await clientDao.InsertAsync(client);
+            Client client = ClientList.First();
             client.ApiKey = "new-key";
             client.Name = "updated-name";
 
@@ -53,44 +53,21 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestFindById()
         {
-            var clients = await SeedClients(ClientList);
-
             (await clientDao.FindByIdAsync(-1)).Should().BeNull();
-            foreach (var client in clients)
-            {
-                (await clientDao.FindByIdAsync(client.Id)).Should().BeEquivalentTo(client);
-            }
+            (await clientDao.FindByIdAsync(ClientList.First().Id)).Should().BeEquivalentTo(ClientList.First());
         }
 
-        [Theory]
-        [MemberData(nameof(Data))]
+        [Fact]
         [AutoRollback]
-        public async Task TestFindAll(List<Client> clients)
+        public async Task TestFindAll()
         {
-            await SeedClients(clients);
-
-            (await clientDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(clients);
+            (await clientDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(ClientList);
         }
-
-        public static IEnumerable<object[]> Data =>
-            new List<object[]> {
-                new object[]{ClientList},
-                new object[]{new List<Client> { }}
-            };
 
         public static IEnumerable<Client> ClientList
             => new List<Client> {
-                new Client { ApiKey = "test-1", Name = "test-user" },
-                new Client { ApiKey = "test-2", Name = "test-user2" } };
+                new Client { Id=1, ApiKey = "customkey1", Name = "client1" },
+                new Client { Id=2, ApiKey = "customkey2", Name = "client2" } };
 
-
-        private async Task<IEnumerable<Client>> SeedClients(IEnumerable<Client> clients)
-        {
-            foreach (var client in clients)
-            {
-                await clientDao.InsertAsync(client);
-            }
-            return clients;
-        }
     }
 }

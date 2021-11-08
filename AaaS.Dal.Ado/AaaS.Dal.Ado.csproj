@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -11,6 +11,18 @@
   <ItemGroup>
     <ProjectReference Include="..\AaaS.Common\AaaS.Common.csproj" />
     <ProjectReference Include="..\AaaS.Dal.Interface\AaaS.Dal.Interface.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DbScripts\create_database.ddl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DbScripts\drop_database.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DbScripts\seed_database.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
