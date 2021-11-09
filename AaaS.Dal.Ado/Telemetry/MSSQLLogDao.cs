@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Dal.Ado.Telementry
+namespace AaaS.Dal.Ado.Telemetry
 {
     public class MSSQLLogDao : AdoLogDao
     {
