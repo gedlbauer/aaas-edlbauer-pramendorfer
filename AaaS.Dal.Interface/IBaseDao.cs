@@ -15,5 +15,7 @@ namespace AaaS.Dal.Interface
         Task<bool> UpdateAsync(T obj);
 
         Task InsertAsync(T obj);
+
+        Task<bool> DeleteAsync(T obj);
     }
 }
