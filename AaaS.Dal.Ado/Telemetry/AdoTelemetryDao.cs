@@ -69,9 +69,11 @@ namespace AaaS.Dal.Ado.Telemetry
 
         protected abstract Task<int> UpdateDerivationAsync(T obj);
 
-        public Task<bool> DeleteAsync(T obj)
+        public async Task<bool> DeleteAsync(T obj)
         {
-            throw new NotImplementedException();
+            int result = await template.ExecuteAsync("delete from telemetry where id=@id",
+                new QueryParameter("@id", obj.Id));
+            return result == 1;
         }
     }
 }

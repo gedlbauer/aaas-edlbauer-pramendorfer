@@ -17,12 +17,12 @@ using Xunit;
 namespace AaaS.Dal.Tests
 {
     [Collection("SeededDb")]
-    public class TelemetryTests : IClassFixture<DatabaseFixture>
+    public class LogTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;
         readonly ILogDao logDao;
 
-        public TelemetryTests(DatabaseFixture fixture)
+        public LogTests(DatabaseFixture fixture)
         {
             this.fixture = fixture;
             logDao = new MSSQLLogDao(this.fixture.ConnectionFactory);
@@ -41,7 +41,7 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
-        // TODO ensure that update does not interfere with find tests
+        [AutoRollback]
         public async Task TestUpdate()
         {
             Client client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" };
@@ -81,8 +81,11 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestDelete()
         {
-            throw new NotImplementedException("Bitte implementieren!");
-            //TODO: delete + test implementieren
+            Log log = new Log { Id = 1 };
+
+            await logDao.DeleteAsync(log);
+
+            (await logDao.FindByIdAsync(log.Id)).Should().BeNull();
         }
     }
 }
