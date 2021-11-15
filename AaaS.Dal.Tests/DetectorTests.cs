@@ -12,6 +12,7 @@ using Xunit.Abstractions;
 
 namespace AaaS.Dal.Tests
 {
+    [Collection("SeededDb")]
     public class DetectorTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;

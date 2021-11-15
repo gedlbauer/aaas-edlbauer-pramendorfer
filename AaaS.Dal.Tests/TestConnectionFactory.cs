@@ -12,7 +12,7 @@ namespace AaaS.Dal.Tests
     {
         private DbProviderFactory dbProviderFactory;
 
-        public string ConnectionString => "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Temp\\AaaSTestDb.mdf;Integrated Security=True;Connect Timeout=30";
+        public string ConnectionString => "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Temp\\AaaSTestDb.mdf;Integrated Security=True;MultipleActiveResultSets=False;Connect Timeout=30";
 
         public string ProviderName => "Microsoft.Data.SqlClient";
 

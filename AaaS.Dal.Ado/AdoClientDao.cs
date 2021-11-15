@@ -64,5 +64,12 @@ namespace AaaS.Dal.Ado
                 new QueryParameter("@id", client.Id));
             return result == 1;
         }
+
+        public async Task<bool> DeleteAsync(Client obj)
+        {
+            int result = await template.ExecuteAsync("delete from client where id=@id",
+                new QueryParameter("@id", obj.Id));
+            return result == 1;
+        }
     }
 }

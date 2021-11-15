@@ -9,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Xunit;
 
 namespace AaaS.Dal.Tests
@@ -43,7 +45,7 @@ namespace AaaS.Dal.Tests
         public async Task TestUpdate()
         {
             Client client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" };
-            Log log = new Log { Id = 1, Client = client, CreatorId = Guid.NewGuid(), Message = "1", Name = "testname", Timestamp = DateTime.Now, Type = new LogType { Id = 1, Name="Error" } };
+            Log log = new Log { Id = 1, Client = client, CreatorId = Guid.NewGuid(), Message = "updated", Name = "testname", Timestamp = DateTime.Now, Type = new LogType { Id = 1, Name = "Error" } };
 
             await logDao.UpdateAsync(log);
 

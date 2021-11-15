@@ -23,12 +23,13 @@ namespace AaaS.Dal.Tests
         public DatabaseFixture()
         {
             ConnectionFactory = new TestConnectionFactory();
+            ExecuteScript(DROP_PATH).Wait();
             ExecuteScript(CREATE_PATH).Wait();
             ExecuteScript(SEED_PATH).Wait();
         }
 
         public void Dispose() {
-            ExecuteScript(DROP_PATH).Wait();
+            
         }
 
         private async Task ExecuteScript(string filepath)
