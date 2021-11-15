@@ -29,17 +29,10 @@ namespace AaaS.Dal.Ado
               Name = (string)row["name"],
           };
 
-        public async IAsyncEnumerable<Client> FindAllAsync()
-        {
-            var clients = template.QueryAsync(
+        public IAsyncEnumerable<Client> FindAllAsync() 
+            => template.QueryAsync(
                 "select * from Client",
                 MapRowToClient);
-
-            await foreach (var client in clients)
-            {
-                yield return client;
-            }
-        }
 
         public async Task<Client> FindByIdAsync(int id)
           => await template.QuerySingleAsync(
