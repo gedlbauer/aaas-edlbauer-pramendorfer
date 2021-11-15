@@ -15,20 +15,20 @@ namespace AaaS.Dal.Tests
     [CollectionDefinition("SeededDb")]
     public class DatabaseFixture : IDisposable
     {
-        const string CREATE_PATH = @"DbScripts\create_database.ddl";
-        const string SEED_PATH = @"DbScripts\seed_database.sql";
-        const string DROP_PATH = @"DbScripts\drop_database.sql";
+        public const string CREATE_PATH = @"DbScripts\create_database.ddl";
+        public const string SEED_PATH = @"DbScripts\seed_database.sql";
+        public const string DROP_PATH = @"DbScripts\drop_database.sql";
         public IConnectionFactory ConnectionFactory { get; private set; }
 
         public DatabaseFixture()
         {
             ConnectionFactory = new TestConnectionFactory();
+            ExecuteScript(DROP_PATH).Wait();
             ExecuteScript(CREATE_PATH).Wait();
             ExecuteScript(SEED_PATH).Wait();
         }
 
         public void Dispose() {
-            ExecuteScript(DROP_PATH).Wait();
         }
 
         private async Task ExecuteScript(string filepath)

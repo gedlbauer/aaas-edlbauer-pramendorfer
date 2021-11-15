@@ -17,4 +17,4 @@ ALTER TABLE Detector ADD CONSTRAINT FK_Detector_Object FOREIGN KEY (object_id) R
 ALTER TABLE Action ADD CONSTRAINT FK_Action_Object FOREIGN KEY (object_id) REFERENCES Object (id);
 ALTER TABLE Detector ADD CONSTRAINT FK_Detector_Action FOREIGN KEY (action_id) REFERENCES Action (object_id);
 ALTER TABLE Detector ADD CONSTRAINT FK_Detector_Client FOREIGN KEY (client_id) REFERENCES Client (id);
-ALTER TABLE ObjectProperty ADD CONSTRAINT FK_ObjectProperty_Object FOREIGN KEY (object_id) REFERENCES Object (id);
+ALTER TABLE ObjectProperty ADD CONSTRAINT FK_ObjectProperty_Object FOREIGN KEY (object_id) REFERENCES Object (id) ON DELETE Cascade;

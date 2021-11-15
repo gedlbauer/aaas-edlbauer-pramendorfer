@@ -68,5 +68,10 @@ namespace AaaS.Dal.Ado.Telemetry
         }
 
         protected abstract Task<int> UpdateDerivationAsync(T obj);
+
+        public Task<bool> DeleteAsync(T obj)
+        {
+            throw new NotImplementedException(); //TODO: Delete
+        }
     }
 }

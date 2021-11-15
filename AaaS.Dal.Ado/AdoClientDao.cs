@@ -64,5 +64,10 @@ namespace AaaS.Dal.Ado
                 new QueryParameter("@id", client.Id));
             return result == 1;
         }
+
+        public Task<bool> DeleteAsync(Client obj)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
