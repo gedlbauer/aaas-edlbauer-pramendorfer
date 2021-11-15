@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace AaaS.Dal.Ado
 {
-    public class MSSQLDetectorDao : AdoDetectorDao
+    public class MSSQLActionDao : AdoActionDao
     {
-        public MSSQLDetectorDao(IConnectionFactory connectionFactory) : base(connectionFactory, new MSSQLClientDao(connectionFactory), new MSSQLActionDao(connectionFactory), new MSSQLObjectPropertyDao(connectionFactory))
+        public MSSQLActionDao(IConnectionFactory factory) : base(factory, new MSSQLObjectPropertyDao(factory))
         {
         }
 

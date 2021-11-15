@@ -9,6 +9,7 @@ namespace AaaS.Core
 {
     public class SimpleDetector : Detector
     {
+        public string Name { get; set; }
         public override string ToString()
         {
             return $"Hello I am a SimpleDetector! (${base.ToString()})";

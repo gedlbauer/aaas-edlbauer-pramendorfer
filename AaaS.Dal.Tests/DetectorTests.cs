@@ -1,7 +1,10 @@
 ﻿using AaaS.Core;
 using AaaS.Dal.Ado;
 using AaaS.Dal.Interface;
+using AaaS.Dal.Tests.Attributes;
 using AaaS.Domain;
+using FluentAssertions;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,31 +20,93 @@ namespace AaaS.Dal.Tests
     {
         readonly DatabaseFixture fixture;
         readonly IDetectorDao detectorDao;
+        readonly IActionDao actionDao;
+        readonly IClientDao clientDao;
+        readonly IObjectPropertyDao objectPropertyDao;
         private readonly ITestOutputHelper output;
 
         public DetectorTests(DatabaseFixture fixture, ITestOutputHelper output)
         {
             this.fixture = fixture;
             detectorDao = new MSSQLDetectorDao(this.fixture.ConnectionFactory);
+            actionDao = new MSSQLActionDao(this.fixture.ConnectionFactory);
+            clientDao = new MSSQLClientDao(this.fixture.ConnectionFactory);
+            objectPropertyDao = new MSSQLObjectPropertyDao(this.fixture.ConnectionFactory);
             this.output = output;
         }
 
         [Fact]
-        public async Task TestFindByIdAsync()
+        public async Task TestFindById()
         {
-            Detector detector = await detectorDao.FindByIdAsync(2);
-            output.WriteLine(detector?.ToString() ?? "<null>");
+            (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(DetectorList.First());
+            (await detectorDao.FindByIdAsync(1)).Should().BeNull();
         }
-        
+
         [Fact]
-        public async Task TestFindAllAsync()
+        public async Task TestFindAll()
         {
-            var sd = new SimpleDetector();
-            var detectors = detectorDao.FindAllAsync();
-            await foreach(var detector in detectors)
-            {
-                output.WriteLine(detector?.ToString() ?? "<null>");
-            }
+            output.WriteLine(new SimpleDetector().GetType().AssemblyQualifiedName);
+            (await detectorDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(DetectorList);
         }
+
+        [Fact]
+        [AutoRollback]
+        public async Task TestDelete()
+        {
+            var detectorToDelete = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+
+            (await detectorDao.DeleteAsync(detectorToDelete)).Should().BeTrue();
+            (await detectorDao.FindByIdAsync(3)).Should().BeNull();
+            (await objectPropertyDao.FindByObjectIdAsync(3).ToListAsync()).Should().NotContain(x => x.ObjectId == 3);
+            (await objectPropertyDao.FindAllAsync().ToListAsync()).Should().NotBeEmpty();
+
+            var invalidDetector = new SimpleDetector { Id = 900, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+
+            (await detectorDao.DeleteAsync(invalidDetector)).Should().BeFalse();
+        }
+
+        [Fact]
+        [AutoRollback]
+        public async Task TestUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Fact]
+        [AutoRollback]
+        public async Task TestInsert()
+        {
+            Detector completelyFreshDetector = new SimpleDetector
+            {
+                TelemetryName = "InsertTestTelemetry",
+                Client = new Client { ApiKey = "DetectorInsertKey", Name = "Detector Insert Client" },
+                Action = new SimpleAction { Email = "insert@mail.com", Value = 127, TemplateText = "This Action needs to be inserted first." },
+                CheckInterval = TimeSpan.FromMilliseconds(1000),
+                Name = "InsertTestDetector"
+            };
+            await detectorDao.InsertAsync(completelyFreshDetector);
+            completelyFreshDetector.Id.Should().Be(4);
+            (await detectorDao.FindByIdAsync(4)).Should().BeEquivalentTo(completelyFreshDetector);
+
+
+            var actionCountBeforeInsert = await actionDao.FindAllAsync().CountAsync();
+            var clientCountBeforeInsert = await clientDao.FindAllAsync().CountAsync();
+            Detector detectorWithExistingAction = new SimpleDetector
+            {
+                TelemetryName = "InsertTelemetry",
+                Action = (await actionDao.FindByIdAsync(1)),
+                Client = (await clientDao.FindByIdAsync(1)),
+                CheckInterval = TimeSpan.FromMilliseconds(1000),
+                Name = "Test2"
+            };
+            await detectorDao.InsertAsync(detectorWithExistingAction);
+            detectorWithExistingAction.Id.Should().Be(6);
+            (await detectorDao.FindByIdAsync(6)).Should().BeEquivalentTo(detectorWithExistingAction);
+            (await actionDao.FindAllAsync().CountAsync()).Should().Be(actionCountBeforeInsert);
+            (await clientDao.FindAllAsync().CountAsync()).Should().Be(clientCountBeforeInsert);
+        }
+
+        public static IEnumerable<Detector> DetectorList => new List<Detector> {
+                new SimpleDetector { Id=3, TelemetryName = "TestTelemetry1", Action = new SimpleAction{ Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client{Id=1, ApiKey = "customkey1", Name="client1" } }};
     }
 }

@@ -76,5 +76,13 @@ namespace AaaS.Dal.Tests
             log.Client.Id.Should().Be(1);
             log.Type.Should().BeEquivalentTo(new LogType { Id = 1, Name = "Error" });
         }
+
+        [Fact]
+        [AutoRollback]
+        public async Task TestDelete()
+        {
+            throw new NotImplementedException("Bitte implementieren!");
+            //TODO: delete + test implementieren
+        }
     }
 }
