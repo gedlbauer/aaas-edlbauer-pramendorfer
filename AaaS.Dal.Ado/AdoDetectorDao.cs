@@ -30,9 +30,17 @@ namespace AaaS.Dal.Ado
 
         protected abstract string LastInsertedIdQuery { get; }
 
-        public Task<bool> DeleteAsync(Detector obj)
+        public async Task<bool> DeleteAsync(Detector obj)
         {
-            throw new NotImplementedException();
+            const string SQL_DELETE_DETECTOR = "DELETE FROM Detector WHERE object_id=@object_id";
+            const string SQL_DELETE_OBJECT = "DELETE FROM Object WHERE id=@id";
+            int deletedRows = await template.ExecuteAsync(SQL_DELETE_DETECTOR, new QueryParameter("@object_id", obj.Id));
+            if (deletedRows > 0)
+            {
+                await template.ExecuteAsync(SQL_DELETE_OBJECT, new QueryParameter("@id", obj.Id));
+                return true;
+            }
+            return false;
         }
 
         public IAsyncEnumerable<Detector> FindAllAsync()

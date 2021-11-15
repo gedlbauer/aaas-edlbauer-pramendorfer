@@ -4,6 +4,7 @@ using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
 using AaaS.Domain;
 using FluentAssertions;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace AaaS.Dal.Tests
         readonly IDetectorDao detectorDao;
         readonly IActionDao actionDao;
         readonly IClientDao clientDao;
+        readonly IObjectPropertyDao objectPropertyDao;
         private readonly ITestOutputHelper output;
 
         public DetectorTests(DatabaseFixture fixture, ITestOutputHelper output)
@@ -29,6 +31,7 @@ namespace AaaS.Dal.Tests
             detectorDao = new MSSQLDetectorDao(this.fixture.ConnectionFactory);
             actionDao = new MSSQLActionDao(this.fixture.ConnectionFactory);
             clientDao = new MSSQLClientDao(this.fixture.ConnectionFactory);
+            objectPropertyDao = new MSSQLObjectPropertyDao(this.fixture.ConnectionFactory);
             this.output = output;
         }
 
@@ -50,7 +53,16 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestDelete()
         {
-            throw new NotImplementedException();
+            var detectorToDelete = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+
+            (await detectorDao.DeleteAsync(detectorToDelete)).Should().BeTrue();
+            (await detectorDao.FindByIdAsync(3)).Should().BeNull();
+            (await objectPropertyDao.FindByObjectIdAsync(3).ToListAsync()).Should().NotContain(x => x.ObjectId == 3);
+            (await objectPropertyDao.FindAllAsync().ToListAsync()).Should().NotBeEmpty();
+
+            var invalidDetector = new SimpleDetector { Id = 900, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+
+            (await detectorDao.DeleteAsync(invalidDetector)).Should().BeFalse();
         }
 
         [Fact]
