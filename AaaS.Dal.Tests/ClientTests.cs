@@ -50,7 +50,6 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
-        [AutoRollback]
         public async Task TestFindById()
         {
             (await clientDao.FindByIdAsync(-1)).Should().BeNull();
@@ -58,10 +57,17 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
-        [AutoRollback]
         public async Task TestFindAll()
         {
             (await clientDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(ClientList);
+        }
+
+        [Fact]
+        [AutoRollback]
+        public async Task TestDelete()
+        {
+            throw new NotImplementedException("Bitte Implementieren!");
+            //TODO: delete + test implementieren
         }
 
         public static IEnumerable<Client> ClientList
