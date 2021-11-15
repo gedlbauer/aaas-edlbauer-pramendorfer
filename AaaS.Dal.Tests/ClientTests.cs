@@ -71,14 +71,6 @@ namespace AaaS.Dal.Tests
             (await clientDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(ClientList);
         }
 
-        [Fact]
-        [AutoRollback]
-        public async Task TestDelete()
-        {
-            throw new NotImplementedException("Bitte Implementieren!");
-            //TODO: delete + test implementieren
-        }
-
         public static IEnumerable<Client> ClientList
             => new List<Client> {
                 new Client { Id=1, ApiKey = "customkey1", Name = "client1" },
