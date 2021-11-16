@@ -29,17 +29,10 @@ namespace AaaS.Dal.Ado
               Name = (string)row["name"],
           };
 
-        public async IAsyncEnumerable<Client> FindAllAsync()
-        {
-            var clients = template.QueryAsync(
+        public IAsyncEnumerable<Client> FindAllAsync() 
+            => template.QueryAsync(
                 "select * from Client",
                 MapRowToClient);
-
-            await foreach (var client in clients)
-            {
-                yield return client;
-            }
-        }
 
         public async Task<Client> FindByIdAsync(int id)
           => await template.QuerySingleAsync(
@@ -65,9 +58,11 @@ namespace AaaS.Dal.Ado
             return result == 1;
         }
 
-        public Task<bool> DeleteAsync(Client obj)
+        public async Task<bool> DeleteAsync(Client obj)
         {
-            throw new NotImplementedException();
+            int result = await template.ExecuteAsync("delete from client where id=@id",
+                new QueryParameter("@id", obj.Id));
+            return result == 1;
         }
     }
 }

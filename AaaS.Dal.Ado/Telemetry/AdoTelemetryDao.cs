@@ -14,25 +14,20 @@ namespace AaaS.Dal.Ado.Telemetry
     public abstract class AdoTelemetryDao<T> : IBaseDao<T> where T : Domain.Telemetry
     {
         protected readonly AdoTemplate template;
+        protected readonly IClientDao clientDao;
         protected abstract string Query { get; }
         protected abstract string LastInsertedIdQuery { get; }
 
-        public AdoTelemetryDao(IConnectionFactory factory)
+        public AdoTelemetryDao(IConnectionFactory factory, IClientDao clientDao)
         {
             template = new AdoTemplate(factory);
+            this.clientDao = clientDao;
         }
 
         protected abstract Task<T> MapRowToTelemetry(IDataRecord row);
 
-        public async IAsyncEnumerable<T> FindAllAsync()
-        {
-            var items = template.QueryAsync(Query, MapRowToTelemetry);
-
-            await foreach (var item in items)
-            {
-                yield return item;
-            }
-        }
+        public IAsyncEnumerable<T> FindAllAsync()
+            => template.QueryAsync(Query, MapRowToTelemetry);
 
         public async Task<T> FindByIdAsync(int id)
             => await template.QuerySingleAsync(
@@ -42,6 +37,9 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public async Task InsertAsync(T obj)
         {
+            if (obj.Client.Id < 1)
+                await clientDao.InsertAsync(obj.Client);
+
             const string SQL_INSERT_TELEM = "insert into telemetry (creation_time, name, client_id, creator_id) values (@cd, @name, @cid, @creaid)";
             obj.Id = Convert.ToInt32(await template.ExecuteScalarAsync<object>($"{SQL_INSERT_TELEM};{LastInsertedIdQuery}",
                  new QueryParameter("@name", obj.Name),
@@ -60,7 +58,7 @@ namespace AaaS.Dal.Ado.Telemetry
                SQL_UPDATE_TELEM,
                new QueryParameter("@ct", obj.Timestamp),
                new QueryParameter("@name", obj.Name),
-               new QueryParameter("@cid", obj.Id),
+               new QueryParameter("@cid", obj.Client.Id),
                new QueryParameter("@creatorid", obj.CreatorId),
                new QueryParameter("@id", obj.Id));
 
@@ -69,9 +67,11 @@ namespace AaaS.Dal.Ado.Telemetry
 
         protected abstract Task<int> UpdateDerivationAsync(T obj);
 
-        public Task<bool> DeleteAsync(T obj)
+        public async Task<bool> DeleteAsync(T obj)
         {
-            throw new NotImplementedException(); //TODO: Delete
+            int result = await template.ExecuteAsync("delete from telemetry where id=@id",
+                 new QueryParameter("@id", obj.Id));
+            return result == 1;
         }
     }
 }

@@ -2,6 +2,7 @@
 using AaaS.Dal.Ado.Telemetry;
 using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
+using AaaS.Dal.Tests.Infrastructure;
 using AaaS.Domain;
 using FluentAssertions;
 using FluentAssertions.Extensions;
@@ -9,18 +10,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Xunit;
 
 namespace AaaS.Dal.Tests
 {
     [Collection("SeededDb")]
-    public class TelemetryTests : IClassFixture<DatabaseFixture>
+    public class LogTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;
         readonly ILogDao logDao;
 
-        public TelemetryTests(DatabaseFixture fixture)
+        public LogTests(DatabaseFixture fixture)
         {
             this.fixture = fixture;
             logDao = new MSSQLLogDao(this.fixture.ConnectionFactory);
@@ -39,17 +42,15 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
-        // TODO ensure that update does not interfere with find tests
+        [AutoRollback]
         public async Task TestUpdate()
         {
             Client client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" };
-            Log log = new Log { Id = 1, Client = client, CreatorId = Guid.NewGuid(), Message = "1", Name = "testname", Timestamp = DateTime.Now, Type = new LogType { Id = 1, Name="Error" } };
+            Log log = new Log { Id = 1, Client = client, CreatorId = Guid.NewGuid(), Message = "updated", Name = "testname", Timestamp = DateTime.Now, Type = new LogType { Id = 1, Name = "Error" } };
 
             await logDao.UpdateAsync(log);
 
-            (await logDao.FindByIdAsync(log.Id)).Should().BeEquivalentTo(log, o => o
-                    .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, 1.Seconds()))
-                    .WhenTypeIs<DateTime>());
+            (await logDao.FindByIdAsync(log.Id)).Should().BeEquivalentTo(log, FluentAssertionsExtensions.ApproximateDateTime);
         }
 
         [Fact]
@@ -63,7 +64,6 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
-
         public async Task TestFindOne()
         {
             (await logDao.FindByIdAsync(-1)).Should().BeNull();
@@ -79,8 +79,11 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestDelete()
         {
-            throw new NotImplementedException("Bitte implementieren!");
-            //TODO: delete + test implementieren
+            Log log = new Log { Id = 1 };
+
+            await logDao.DeleteAsync(log);
+
+            (await logDao.FindByIdAsync(log.Id)).Should().BeNull();
         }
     }
 }

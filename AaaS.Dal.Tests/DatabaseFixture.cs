@@ -29,6 +29,7 @@ namespace AaaS.Dal.Tests
         }
 
         public void Dispose() {
+            
         }
 
         private async Task ExecuteScript(string filepath)

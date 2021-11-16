@@ -38,6 +38,15 @@ namespace AaaS.Dal.Tests
 
         [Fact]
         [AutoRollback]
+        public async Task TestDelete()
+        {
+            await clientDao.DeleteAsync(new Client { Id = 3 });
+
+            (await clientDao.FindByIdAsync(3)).Should().BeNull();
+        }
+
+        [Fact]
+        [AutoRollback]
         public async Task TestUpdate()
         {
             Client client = ClientList.First();
@@ -62,18 +71,11 @@ namespace AaaS.Dal.Tests
             (await clientDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(ClientList);
         }
 
-        [Fact]
-        [AutoRollback]
-        public async Task TestDelete()
-        {
-            throw new NotImplementedException("Bitte Implementieren!");
-            //TODO: delete + test implementieren
-        }
-
         public static IEnumerable<Client> ClientList
             => new List<Client> {
                 new Client { Id=1, ApiKey = "customkey1", Name = "client1" },
-                new Client { Id=2, ApiKey = "customkey2", Name = "client2" } };
+                new Client { Id=2, ApiKey = "customkey2", Name = "client2" },
+                new Client { Id=3, ApiKey = "customkey3", Name = "client3" }};
 
     }
 }
