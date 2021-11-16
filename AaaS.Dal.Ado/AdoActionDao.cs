@@ -83,6 +83,10 @@ namespace AaaS.Dal.Ado
 
         private async Task<bool> UpdateProperties(IAction action)
         {
+            if(await FindByIdAsync(action.Id) is null)
+            {
+                return false;
+            }
             return await ObjectLoaderUtilities.UpdateProperties(action.Id, action, objectPropertyDao);
         }
 
