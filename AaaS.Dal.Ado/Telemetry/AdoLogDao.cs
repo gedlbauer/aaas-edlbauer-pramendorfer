@@ -13,15 +13,11 @@ namespace AaaS.Dal.Ado.Telemetry
 {
     public abstract class AdoLogDao : AdoTelemetryDao<Log>, ILogDao
     {
-        private readonly IClientDao clientDao;
         protected override string Query => "Select t.Id, t.creation_time, t.Name, t.client_id, t.creator_id, " +
             "lt.name as typename, l.message, l.type_id from Telemetry as t Inner join[Log] " +
             "as l on l.telemetry_id=t.id inner join LogType as lt on l.[type_id]=lt.id";
 
-        public AdoLogDao(IConnectionFactory factory, IClientDao clientDao) : base(factory)
-        {
-            this.clientDao = clientDao;
-        }
+        public AdoLogDao(IConnectionFactory factory, IClientDao clientDao) : base(factory, clientDao) { }
 
         protected override async Task<Log> MapRowToTelemetry(IDataRecord row)
         {

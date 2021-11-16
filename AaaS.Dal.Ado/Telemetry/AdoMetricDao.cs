@@ -12,14 +12,10 @@ namespace AaaS.Dal.Ado.Telemetry
 {
     public abstract class AdoMetricDao : AdoTelemetryDao<Metric>, IMetricDao
     {
-        private readonly IClientDao clientDao;
         protected override string Query => "Select t.Id, t.creation_time, t.Name, t.client_id, t.creator_id, m.value" +
             " from Telemetry as t Inner join[Metric] as m on m.telemetry_id=t.id";
 
-        public AdoMetricDao(IConnectionFactory factory, IClientDao clientDao) : base(factory)
-        {
-            this.clientDao = clientDao;
-        }
+        public AdoMetricDao(IConnectionFactory factory, IClientDao clientDao) : base(factory, clientDao) { }
 
         protected override async Task InsertDerivationAsync(Metric obj)
         {

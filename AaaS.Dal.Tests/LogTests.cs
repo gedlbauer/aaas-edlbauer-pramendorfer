@@ -2,6 +2,7 @@
 using AaaS.Dal.Ado.Telemetry;
 using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
+using AaaS.Dal.Tests.Infrastructure;
 using AaaS.Domain;
 using FluentAssertions;
 using FluentAssertions.Extensions;
@@ -49,9 +50,7 @@ namespace AaaS.Dal.Tests
 
             await logDao.UpdateAsync(log);
 
-            (await logDao.FindByIdAsync(log.Id)).Should().BeEquivalentTo(log, o => o
-                    .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, 1.Seconds()))
-                    .WhenTypeIs<DateTime>());
+            (await logDao.FindByIdAsync(log.Id)).Should().BeEquivalentTo(log, FluentAssertionsExtensions.ApproximateDateTime);
         }
 
         [Fact]
@@ -65,7 +64,6 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
-
         public async Task TestFindOne()
         {
             (await logDao.FindByIdAsync(-1)).Should().BeNull();

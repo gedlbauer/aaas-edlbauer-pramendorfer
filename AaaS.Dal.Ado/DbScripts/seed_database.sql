@@ -1,14 +1,21 @@
-﻿insert into client (name, api_key) values ('client1', 'customkey1');
-insert into client (name, api_key) values ('client2', 'customkey2');
-insert into client (name, api_key) values ('client3', 'customkey3');
+﻿INSERT INTO client (name, api_key) values ('client1', 'customkey1');
+INSERT INTO client (name, api_key) values ('client2', 'customkey2');
+INSERT INTO client (name, api_key) values ('client3', 'customkey3');
 
-insert into LogType (name) values ('Error')
+-- Logs
+INSERT INTO LogType (name) VALUES ('Error')
 
-insert into telemetry (creation_time, name, client_id, creator_id) values (GETDATE(), 'log1', 1, '09b87c32-d36a-4050-861a-244f86f754a5')
-insert into log (telemetry_id, type_id, message) values (1, 1, 'message from log 1')
+INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'log1', 1, '09b87c32-d36a-4050-861a-244f86f754a5')
+INSERT INTO log (telemetry_id, type_id, message) VALUES (1, 1, 'message from log 1')
+INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'log2', 2, '09b87c32-d36a-4050-861a-244f86f754a6')
+INSERT INTO log (telemetry_id, type_id, message) VALUES (2, 1, 'message from log 2')
 
-insert into telemetry (creation_time, name, client_id, creator_id) values (GETDATE(), 'log2', 2, '09b87c32-d36a-4050-861a-244f86f754a6')
-insert into log (telemetry_id, type_id, message) values (2, 1, 'message from log 2')
+-- Metrics
+INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'metric1', 1, '09b87c32-d36a-4050-861a-244f86f754a7')
+INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'metric2', 2, '09b87c32-d36a-4050-861a-244f86f754a8')
+INSERT INTO metric (telemetry_id, value) VALUES (3, 10)
+INSERT INTO metric (telemetry_id, value) VALUES (4, 20)
+
 
 begin --Actions
 INSERT INTO Object(type) VALUES ('AaaS.Core.SimpleAction, AaaS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
