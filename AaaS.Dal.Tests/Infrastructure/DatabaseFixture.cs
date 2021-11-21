@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Xunit;
 
-namespace AaaS.Dal.Tests
+namespace AaaS.Dal.Tests.Infrastructure
 {
     [CollectionDefinition("SeededDb")]
     public class DatabaseFixture : IDisposable

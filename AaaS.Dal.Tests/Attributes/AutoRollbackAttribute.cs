@@ -1,4 +1,5 @@
 ﻿using AaaS.Common;
+using AaaS.Dal.Tests.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;

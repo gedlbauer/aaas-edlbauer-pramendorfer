@@ -1,6 +1,7 @@
 ﻿using AaaS.Dal.Ado;
 using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
+using AaaS.Dal.Tests.Infrastructure;
 using AaaS.Domain;
 using FluentAssertions;
 using System;
