@@ -57,16 +57,16 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestUpdate()
         {
+            var notExistingAction = new SimpleAction { Id = 100, Email = "testmail@test.com", TemplateText = "Das ist eine Testmail", Value = 12 };
+            (await actionDao.UpdateAsync(notExistingAction)).Should().BeFalse();
+
             var actionToUpdate = new SimpleAction { Email = "test@testmail.com", TemplateText = "Das ist eine veränderte Testaction", Id = 1, Value = 40 };
             (await actionDao.UpdateAsync(actionToUpdate)).Should().BeTrue();
             (await actionDao.FindByIdAsync(1)).Should().BeEquivalentTo(actionToUpdate);
-            var invalidActionToUpdate = new SimpleAction { Email = "test@testmail.com", TemplateText = "Das ist eine veränderte Testaction", Id = -1, Value = 40 };
 
             var actionToUpdate2 = new SimpleAction { Email = null, TemplateText = "Das ist eine veränderte Testaction", Id = 1, Value = 40 };
             (await actionDao.UpdateAsync(actionToUpdate2)).Should().BeTrue();
             (await actionDao.FindByIdAsync(1)).Should().BeEquivalentTo(actionToUpdate2);
-
-            await actionDao.Invoking(async x => await actionDao.UpdateAsync(invalidActionToUpdate)).Should().ThrowAsync<SqlException>();
         }
 
         [Fact]

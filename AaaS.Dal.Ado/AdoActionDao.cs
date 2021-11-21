@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace AaaS.Dal.Ado
 {
@@ -82,39 +83,11 @@ namespace AaaS.Dal.Ado
 
         private async Task<bool> UpdateProperties(IAction action)
         {
-            var updated = false;
-            var properties = action.GetType().GetProperties();
-            foreach (var property in properties)
+            if(await FindByIdAsync(action.Id) is null)
             {
-                if (property.GetValue(action) is null)
-                {
-                    await objectPropertyDao.DeleteAsync(new ObjectProperty { ObjectId = action.Id, Name = property.Name });
-                    updated = true;
-                }
-                else
-                {
-                    var objectProperty = new ObjectProperty
-                    {
-                        ObjectId = action.Id,
-                        Name = property.Name,
-                        TypeName = property.PropertyType.AssemblyQualifiedName,
-                        Value = JsonSerializer.Serialize(property.GetValue(action))
-                    };
-                    if (await objectPropertyDao.FindByObjectIdAndNameAsync(objectProperty.ObjectId, objectProperty.Name) is not null)
-                    {
-                        if (await objectPropertyDao.UpdateAsync(objectProperty))
-                        {
-                            updated = true;
-                        }
-                    }
-                    else
-                    {
-                        await objectPropertyDao.InsertAsync(objectProperty);
-                        updated = true;
-                    }
-                }
+                return false;
             }
-            return updated;
+            return await ObjectLoaderUtilities.UpdateProperties(action.Id, action, objectPropertyDao);
         }
 
         public async Task<IAction> MapRowToAction(IDataRecord record)
@@ -130,12 +103,14 @@ namespace AaaS.Dal.Ado
 
         public async Task<bool> DeleteAsync(IAction action)
         {
+            using TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             const string SQL_DELETE_ACTION = "DELETE FROM Action WHERE object_id=@object_id";
             const string SQL_DELETE_OBJECT = "DELETE FROM Object WHERE id=@id";
             int deletedRows = await template.ExecuteAsync(SQL_DELETE_ACTION, new QueryParameter("@object_id", action.Id));
             if (deletedRows > 0)
             {
                 await template.ExecuteAsync(SQL_DELETE_OBJECT, new QueryParameter("@id", action.Id));
+                scope.Complete();
                 return true;
             }
             return false;

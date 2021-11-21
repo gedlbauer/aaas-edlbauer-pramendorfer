@@ -69,7 +69,20 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestUpdate()
         {
-            throw new NotImplementedException();
+            var notExistingDetector = new SimpleDetector { Id = 100, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+            (await detectorDao.UpdateAsync(notExistingDetector)).Should().BeFalse();
+
+            var detectorWithExistingFKs = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+            (await detectorDao.UpdateAsync(detectorWithExistingFKs)).Should().BeTrue();
+            (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(detectorWithExistingFKs);
+            
+            var detectorWithNonExistingAction = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Email = "abc", TemplateText = "def", Value = 12 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+            (await detectorDao.UpdateAsync(detectorWithNonExistingAction)).Should().BeTrue();
+            (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(detectorWithNonExistingAction);
+
+            var detectorWithNonExistingClient = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { ApiKey = "customkey11", Name = "client1" } };
+            (await detectorDao.UpdateAsync(detectorWithNonExistingClient)).Should().BeTrue();
+            (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(detectorWithNonExistingClient);
         }
 
         [Fact]

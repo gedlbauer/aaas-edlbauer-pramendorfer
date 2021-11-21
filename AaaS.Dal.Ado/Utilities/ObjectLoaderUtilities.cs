@@ -1,4 +1,5 @@
 ﻿using AaaS.Dal.Interface;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,43 @@ namespace AaaS.Dal.Ado.Utilities
                 var propertyValue = deserializer.Invoke(null, new object[] { property.Value, new JsonSerializerOptions(JsonSerializerDefaults.General) });
                 actionType.GetProperty(property.Name).SetValue(objectToLoad, propertyValue);
             }
+        }
+
+        public static async Task<bool> UpdateProperties<T>(int id, T action, IObjectPropertyDao objectPropertyDao)
+        {
+            var updated = false;
+            var properties = action.GetType().GetProperties();
+            foreach (var property in properties)
+            {
+                if (property.GetValue(action) is null)
+                {
+                    if (await objectPropertyDao.DeleteAsync(new ObjectProperty { ObjectId = id, Name = property.Name }))
+                        updated = true;
+                }
+                else
+                {
+                    var objectProperty = new ObjectProperty
+                    {
+                        ObjectId = id,
+                        Name = property.Name,
+                        TypeName = property.PropertyType.AssemblyQualifiedName,
+                        Value = JsonSerializer.Serialize(property.GetValue(action))
+                    };
+                    if (await objectPropertyDao.FindByObjectIdAndNameAsync(objectProperty.ObjectId, objectProperty.Name) is not null)
+                    {
+                        if (await objectPropertyDao.UpdateAsync(objectProperty))
+                        {
+                            updated = true;
+                        }
+                    }
+                    else
+                    {
+                        await objectPropertyDao.InsertAsync(objectProperty);
+                        updated = true;
+                    }
+                }
+            }
+            return updated;
         }
     }
 }

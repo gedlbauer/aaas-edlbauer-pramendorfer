@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace AaaS.Dal.Ado
 {
@@ -71,11 +72,11 @@ namespace AaaS.Dal.Ado
             detector.Id = Convert.ToInt32(
                     await template.ExecuteScalarAsync<object>($"{SQL_INSERT_OBJECT};{LastInsertedIdQuery}",
                     new QueryParameter("@type", detector.GetType().AssemblyQualifiedName)));
-            if((await clientDao.FindByIdAsync(detector.Client.Id)) is null)
+            if (detector.Client.Id < 1)
             {
                 await clientDao.InsertAsync(detector.Client);
             }
-            if((await actionDao.FindByIdAsync(detector.Action.Id)) is null)
+            if (detector.Action.Id < 1)
             {
                 await actionDao.InsertAsync(detector.Action);
             }
@@ -117,9 +118,41 @@ namespace AaaS.Dal.Ado
             return detector;
         }
 
-        public Task<bool> UpdateAsync(Detector obj)
+        public async Task<bool> UpdateAsync(Detector obj)
         {
-            throw new NotImplementedException();
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
+            var updated = false;
+            if (obj.Client.Id < 1)
+            {
+                await clientDao.InsertAsync(obj.Client);
+            }
+            if (obj.Action.Id < 1)
+            {
+                await actionDao.InsertAsync(obj.Action);
+            }
+            const string SQL_UPDATE_DETECTOR = "UPDATE Detector SET client_id=@client_id, telemetry_name=@telemetry_name, action_id=@action_id, check_interval=@check_interval WHERE object_id=@object_id";
+            var updatedRows = await template.ExecuteAsync(
+                SQL_UPDATE_DETECTOR,
+                new QueryParameter("@client_id", obj.Client.Id),
+                new QueryParameter("@telemetry_name", obj.TelemetryName),
+                new QueryParameter("@action_id", obj.Action.Id),
+                new QueryParameter("@check_interval", obj.CheckInterval.TotalMilliseconds),
+                new QueryParameter("@object_id", obj.Id)
+                );
+            if (updatedRows <= 0)
+            {
+                return false;
+            }
+            if (await ObjectLoaderUtilities.UpdateProperties(obj.Id, obj, objectPropertyDao) || updatedRows > 0)
+            {
+                updated = true;
+            }
+            if (updated)
+            {
+                scope.Complete();
+            }
+
+            return updated;
         }
     }
 }

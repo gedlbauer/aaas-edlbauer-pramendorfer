@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Domain
+namespace AaaS.Core.Detectors
 {
-    public class MailAction : IAction
+    public class AverageSlidingWindowDetector : SlidingWindowDetector
     {
-        public int Id { get; set; }
-        public string MailAddress { get; set; }
-
-        public void Execute()
+        public override double CalculateCheckValue()
         {
             throw new NotImplementedException();
         }
