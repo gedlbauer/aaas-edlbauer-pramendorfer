@@ -14,7 +14,7 @@ namespace AaaS.Core.Detectors
         public int MaxOccurs { get; set; }
         public TimeSpan TimeWindow {get; set;}
 
-        public override void Detect()
+        protected override void Detect()
         {
             throw new NotImplementedException();
         }
