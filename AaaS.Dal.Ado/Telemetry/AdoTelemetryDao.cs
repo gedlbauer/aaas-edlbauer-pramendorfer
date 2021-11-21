@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using AaaS.Common;
 using AaaS.Dal.Ado.Utilities;
 using AaaS.Dal.Interface;
@@ -53,6 +54,14 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public async Task<bool> UpdateAsync(T obj)
         {
+            if (obj.Client.Id > 0)
+            {
+                bool success = await clientDao.UpdateAsync(obj.Client);
+                if (!success) return false;
+            }
+            else
+                await clientDao.InsertAsync(obj.Client);
+
             const string SQL_UPDATE_TELEM = "update telemetry set creation_time=@ct, name=@name, client_id=@cid, creator_id=@creatorid where id=@id";
             int resultTelem = await template.ExecuteAsync(
                SQL_UPDATE_TELEM,
