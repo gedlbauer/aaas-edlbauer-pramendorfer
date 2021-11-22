@@ -15,7 +15,7 @@ namespace AaaS.SeederClient
         {
             IConfiguration config = ConfigurationUtil.GetConfiguration();
             IConnectionFactory factory = DefaultConnectionFactory.FromConfiguration(config, "AaaSDbConnection");
-            var seeder = new Seeder(factory, BASE_PATH);
+            var seeder = new Seeder(factory, new MSSQLActionDao(factory), new MSSQLClientDao(factory), new MSSQLDetectorDao(factory), BASE_PATH);
 
             await seeder.RecreateDatabase();
             await seeder.SeedAll();

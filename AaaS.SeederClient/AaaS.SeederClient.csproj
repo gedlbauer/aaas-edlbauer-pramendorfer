@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AaaS.Core\AaaS.Core.csproj" />
     <ProjectReference Include="..\AaaS.Dal.Ado\AaaS.Dal.Ado.csproj" />
     <ProjectReference Include="..\AaaS.Dal.Interface\AaaS.Dal.Interface.csproj" />
   </ItemGroup>

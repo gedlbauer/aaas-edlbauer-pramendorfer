@@ -1,4 +1,8 @@
 ﻿using AaaS.Common;
+using AaaS.Core.Actions;
+using AaaS.Core.Detectors;
+using AaaS.Dal.Interface;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -13,10 +17,16 @@ namespace AaaS.SeederClient
     {
         private string basePath;
         private IConnectionFactory connectionFactory;
+        private IActionDao actionDao;
+        private IClientDao clientDao;
+        private IDetectorDao detectorDao;
 
-        public Seeder(IConnectionFactory connectionFactory, string basePath)
+        public Seeder(IConnectionFactory connectionFactory, IActionDao actionDao, IClientDao clientDao, IDetectorDao detectorDao, string basePath)
         {
             this.basePath = basePath;
+            this.actionDao = actionDao;
+            this.clientDao = clientDao;
+            this.detectorDao = detectorDao;
             this.connectionFactory = connectionFactory;
         }
 
@@ -41,6 +51,8 @@ namespace AaaS.SeederClient
             await SeedClients();
             await SeedLogTypes();
             await SeedTelemetries();
+            await SeedActions();
+            await SeedDetectors();
         }
 
         public async Task SeedClients()
@@ -61,6 +73,59 @@ namespace AaaS.SeederClient
             await BulkInsert("logs.csv", "Log");
             await BulkInsert("metrics.csv", "Metric");
             await BulkInsert("timemeasurements.csv", "TimeMeasurement");
+        }
+
+        public async Task SeedActions()
+        {
+            var actions = new List<IAction> {
+                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 1" },
+                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 2" },
+                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 3" },
+                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 4" },
+                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 5" },
+
+                new WebHookAction { RequestUrl = "https://www.google.com/" },
+                new WebHookAction { RequestUrl = "https://www.bing.com/" },
+                new WebHookAction { RequestUrl = "https://www.yahoo.com/" },
+                new WebHookAction { RequestUrl = "https://www.youtube.com/" },
+                new WebHookAction { RequestUrl = "https://www.apple.com/" }
+            };
+            foreach (var action in actions)
+            {
+                await actionDao.InsertAsync(action);
+            }
+        }
+
+        public async Task SeedDetectors()
+        {
+            var actions = await actionDao.FindAllAsync().ToListAsync();
+            var clients = await clientDao.FindAllAsync().ToListAsync();
+            var detectors = new List<Detector>
+            {
+                new MinMaxDetector {Client = clients[0], CheckInterval = TimeSpan.FromMilliseconds(1000), Max = 10, Min=1, MaxOccurs = 2, TelemetryName="TestTelemetry1", TimeWindow=TimeSpan.FromSeconds(10)},
+                new MinMaxDetector {Client = clients[1], CheckInterval = TimeSpan.FromMilliseconds(1000), Max = 100, Min=10, MaxOccurs = 5, TelemetryName="TestTelemetry2", TimeWindow=TimeSpan.FromSeconds(5)},
+                new MinMaxDetector {Client = clients[2], CheckInterval = TimeSpan.FromMilliseconds(1000), Max = 20, Min=2, MaxOccurs = 3, TelemetryName="TestTelemetry3", TimeWindow=TimeSpan.FromSeconds(100)},
+
+                new CurrentValueSlidingWindowDetector { Client = clients[3], CheckInterval = TimeSpan.FromMilliseconds(300), Threshold = 20, TimeWindow = TimeSpan.FromSeconds(20), TelemetryName = "TestTelemetry4", UseGreater = true},
+                new CurrentValueSlidingWindowDetector { Client = clients[4], CheckInterval = TimeSpan.FromMilliseconds(500), Threshold = 30, TimeWindow = TimeSpan.FromSeconds(50), TelemetryName = "TestTelemetry5", UseGreater = true},
+                new CurrentValueSlidingWindowDetector { Client = clients[0], CheckInterval = TimeSpan.FromMilliseconds(2000), Threshold = 60, TimeWindow = TimeSpan.FromSeconds(10), TelemetryName = "TestTelemetry1", UseGreater = false},
+
+                new AverageSlidingWindowDetector { Client = clients[1], CheckInterval = TimeSpan.FromMilliseconds(200), Threshold = 90, TimeWindow = TimeSpan.FromSeconds(30), TelemetryName = "TestTelemetry2", UseGreater = false},
+                new AverageSlidingWindowDetector { Client = clients[2], CheckInterval = TimeSpan.FromMilliseconds(100), Threshold = 10, TimeWindow = TimeSpan.FromSeconds(50), TelemetryName = "TestTelemetry3", UseGreater = true},
+
+                new SumSlidingWindowDetector { Client = clients[3], CheckInterval = TimeSpan.FromMilliseconds(400), Threshold = 100, TimeWindow = TimeSpan.FromSeconds(30), TelemetryName = "TestTelemetry4", UseGreater = true},
+                new SumSlidingWindowDetector { Client = clients[4], CheckInterval = TimeSpan.FromMilliseconds(700), Threshold = 200, TimeWindow = TimeSpan.FromSeconds(50), TelemetryName = "TestTelemetry5", UseGreater = false}
+            };
+
+            for (int i = 0; i < actions.Count; i++)
+            {
+                detectors[i].Action = actions[i];
+            }
+
+            foreach (var detector in detectors)
+            {
+                await detectorDao.InsertAsync(detector);
+            }
         }
 
         private async Task BulkInsert(string fileName, string tableName)
