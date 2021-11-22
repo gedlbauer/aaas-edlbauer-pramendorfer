@@ -13,6 +13,8 @@ namespace AaaS.Dal.Tests.Infrastructure
     {
         public static EquivalencyAssertionOptions<TExpectation> ApproximateDateTime<TExpectation>(EquivalencyAssertionOptions<TExpectation> o) 
             => o.Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, 1.Seconds()))
-            .WhenTypeIs<DateTime>();
+            .WhenTypeIs<DateTime>()
+            .Using<TimeSpan>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, 1.Seconds()))
+            .WhenTypeIs<TimeSpan>();
     }
 }

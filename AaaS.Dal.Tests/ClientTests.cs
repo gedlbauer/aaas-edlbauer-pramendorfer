@@ -1,6 +1,7 @@
 ﻿using AaaS.Dal.Ado;
 using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
+using AaaS.Dal.Tests.Infrastructure;
 using AaaS.Domain;
 using FluentAssertions;
 using System;
@@ -47,15 +48,28 @@ namespace AaaS.Dal.Tests
 
         [Fact]
         [AutoRollback]
-        public async Task TestUpdate()
+        public async Task TestSuccessfullUpdate()
         {
             Client client = ClientList.First();
             client.ApiKey = "new-key";
             client.Name = "updated-name";
 
-            await clientDao.UpdateAsync(client);
+           bool result = await clientDao.UpdateAsync(client);
 
+            result.Should().BeTrue();
             (await clientDao.FindByIdAsync(client.Id)).Should().BeEquivalentTo(client);
+        }
+
+        [Fact]
+        [AutoRollback]
+        public async Task TestFailingUpdate()
+        {
+            Client nonExistingClient = ClientList.First();
+            nonExistingClient.Id = 100;
+
+            bool result = await clientDao.UpdateAsync(nonExistingClient);
+
+            result.Should().BeFalse();
         }
 
         [Fact]

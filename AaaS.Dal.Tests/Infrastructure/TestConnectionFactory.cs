@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Dal.Tests
+namespace AaaS.Dal.Tests.Infrastructure
 {
     public class TestConnectionFactory : IConnectionFactory
     {
