@@ -67,8 +67,7 @@ namespace AaaS.SeederClient
         {
             var sql = $"BULK INSERT {tableName} FROM " +
                 $"'{basePath}{fileName}' " +
-                $"WITH(FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '0x0a'); " +
-                $"GO";
+                $"WITH(FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '0x0a'); ";
             await ExecuteScript(sql);
         }
 
