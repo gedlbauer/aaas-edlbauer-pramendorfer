@@ -8,6 +8,6 @@ namespace AaaS.Domain
 {
     public class Metric : Telemetry
     {
-        public int Value { get; set; }
+        public double Value { get; set; }
     }
 }

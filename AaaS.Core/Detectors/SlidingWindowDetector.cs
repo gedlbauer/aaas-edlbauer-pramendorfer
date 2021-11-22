@@ -16,7 +16,7 @@ namespace AaaS.Core.Detectors
 
         public abstract double CalculateCheckValue();
 
-        public override void Detect()
+        protected override void Detect()
         {
             var value = CalculateCheckValue();
             if ((UseGreater && value > Threshold) || value < Threshold)

@@ -35,7 +35,7 @@ namespace AaaS.Dal.Ado.Telemetry
                 Name = (string)row["name"],
                 Client = client,
                 CreatorId = Guid.Parse((string)row["creator_id"]),
-                Value = (int)row["value"]
+                Value = (double)row["value"]
             };
         }
 

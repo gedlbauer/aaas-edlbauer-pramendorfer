@@ -14,5 +14,10 @@ namespace AaaS.Core
         {
             return $"Hello I am a SimpleDetector! (${base.ToString()})";
         }
+
+        protected override void Detect()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,6 +1,6 @@
 CREATE TABLE Telemetry (id int IDENTITY NOT NULL, creation_time datetime NULL, name varchar(255) NULL, client_id int NOT NULL, creator_id varchar(68) NULL, PRIMARY KEY (id));
 CREATE TABLE Log (telemetry_id int NOT NULL, message varchar(1000) NULL, type_id int NOT NULL, PRIMARY KEY (telemetry_id));
-CREATE TABLE Metric (telemetry_id int NOT NULL, value int NULL, PRIMARY KEY (telemetry_id));
+CREATE TABLE Metric (telemetry_id int NOT NULL, value float NULL, PRIMARY KEY (telemetry_id));
 CREATE TABLE TimeMeasurement (telemetry_id int NOT NULL, start_time datetime NULL, end_time datetime NULL, PRIMARY KEY (telemetry_id));
 CREATE TABLE Client (id int IDENTITY NOT NULL, api_key varchar(68) NOT NULL UNIQUE, name varchar(255) NULL, PRIMARY KEY (id));
 CREATE TABLE LogType (id int IDENTITY NOT NULL, name varchar(255) NULL, PRIMARY KEY (id));
