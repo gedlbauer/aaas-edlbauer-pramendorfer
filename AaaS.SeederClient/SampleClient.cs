@@ -25,22 +25,30 @@ namespace AaaS.SeederClient
         public async Task PrintStats()
         {
             Console.WriteLine("--------------Sample AaaS Client--------------");
-            Console.WriteLine("Registered Clients: ");
 
+            Console.WriteLine("Registered Clients: ");
             await foreach (var item in clientDao.FindAllAsync())
             {
-                Console.WriteLine($"{item.Id}: {item.Name}");
+                Console.WriteLine($"{item.Id}: Name={item.Name}, ApiKey={item.ApiKey}");
             }
 
-            Console.WriteLine("Metrics:");
-            Console.WriteLine($"{(await metricDao.FindAllAsync().CountAsync())} metrics in the database.");
+            Console.WriteLine("Top 10 Metrics:");
+            await foreach (var item in metricDao.FindAllAsync().Take(10))
+            {
+                Console.WriteLine($"{item.Id}: Name={item.Name}, Value={item.Value}");
+            }
 
+            Console.WriteLine("Top 10 Logs:");
+            await foreach (var item in logDao.FindAllAsync().Take(10))
+            {
+                Console.WriteLine($"{item.Id}: Name={item.Name} {item.Message}");
+            }
 
-            Console.WriteLine("Logs:");
-            Console.WriteLine($"{(await logDao.FindAllAsync().CountAsync())} logs in the database.");
-
-            Console.WriteLine("TimeMeasurement:");
-            Console.WriteLine($"{(await timeMeasurementDao.FindAllAsync().CountAsync())} time measurements in the database.");
+            Console.WriteLine("Top 10 TimeMeasurement:");
+            await foreach (var item in timeMeasurementDao.FindAllAsync().Take(10))
+            {
+                Console.WriteLine($"{item.Id}: Name={item.Name}, StartTime={item.StartTime:G} EndTime={item.EndTime:G}");
+            }
         }
     }
 }
