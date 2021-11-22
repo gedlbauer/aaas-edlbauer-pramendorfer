@@ -22,12 +22,12 @@ namespace AaaS.SeederClient
 
         public async Task DestroyDatabase()
         {
-            await ExecuteScript(@"DbScripts\drop_database.sql");
+            await ExecuteScriptFromFile(@"DbScripts\drop_database.sql");
         }
 
         public async Task CreateDatabase()
         {
-            await ExecuteScript(@"DbScripts\create_datbase.ddl");
+            await ExecuteScriptFromFile(@"DbScripts\create_database.ddl");
         }
 
         public async Task RecreateDatabase()
@@ -36,12 +36,53 @@ namespace AaaS.SeederClient
             await CreateDatabase();
         }
 
-        private async Task ExecuteScript(string filepath)
+        public async Task SeedAll()
+        {
+            await SeedClients();
+            await SeedLogTypes();
+            await SeedTelemetries();
+        }
+
+        public async Task SeedClients()
+        {
+            await BulkInsert("clients.csv", "Client");
+        }
+
+        public async Task SeedLogTypes()
+        {
+            await BulkInsert("logtypes.csv", "LogType");
+        }
+
+        public async Task SeedTelemetries()
+        {
+            await BulkInsert("telemetry1.csv", "Telemetry");
+            await BulkInsert("telemetry2.csv", "Telemetry");
+            await BulkInsert("telemetry3.csv", "Telemetry");
+            await BulkInsert("logs.csv", "Log");
+            await BulkInsert("metrics.csv", "Metric");
+            await BulkInsert("timemeasurements.csv", "TimeMeasurement");
+        }
+
+        private async Task BulkInsert(string fileName, string tableName)
+        {
+            var sql = $"BULK INSERT {tableName} FROM " +
+                $"'{basePath}{fileName}' " +
+                $"WITH(FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '0x0a'); " +
+                $"GO";
+            await ExecuteScript(sql);
+        }
+
+        private async Task ExecuteScriptFromFile(string filepath)
         {
             string seedScript = await File.ReadAllTextAsync(filepath);
+            await ExecuteScript(seedScript);
+        }
+
+        private async Task ExecuteScript(string script)
+        {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using DbCommand command = connection.CreateCommand();
-            command.CommandText = seedScript;
+            command.CommandText = script;
             command.ExecuteNonQuery();
         }
     }

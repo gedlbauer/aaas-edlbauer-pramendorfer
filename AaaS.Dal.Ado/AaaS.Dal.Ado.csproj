@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <None Update="DbScripts\create_database.ddl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DbScripts\drop_database.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -27,7 +27,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DbScripts\seed_database.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
