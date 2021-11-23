@@ -20,12 +20,6 @@
     <None Update="DbScripts\drop_database.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="DbScripts\SeedData\bulk_insert_clients.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="DbScripts\SeedData\clients.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="DbScripts\seed_database.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
