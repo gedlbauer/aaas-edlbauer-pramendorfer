@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Dal.Interface
+namespace AaaS.Core.Actions
 {
-    public interface IActionDao : IBaseDao<AaaSAction>
+    public abstract class BaseAction : AaaSAction, IAction
     {
+        public abstract void Execute();
     }
 }

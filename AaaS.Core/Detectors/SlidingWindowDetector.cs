@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Detectors
 {
-    public abstract class SlidingWindowDetector : Detector
+    public abstract class SlidingWindowDetector : BaseDetector
     {
         public TimeSpan TimeWindow { get; set; }
         public bool UseGreater { get; set; }

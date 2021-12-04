@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace AaaS.Domain
 {
-    public interface IAction
+    public class AaaSAction
     {
         public int Id { get; set; }
-
-        void Execute();
     }
 }

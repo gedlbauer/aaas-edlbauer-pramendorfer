@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Actions
 {
-    public class WebHookAction : IAction
+    public class WebHookAction : BaseAction
     {
-        public int Id { get; set; }
         public string RequestUrl { get; set; }
 
-        public void Execute()
+        public override void Execute()
         {
             throw new NotImplementedException();
         }

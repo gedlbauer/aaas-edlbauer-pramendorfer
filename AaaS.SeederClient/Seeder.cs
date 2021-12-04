@@ -77,7 +77,7 @@ namespace AaaS.SeederClient
 
         public async Task SeedActions()
         {
-            var actions = new List<IAction> {
+            var actions = new List<AaaSAction> {
                 new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 1" },
                 new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 2" },
                 new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 3" },

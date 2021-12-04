@@ -88,7 +88,7 @@ namespace AaaS.Dal.Tests
 
         }
 
-        public static IEnumerable<IAction> ActionList => new List<IAction> {
+        public static IEnumerable<AaaSAction> ActionList => new List<AaaSAction> {
                 new SimpleAction { Id = 1, Email="testmail@test.com", TemplateText="Das ist eine Testmail", Value=12 },
                 new SimpleAction { Id = 2, Email="testmail@test.com", TemplateText="Das ist eine Testmail", Value=12 }
         };

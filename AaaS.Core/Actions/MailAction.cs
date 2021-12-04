@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Actions
 {
-    public class MailAction : IAction
+    public class MailAction : BaseAction
     {
-        public int Id { get; set; }
         public string MailAddress { get; set; }
 
         public string MailTemplate { get; set; }
 
 
-        public void Execute()
+        public override void Execute()
         {
             throw new NotImplementedException();
         }

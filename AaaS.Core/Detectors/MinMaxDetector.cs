@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Detectors
 {
-    public class MinMaxDetector : Detector
+    public class MinMaxDetector : BaseDetector
     {
         public int Min { get; set; }
         public int Max { get; set; }

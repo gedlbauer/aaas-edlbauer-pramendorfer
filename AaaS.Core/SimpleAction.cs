@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core
 {
-    public class SimpleAction : IAction
+    public class SimpleAction : AaaSAction
     {
-        public int Id { get; set; }
         public string Email { get; set; }
         public string TemplateText { get; set; }
         public int Value { get; set; }
