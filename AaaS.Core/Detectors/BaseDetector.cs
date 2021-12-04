@@ -1,4 +1,5 @@
-﻿using AaaS.Domain;
+﻿using AaaS.Core.Actions;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Detectors
 {
-    public abstract class BaseDetector : Detector, IDetector
+    public abstract class BaseDetector : Detector<BaseAction>, IDetector
     {
         protected abstract void Detect();
 

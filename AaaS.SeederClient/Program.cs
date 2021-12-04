@@ -1,4 +1,5 @@
 ﻿using AaaS.Common;
+using AaaS.Core.Actions;
 using AaaS.Dal.Ado;
 using AaaS.Dal.Ado.Telemetry;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,7 @@ namespace AaaS.SeederClient
         {
             IConfiguration config = ConfigurationUtil.GetConfiguration();
             IConnectionFactory factory = DefaultConnectionFactory.FromConfiguration(config, "AaaSDbConnection");
-            var seeder = new Seeder(factory, new MSSQLActionDao(factory), new MSSQLClientDao(factory), new MSSQLDetectorDao(factory), BASE_PATH);
+            var seeder = new Seeder(factory, new MSSQLActionDao<BaseAction>(factory), new MSSQLClientDao(factory), new MSSQLDetectorDao<BaseAction>(factory), BASE_PATH);
 
             await seeder.RecreateDatabase();
             await seeder.SeedAll();

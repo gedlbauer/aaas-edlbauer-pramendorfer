@@ -1,4 +1,5 @@
-﻿using AaaS.Domain;
+﻿using AaaS.Core.Detectors;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core
 {
-    public class SimpleDetector : Detector
+    public class SimpleDetector : BaseDetector
     {
         public string Name { get; set; }
         public override string ToString()

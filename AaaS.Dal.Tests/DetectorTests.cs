@@ -1,4 +1,6 @@
 ﻿using AaaS.Core;
+using AaaS.Core.Actions;
+using AaaS.Core.Detectors;
 using AaaS.Dal.Ado;
 using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
@@ -20,8 +22,8 @@ namespace AaaS.Dal.Tests
     public class DetectorTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;
-        readonly IDetectorDao detectorDao;
-        readonly IActionDao actionDao;
+        readonly IDetectorDao<BaseAction> detectorDao;
+        readonly IActionDao<BaseAction> actionDao;
         readonly IClientDao clientDao;
         readonly IObjectPropertyDao objectPropertyDao;
         private readonly ITestOutputHelper output;
@@ -29,8 +31,8 @@ namespace AaaS.Dal.Tests
         public DetectorTests(DatabaseFixture fixture, ITestOutputHelper output)
         {
             this.fixture = fixture;
-            detectorDao = new MSSQLDetectorDao(this.fixture.ConnectionFactory);
-            actionDao = new MSSQLActionDao(this.fixture.ConnectionFactory);
+            detectorDao = new MSSQLDetectorDao<BaseAction>(this.fixture.ConnectionFactory);
+            actionDao = new MSSQLActionDao<BaseAction>(this.fixture.ConnectionFactory);
             clientDao = new MSSQLClientDao(this.fixture.ConnectionFactory);
             objectPropertyDao = new MSSQLObjectPropertyDao(this.fixture.ConnectionFactory);
             this.output = output;
@@ -90,7 +92,7 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestInsert()
         {
-            Detector completelyFreshDetector = new SimpleDetector
+            Detector<BaseAction> completelyFreshDetector = new SimpleDetector
             {
                 TelemetryName = "InsertTestTelemetry",
                 Client = new Client { ApiKey = "DetectorInsertKey", Name = "Detector Insert Client" },
@@ -105,7 +107,7 @@ namespace AaaS.Dal.Tests
 
             var actionCountBeforeInsert = await actionDao.FindAllAsync().CountAsync();
             var clientCountBeforeInsert = await clientDao.FindAllAsync().CountAsync();
-            Detector detectorWithExistingAction = new SimpleDetector
+            Detector<BaseAction> detectorWithExistingAction = new SimpleDetector
             {
                 TelemetryName = "InsertTelemetry",
                 Action = (await actionDao.FindByIdAsync(1)),
@@ -120,7 +122,7 @@ namespace AaaS.Dal.Tests
             (await clientDao.FindAllAsync().CountAsync()).Should().Be(clientCountBeforeInsert);
         }
 
-        public static IEnumerable<Detector> DetectorList => new List<Detector> {
+        public static IEnumerable<BaseDetector> DetectorList => new List<BaseDetector> {
                 new SimpleDetector { Id=3, TelemetryName = "TestTelemetry1", Action = new SimpleAction{ Id = 1 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client{Id=1, ApiKey = "customkey1", Name="client1" } }};
     }
 }

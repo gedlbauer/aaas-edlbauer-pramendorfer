@@ -19,13 +19,13 @@ namespace AaaS.Dal.Tests
     public class ActionTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;
-        readonly IActionDao actionDao;
+        readonly IActionDao<AaaSAction> actionDao;
         readonly IObjectPropertyDao objectPropertyDao;
 
         public ActionTests(DatabaseFixture fixture)
         {
             this.fixture = fixture;
-            actionDao = new MSSQLActionDao(this.fixture.ConnectionFactory);
+            actionDao = new MSSQLActionDao<AaaSAction>(this.fixture.ConnectionFactory);
             objectPropertyDao = new MSSQLObjectPropertyDao(this.fixture.ConnectionFactory);
         }
 

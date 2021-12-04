@@ -1,4 +1,5 @@
 ﻿using AaaS.Common;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Dal.Ado
 {
-    public class MSSQLActionDao : AdoActionDao
+    public class MSSQLActionDao<T> : AdoActionDao<T> where T : AaaSAction
     {
         public MSSQLActionDao(IConnectionFactory factory) : base(factory, new MSSQLObjectPropertyDao(factory))
         {

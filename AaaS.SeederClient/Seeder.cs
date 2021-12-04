@@ -17,11 +17,11 @@ namespace AaaS.SeederClient
     {
         private string basePath;
         private IConnectionFactory connectionFactory;
-        private IActionDao actionDao;
+        private IActionDao<BaseAction> actionDao;
         private IClientDao clientDao;
-        private IDetectorDao detectorDao;
+        private IDetectorDao<BaseAction> detectorDao;
 
-        public Seeder(IConnectionFactory connectionFactory, IActionDao actionDao, IClientDao clientDao, IDetectorDao detectorDao, string basePath)
+        public Seeder(IConnectionFactory connectionFactory, IActionDao<BaseAction> actionDao, IClientDao clientDao, IDetectorDao<BaseAction> detectorDao, string basePath)
         {
             this.basePath = basePath;
             this.actionDao = actionDao;
@@ -77,7 +77,7 @@ namespace AaaS.SeederClient
 
         public async Task SeedActions()
         {
-            var actions = new List<AaaSAction> {
+            var actions = new List<BaseAction> {
                 new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 1" },
                 new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 2" },
                 new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 3" },
@@ -100,7 +100,7 @@ namespace AaaS.SeederClient
         {
             var actions = await actionDao.FindAllAsync().ToListAsync();
             var clients = await clientDao.FindAllAsync().ToListAsync();
-            var detectors = new List<Detector>
+            var detectors = new List<BaseDetector>
             {
                 new MinMaxDetector {Client = clients[0], CheckInterval = TimeSpan.FromMilliseconds(1000), Max = 10, Min=1, MaxOccurs = 2, TelemetryName="TestTelemetry1", TimeWindow=TimeSpan.FromSeconds(10)},
                 new MinMaxDetector {Client = clients[1], CheckInterval = TimeSpan.FromMilliseconds(1000), Max = 100, Min=10, MaxOccurs = 5, TelemetryName="TestTelemetry2", TimeWindow=TimeSpan.FromSeconds(5)},
@@ -119,7 +119,7 @@ namespace AaaS.SeederClient
 
             for (int i = 0; i < actions.Count; i++)
             {
-                detectors[i].Action = actions[i];
+                detectors[i].Action = (BaseAction)actions[i];
             }
 
             foreach (var detector in detectors)

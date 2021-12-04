@@ -14,7 +14,7 @@ using System.Transactions;
 
 namespace AaaS.Dal.Ado
 {
-    public abstract class AdoActionDao : IActionDao
+    public abstract class AdoActionDao<T> : IActionDao<T> where T : AaaSAction
     {
         private readonly AdoTemplate template;
         private readonly IObjectPropertyDao objectPropertyDao;
@@ -26,14 +26,14 @@ namespace AaaS.Dal.Ado
             this.objectPropertyDao = objectPropertyDao;
         }
 
-        public IAsyncEnumerable<AaaSAction> FindAllAsync()
+        public IAsyncEnumerable<T> FindAllAsync()
         {
             return template.QueryAsync(
                 "SELECT * FROM Action a " +
                 "JOIN Object o ON (o.id = a.object_id)", MapRowToAction);
         }
 
-        public async Task<AaaSAction> FindByIdAsync(int id)
+        public async Task<T> FindByIdAsync(int id)
         {
             var action = await template.QuerySingleAsync(
                 "SELECT * FROM Action a " +
@@ -46,7 +46,7 @@ namespace AaaS.Dal.Ado
             return action;
         }
 
-        public async Task InsertAsync(AaaSAction action)
+        public async Task InsertAsync(T action)
         {
             const string SQL_INSERT_OBJECT = "INSERT INTO Object (type) values (@type);";
             const string SQL_INSERT_ACTION = "INSERT INTO Action (object_id) values (@object_id);";
@@ -58,7 +58,7 @@ namespace AaaS.Dal.Ado
             await InsertProperties(action);
         }
 
-        private async Task InsertProperties(AaaSAction action)
+        private async Task InsertProperties(T action)
         {
             var properties = action.GetType().GetProperties();
             foreach (var property in properties)
@@ -71,17 +71,17 @@ namespace AaaS.Dal.Ado
             }
         }
 
-        private async Task LoadProperties(AaaSAction action)
+        private async Task LoadProperties(T action)
         {
             await ObjectLoaderUtilities.LoadPropertiesFromId(action.Id, action, objectPropertyDao);
         }
 
-        public async Task<bool> UpdateAsync(AaaSAction action)
+        public async Task<bool> UpdateAsync(T action)
         {
             return await UpdateProperties(action);
         }
 
-        private async Task<bool> UpdateProperties(AaaSAction action)
+        private async Task<bool> UpdateProperties(T action)
         {
             if(await FindByIdAsync(action.Id) is null)
             {
@@ -90,18 +90,18 @@ namespace AaaS.Dal.Ado
             return await ObjectLoaderUtilities.UpdateProperties(action.Id, action, objectPropertyDao);
         }
 
-        public async Task<AaaSAction> MapRowToAction(IDataRecord record)
+        public async Task<T> MapRowToAction(IDataRecord record)
         {
             string typeName = (string)record["type"];
             var type = Type.GetType(typeName);
-            var action = (AaaSAction)Activator.CreateInstance(type);
+            var action = (T)Activator.CreateInstance(type);
             action.Id = (int)record["id"];
             if (action is not null)
                 await LoadProperties(action);
             return action;
         }
 
-        public async Task<bool> DeleteAsync(AaaSAction action)
+        public async Task<bool> DeleteAsync(T action)
         {
             using TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             const string SQL_DELETE_ACTION = "DELETE FROM Action WHERE object_id=@object_id";

@@ -14,14 +14,14 @@ using System.Transactions;
 
 namespace AaaS.Dal.Ado
 {
-    public abstract class AdoDetectorDao : IDetectorDao
+    public abstract class AdoDetectorDao<T> : IDetectorDao<T> where T : AaaSAction
     {
         private readonly AdoTemplate template;
         private readonly IClientDao clientDao;
-        private readonly IActionDao actionDao;
+        private readonly IActionDao<T> actionDao;
         private readonly IObjectPropertyDao objectPropertyDao;
 
-        public AdoDetectorDao(IConnectionFactory connectionFactory, IClientDao clientDao, IActionDao actionDao, IObjectPropertyDao objectPropertyDao)
+        public AdoDetectorDao(IConnectionFactory connectionFactory, IClientDao clientDao, IActionDao<T> actionDao, IObjectPropertyDao objectPropertyDao)
         {
             template = new AdoTemplate(connectionFactory);
             this.clientDao = clientDao;
@@ -31,7 +31,7 @@ namespace AaaS.Dal.Ado
 
         protected abstract string LastInsertedIdQuery { get; }
 
-        public async Task<bool> DeleteAsync(Detector obj)
+        public async Task<bool> DeleteAsync(Detector<T> obj)
         {
             const string SQL_DELETE_DETECTOR = "DELETE FROM Detector WHERE object_id=@object_id";
             const string SQL_DELETE_OBJECT = "DELETE FROM Object WHERE id=@id";
@@ -44,7 +44,7 @@ namespace AaaS.Dal.Ado
             return false;
         }
 
-        public IAsyncEnumerable<Detector> FindAllAsync()
+        public IAsyncEnumerable<Detector<T>> FindAllAsync()
         {
             return template.QueryAsync(
                 "SELECT * FROM Detector d " +
@@ -52,7 +52,7 @@ namespace AaaS.Dal.Ado
                 MapRowToDetector);
         }
 
-        public async Task<Detector> FindByIdAsync(int id)
+        public async Task<Detector<T>> FindByIdAsync(int id)
         {
             return await template.QuerySingleAsync(
                 "SELECT * FROM Detector d " +
@@ -63,7 +63,7 @@ namespace AaaS.Dal.Ado
                 );
         }
 
-        public async Task InsertAsync(Detector detector)
+        public async Task InsertAsync(Detector<T> detector)
         {
             const string SQL_INSERT_OBJECT = "INSERT INTO Object (type) VALUES (@type)";
             const string SQL_INSERT_DETECTOR =
@@ -90,9 +90,9 @@ namespace AaaS.Dal.Ado
             await InsertProperties(detector);
         }
 
-        private async Task InsertProperties(Detector detector)
+        private async Task InsertProperties(Detector<T> detector)
         {
-            var staticDetectorProperties = typeof(Detector).GetProperties();
+            var staticDetectorProperties = typeof(Detector<AaaSAction>).GetProperties();
             var properties = detector.GetType().GetProperties()
                 .Where(x => !staticDetectorProperties.Any(y => x.Name == y.Name && x.PropertyType == y.PropertyType));
             foreach (var property in properties)
@@ -105,20 +105,20 @@ namespace AaaS.Dal.Ado
             }
         }
 
-        public async Task<Detector> MapRowToDetector(IDataRecord record)
+        public async Task<Detector<T>> MapRowToDetector(IDataRecord record)
         {
             string typeName = (string)record["type"];
             var type = Type.GetType(typeName);
-            var detector = (Detector)Activator.CreateInstance(type);
+            var detector = (Detector<T>)Activator.CreateInstance(type);
             detector.Id = (int)record["id"];
             detector.TelemetryName = (string)record["telemetry_name"];
             detector.CheckInterval = TimeSpan.FromMilliseconds((int)record["check_interval"]);
             detector.Client = await clientDao.FindByIdAsync((int)record["client_id"]);
-            detector.Action = await actionDao.FindByIdAsync((int)record["action_id"]);
+            detector.Action = (T)await actionDao.FindByIdAsync((int)record["action_id"]);
             return detector;
         }
 
-        public async Task<bool> UpdateAsync(Detector obj)
+        public async Task<bool> UpdateAsync(Detector<T> obj)
         {
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             var updated = false;

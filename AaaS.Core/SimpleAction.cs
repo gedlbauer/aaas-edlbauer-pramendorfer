@@ -1,4 +1,5 @@
-﻿using AaaS.Domain;
+﻿using AaaS.Core.Actions;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core
 {
-    public class SimpleAction : AaaSAction
+    public class SimpleAction : BaseAction
     {
         public string Email { get; set; }
         public string TemplateText { get; set; }
         public int Value { get; set; }
 
-        public void Execute()
+        public override void Execute()
         {
-            Console.WriteLine($"Hello from SimpleAction: {TemplateText} - {Value}");
+            throw new NotImplementedException();
         }
     }
 }

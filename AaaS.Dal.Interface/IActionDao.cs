@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Dal.Interface
 {
-    public interface IActionDao : IBaseDao<AaaSAction>
+    public interface IActionDao<T> : IBaseDao<T> where T : AaaSAction
     {
     }
 }
