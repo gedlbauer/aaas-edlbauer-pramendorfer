@@ -14,14 +14,16 @@ using System.Transactions;
 
 namespace AaaS.Dal.Ado
 {
-    public abstract class AdoDetectorDao<T> : IDetectorDao<T> where T : AaaSAction
+    public abstract class AdoDetectorDao<TDetector, TAction> : IDetectorDao<TDetector, TAction> 
+        where TDetector : Detector<TAction>
+        where TAction : AaaSAction
     {
         private readonly AdoTemplate template;
         private readonly IClientDao clientDao;
-        private readonly IActionDao<T> actionDao;
+        private readonly IActionDao<TAction> actionDao;
         private readonly IObjectPropertyDao objectPropertyDao;
 
-        public AdoDetectorDao(IConnectionFactory connectionFactory, IClientDao clientDao, IActionDao<T> actionDao, IObjectPropertyDao objectPropertyDao)
+        public AdoDetectorDao(IConnectionFactory connectionFactory, IClientDao clientDao, IActionDao<TAction> actionDao, IObjectPropertyDao objectPropertyDao)
         {
             template = new AdoTemplate(connectionFactory);
             this.clientDao = clientDao;
@@ -31,7 +33,7 @@ namespace AaaS.Dal.Ado
 
         protected abstract string LastInsertedIdQuery { get; }
 
-        public async Task<bool> DeleteAsync(Detector<T> obj)
+        public async Task<bool> DeleteAsync(TDetector obj)
         {
             const string SQL_DELETE_DETECTOR = "DELETE FROM Detector WHERE object_id=@object_id";
             const string SQL_DELETE_OBJECT = "DELETE FROM Object WHERE id=@id";
@@ -44,7 +46,7 @@ namespace AaaS.Dal.Ado
             return false;
         }
 
-        public IAsyncEnumerable<Detector<T>> FindAllAsync()
+        public IAsyncEnumerable<TDetector> FindAllAsync()
         {
             return template.QueryAsync(
                 "SELECT * FROM Detector d " +
@@ -52,7 +54,7 @@ namespace AaaS.Dal.Ado
                 MapRowToDetector);
         }
 
-        public async Task<Detector<T>> FindByIdAsync(int id)
+        public async Task<TDetector> FindByIdAsync(int id)
         {
             return await template.QuerySingleAsync(
                 "SELECT * FROM Detector d " +
@@ -63,7 +65,7 @@ namespace AaaS.Dal.Ado
                 );
         }
 
-        public async Task InsertAsync(Detector<T> detector)
+        public async Task InsertAsync(TDetector detector)
         {
             const string SQL_INSERT_OBJECT = "INSERT INTO Object (type) VALUES (@type)";
             const string SQL_INSERT_DETECTOR =
@@ -90,7 +92,7 @@ namespace AaaS.Dal.Ado
             await InsertProperties(detector);
         }
 
-        private async Task InsertProperties(Detector<T> detector)
+        private async Task InsertProperties(TDetector detector)
         {
             var staticDetectorProperties = typeof(Detector<AaaSAction>).GetProperties();
             var properties = detector.GetType().GetProperties()
@@ -105,20 +107,20 @@ namespace AaaS.Dal.Ado
             }
         }
 
-        public async Task<Detector<T>> MapRowToDetector(IDataRecord record)
+        public async Task<TDetector> MapRowToDetector(IDataRecord record)
         {
             string typeName = (string)record["type"];
             var type = Type.GetType(typeName);
-            var detector = (Detector<T>)Activator.CreateInstance(type);
+            var detector = (TDetector)Activator.CreateInstance(type);
             detector.Id = (int)record["id"];
             detector.TelemetryName = (string)record["telemetry_name"];
             detector.CheckInterval = TimeSpan.FromMilliseconds((int)record["check_interval"]);
             detector.Client = await clientDao.FindByIdAsync((int)record["client_id"]);
-            detector.Action = (T)await actionDao.FindByIdAsync((int)record["action_id"]);
+            detector.Action = await actionDao.FindByIdAsync((int)record["action_id"]);
             return detector;
         }
 
-        public async Task<bool> UpdateAsync(Detector<T> obj)
+        public async Task<bool> UpdateAsync(TDetector obj)
         {
             using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             var updated = false;

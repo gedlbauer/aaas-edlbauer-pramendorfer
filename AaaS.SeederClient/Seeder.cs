@@ -19,9 +19,9 @@ namespace AaaS.SeederClient
         private IConnectionFactory connectionFactory;
         private IActionDao<BaseAction> actionDao;
         private IClientDao clientDao;
-        private IDetectorDao<BaseAction> detectorDao;
+        private IDetectorDao<BaseDetector, BaseAction> detectorDao;
 
-        public Seeder(IConnectionFactory connectionFactory, IActionDao<BaseAction> actionDao, IClientDao clientDao, IDetectorDao<BaseAction> detectorDao, string basePath)
+        public Seeder(IConnectionFactory connectionFactory, IActionDao<BaseAction> actionDao, IClientDao clientDao, IDetectorDao<BaseDetector, BaseAction> detectorDao, string basePath)
         {
             this.basePath = basePath;
             this.actionDao = actionDao;

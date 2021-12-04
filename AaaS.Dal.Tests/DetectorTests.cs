@@ -22,7 +22,7 @@ namespace AaaS.Dal.Tests
     public class DetectorTests : IClassFixture<DatabaseFixture>
     {
         readonly DatabaseFixture fixture;
-        readonly IDetectorDao<BaseAction> detectorDao;
+        readonly IDetectorDao<BaseDetector, BaseAction> detectorDao;
         readonly IActionDao<BaseAction> actionDao;
         readonly IClientDao clientDao;
         readonly IObjectPropertyDao objectPropertyDao;
@@ -31,7 +31,7 @@ namespace AaaS.Dal.Tests
         public DetectorTests(DatabaseFixture fixture, ITestOutputHelper output)
         {
             this.fixture = fixture;
-            detectorDao = new MSSQLDetectorDao<BaseAction>(this.fixture.ConnectionFactory);
+            detectorDao = new MSSQLDetectorDao<BaseDetector, BaseAction>(this.fixture.ConnectionFactory);
             actionDao = new MSSQLActionDao<BaseAction>(this.fixture.ConnectionFactory);
             clientDao = new MSSQLClientDao(this.fixture.ConnectionFactory);
             objectPropertyDao = new MSSQLObjectPropertyDao(this.fixture.ConnectionFactory);
@@ -92,7 +92,7 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestInsert()
         {
-            Detector<BaseAction> completelyFreshDetector = new SimpleDetector
+            BaseDetector completelyFreshDetector = new SimpleDetector
             {
                 TelemetryName = "InsertTestTelemetry",
                 Client = new Client { ApiKey = "DetectorInsertKey", Name = "Detector Insert Client" },
@@ -107,7 +107,7 @@ namespace AaaS.Dal.Tests
 
             var actionCountBeforeInsert = await actionDao.FindAllAsync().CountAsync();
             var clientCountBeforeInsert = await clientDao.FindAllAsync().CountAsync();
-            Detector<BaseAction> detectorWithExistingAction = new SimpleDetector
+            BaseDetector detectorWithExistingAction = new SimpleDetector
             {
                 TelemetryName = "InsertTelemetry",
                 Action = (await actionDao.FindByIdAsync(1)),
