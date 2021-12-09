@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,9 +12,10 @@ namespace AaaS.Core.Actions
     {
         public string RequestUrl { get; set; }
 
-        public override Task Execute()
+        public async override Task Execute()
         {
-            throw new NotImplementedException();
+            using var client = new HttpClient();
+            await client.GetAsync(RequestUrl);
         }
     }
 }

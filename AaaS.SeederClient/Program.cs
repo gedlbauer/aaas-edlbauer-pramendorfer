@@ -15,18 +15,14 @@ namespace AaaS.SeederClient
         private static readonly string BASE_PATH = @"C:\temp\AaaS\seeding\";
         static async Task Main(string[] args)
         {
-            //IConfiguration config = ConfigurationUtil.GetConfiguration();
-            //IConnectionFactory factory = DefaultConnectionFactory.FromConfiguration(config, "AaaSDbConnection");
-            //var seeder = new Seeder(factory, new MSSQLActionDao<BaseAction>(factory), new MSSQLClientDao(factory), new MSSQLDetectorDao<BaseDetector, BaseAction>(factory), BASE_PATH);
+            IConfiguration config = ConfigurationUtil.GetConfiguration();
+            IConnectionFactory factory = DefaultConnectionFactory.FromConfiguration(config, "AaaSDbConnection");
+            var seeder = new Seeder(factory, new MSSQLActionDao<BaseAction>(factory), new MSSQLClientDao(factory), new MSSQLDetectorDao<BaseDetector, BaseAction>(factory), BASE_PATH);
 
-            //await seeder.RecreateDatabase();
-            //await seeder.SeedAll();
+            await seeder.RecreateDatabase();
+            await seeder.SeedAll();
 
-            //await new SampleClient(new MSSQLClientDao(factory), new MSSQLLogDao(factory), new MSSQLMetricDao(factory), new MSSQLTimeMeasurementDao(factory)).PrintStats();
-            var mailAction = new MailAction();
-            mailAction.MailAddress = "edlbauerg@gmail.com";
-            mailAction.MailContent = "Hallo asdf";
-            await mailAction.Execute();
+            await new SampleClient(new MSSQLClientDao(factory), new MSSQLLogDao(factory), new MSSQLMetricDao(factory), new MSSQLTimeMeasurementDao(factory)).PrintStats();
         }
     }
 }
