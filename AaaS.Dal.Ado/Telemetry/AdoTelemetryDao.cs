@@ -30,6 +30,12 @@ namespace AaaS.Dal.Ado.Telemetry
         public IAsyncEnumerable<T> FindAllAsync()
             => template.QueryAsync(Query, MapRowToTelemetry);
 
+        public IAsyncEnumerable<T> FindSinceAsync(DateTime dateTime)
+            => template.QueryAsync(
+                Query + " where creation_time=@ct;",
+                MapRowToTelemetry,
+                new QueryParameter("@ct", dateTime));
+
         public async Task<T> FindByIdAsync(int id)
             => await template.QuerySingleAsync(
                     Query + " where t.id=@id",
