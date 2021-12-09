@@ -11,9 +11,10 @@ namespace AaaS.Core.Detectors
     {
         public SumSlidingWindowDetector(IMetricDao metricDao = null) : base(metricDao) { }
 
-        public override Task<double> CalculateCheckValue()
+        public async override Task<double> CalculateCheckValue()
         {
-            throw new NotImplementedException();
+            var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
+            return await MetricDao.FindSinceByClientAsync(fromDate, Client.Id).SumAsync(x => x.Value);
         }
     }
 }

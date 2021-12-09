@@ -9,13 +9,12 @@ namespace AaaS.Core.Detectors
 {
     public class AverageSlidingWindowDetector : SlidingWindowDetector
     {
-        public AverageSlidingWindowDetector(IMetricDao metricDao = null) : base(metricDao)
-        {
-        }
+        public AverageSlidingWindowDetector(IMetricDao metricDao = null) : base(metricDao) { }
 
-        public override Task<double> CalculateCheckValue()
+        public async override Task<double> CalculateCheckValue()
         {
-            throw new NotImplementedException();
+            var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
+            return await MetricDao.FindSinceByClientAsync(fromDate, Client.Id).AverageAsync(x => x.Value);
         }
     }
 }
