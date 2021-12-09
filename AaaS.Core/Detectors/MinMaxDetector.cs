@@ -15,22 +15,13 @@ namespace AaaS.Core.Detectors
         public int MaxOccurs { get; set; }
         public TimeSpan TimeWindow { get; set; }
 
-        public IMetricDao MetricDao { set; private get; }
-
-
-
-        public MinMaxDetector(IMetricDao metricDao)
-        {
-            MetricDao = metricDao;
-        }
-
-        public MinMaxDetector() { }
+        public MinMaxDetector(IMetricDao metricDao = null) : base(metricDao) { }
 
         protected async override Task Detect()
         {
             var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
-            var metrics = MetricDao.FindSinceAsync(fromDate);
-            if(await metrics.CountAsync(x => x.Value < Min || x.Value > Max) > MaxOccurs)
+            var metrics = MetricDao.FindSinceByClientAsync(fromDate, Client.Id);
+            if (await metrics.CountAsync(x => x.Value < Min || x.Value > Max) > MaxOccurs)
             {
                 await Action.Execute();
             }

@@ -1,4 +1,5 @@
 ﻿using AaaS.Core.Detectors;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,17 @@ namespace AaaS.Core
 {
     public class SimpleDetector : BaseDetector
     {
+        public SimpleDetector(IMetricDao metricDao = null) : base(metricDao)
+        {
+        }
+
         public string Name { get; set; }
         public override string ToString()
         {
             return $"Hello I am a SimpleDetector! (${base.ToString()})";
         }
 
-        protected override void Detect()
+        protected override Task Detect()
         {
             throw new NotImplementedException();
         }

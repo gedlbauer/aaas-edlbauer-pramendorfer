@@ -1,4 +1,5 @@
-﻿using AaaS.Domain;
+﻿using AaaS.Dal.Interface;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,16 @@ namespace AaaS.Core.Detectors
         public bool UseGreater { get; set; }
         public int Threshold { get; set; }
 
-        public abstract double CalculateCheckValue();
+        protected SlidingWindowDetector(IMetricDao metricDao) : base(metricDao) { }
 
-        protected override void Detect()
+        public abstract Task<double> CalculateCheckValue();
+
+        protected async override Task Detect()
         {
-            var value = CalculateCheckValue();
+            var value = await CalculateCheckValue();
             if ((UseGreater && value > Threshold) || value < Threshold)
             {
-                Action.Execute();
+                await Action.Execute();
             }
         }
     }
