@@ -78,11 +78,11 @@ namespace AaaS.SeederClient
         public async Task SeedActions()
         {
             var actions = new List<BaseAction> {
-                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 1" },
-                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 2" },
-                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 3" },
-                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 4" },
-                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailTemplate = "Hallo! Das ist eine Testmail von Action 5" },
+                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 1" },
+                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 2" },
+                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 3" },
+                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 4" },
+                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 5" },
 
                 new WebHookAction { RequestUrl = "https://www.google.com/" },
                 new WebHookAction { RequestUrl = "https://www.bing.com/" },

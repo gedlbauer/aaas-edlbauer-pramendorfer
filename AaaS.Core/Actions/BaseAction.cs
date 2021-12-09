@@ -9,6 +9,6 @@ namespace AaaS.Core.Actions
 {
     public abstract class BaseAction : AaaSAction, IAction
     {
-        public abstract void Execute();
+        public abstract Task Execute();
     }
 }

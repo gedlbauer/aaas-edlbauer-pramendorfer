@@ -14,7 +14,7 @@ namespace AaaS.Core
         public string TemplateText { get; set; }
         public int Value { get; set; }
 
-        public override void Execute()
+        public override Task Execute()
         {
             throw new NotImplementedException();
         }

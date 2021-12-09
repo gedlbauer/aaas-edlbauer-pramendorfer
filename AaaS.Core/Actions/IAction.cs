@@ -8,6 +8,6 @@ namespace AaaS.Core.Actions
 {
     interface IAction
     {
-        void Execute();
+        Task Execute();
     }
 }

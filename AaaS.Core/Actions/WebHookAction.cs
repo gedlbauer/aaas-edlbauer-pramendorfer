@@ -11,7 +11,7 @@ namespace AaaS.Core.Actions
     {
         public string RequestUrl { get; set; }
 
-        public override void Execute()
+        public override Task Execute()
         {
             throw new NotImplementedException();
         }
