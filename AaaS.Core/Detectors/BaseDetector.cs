@@ -10,14 +10,14 @@ namespace AaaS.Core.Detectors
 {
     public abstract class BaseDetector : Detector<BaseAction>, IDetector
     {
-        protected abstract void Detect();
+        protected abstract Task Detect();
 
         public async Task Start()
         {
             isRunning = true;
             while (isRunning)
             {
-                Detect();
+                await Detect();
                 await Task.Delay(CheckInterval);
             }
         }

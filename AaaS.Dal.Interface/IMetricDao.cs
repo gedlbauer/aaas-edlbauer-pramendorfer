@@ -9,5 +9,6 @@ namespace AaaS.Dal.Interface
 {
     public interface IMetricDao : IBaseDao<Metric>
     {
+        IAsyncEnumerable<Metric> FindSinceAsync(DateTime from);
     }
 }
