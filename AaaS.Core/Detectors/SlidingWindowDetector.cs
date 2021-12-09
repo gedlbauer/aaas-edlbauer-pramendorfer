@@ -15,6 +15,8 @@ namespace AaaS.Core.Detectors
         public bool UseGreater { get; set; }
         public int Threshold { get; set; }
 
+        protected DateTime FromDate => DateTime.UtcNow.Subtract(TimeWindow);
+
         protected SlidingWindowDetector(IMetricDao metricDao) : base(metricDao) { }
 
         public abstract Task<double> CalculateCheckValue();

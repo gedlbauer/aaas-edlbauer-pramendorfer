@@ -15,8 +15,7 @@ namespace AaaS.Core.Detectors
 
         public async override Task<double> CalculateCheckValue()
         {
-            var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
-            var metrics = MetricDao.FindSinceByClientAsync(fromDate, Client.Id);
+            var metrics = MetricDao.FindSinceByClientAsync(FromDate, Client.Id);
             return (await metrics.OrderBy(x => x.Timestamp).LastOrDefaultAsync())?.Value ?? 0;
         }
     }
