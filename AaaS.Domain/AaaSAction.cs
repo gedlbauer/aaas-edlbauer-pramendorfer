@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace AaaS.Domain
 {
-    public class AaaSAction
+    public abstract class AaaSAction
     {
         public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

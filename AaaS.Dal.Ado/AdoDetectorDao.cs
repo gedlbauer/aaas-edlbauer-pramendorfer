@@ -141,7 +141,7 @@ namespace AaaS.Dal.Ado
                 new QueryParameter("@check_interval", obj.CheckInterval.TotalMilliseconds),
                 new QueryParameter("@object_id", obj.Id)
                 );
-            if (updatedRows <= 0)
+            if (updatedRows <= 0) // updated rows ist auch 1, wenn eine Reihe geupdated wurde, jedoch alle Werte gleich sind
             {
                 return false;
             }

@@ -24,13 +24,13 @@ INSERT INTO TimeMeasurement (telemetry_id, start_time, end_time) VALUES (6, GETD
 
 begin --Actions
 INSERT INTO Object(type) VALUES ('AaaS.Core.SimpleAction, AaaS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
-INSERT INTO Action(object_id) VALUES(1)
+INSERT INTO Action(object_id, name) VALUES(1, 'Simple1')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (1, 'Email', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"testmail@test.com"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (1, 'TemplateText', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"Das ist eine Testmail"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (1, 'Value', 'System.Int32, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '12')
 
 INSERT INTO Object(type) VALUES ('AaaS.Core.SimpleAction, AaaS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
-INSERT INTO Action(object_id) VALUES(2)
+INSERT INTO Action(object_id, name) VALUES(2, 'Simple2')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (2, 'Email', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"testmail@test.com"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (2, 'TemplateText', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"Das ist eine Testmail"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (2, 'Value', 'System.Int32, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '12')

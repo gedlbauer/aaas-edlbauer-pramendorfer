@@ -78,17 +78,17 @@ namespace AaaS.SeederClient
         public async Task SeedActions()
         {
             var actions = new List<BaseAction> {
-                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 1" },
-                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 2" },
-                new MailAction { MailAddress = "s2010307089@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 3" },
-                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 4" },
-                new MailAction { MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 5" },
+                new MailAction { Name="Action 1", MailAddress = "s2010307089@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 1" },
+                new MailAction { Name="Action 2", MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 2" },
+                new MailAction { Name="Action 3", MailAddress = "s2010307089@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 3" },
+                new MailAction { Name="Action 4", MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 4" },
+                new MailAction { Name="Action 5", MailAddress = "s2010307058@students.fh-hagenberg.at", MailContent = "Hallo! Das ist eine Testmail von Action 5" },
 
-                new WebHookAction { RequestUrl = "https://www.google.com/" },
-                new WebHookAction { RequestUrl = "https://www.bing.com/" },
-                new WebHookAction { RequestUrl = "https://www.yahoo.com/" },
-                new WebHookAction { RequestUrl = "https://www.youtube.com/" },
-                new WebHookAction { RequestUrl = "https://www.apple.com/" }
+                new WebHookAction { Name="Action 6", RequestUrl = "https://www.google.com/" },
+                new WebHookAction { Name="Action 7", RequestUrl = "https://www.bing.com/" },
+                new WebHookAction { Name="Action 8", RequestUrl = "https://www.yahoo.com/" },
+                new WebHookAction { Name="Action 9", RequestUrl = "https://www.youtube.com/" },
+                new WebHookAction { Name="Action 10", RequestUrl = "https://www.apple.com/" }
             };
             foreach (var action in actions)
             {

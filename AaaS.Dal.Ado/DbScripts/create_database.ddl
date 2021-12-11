@@ -5,7 +5,7 @@ CREATE TABLE TimeMeasurement (telemetry_id int NOT NULL, start_time datetime NUL
 CREATE TABLE Client (id int IDENTITY NOT NULL, api_key varchar(68) NOT NULL UNIQUE, name varchar(255) NULL, PRIMARY KEY (id));
 CREATE TABLE LogType (id int IDENTITY NOT NULL, name varchar(255) NULL, PRIMARY KEY (id));
 CREATE TABLE Detector (object_id int NOT NULL, client_id int NOT NULL, telemetry_name varchar(255) NULL, action_id int NOT NULL, check_interval int NULL, PRIMARY KEY (object_id));
-CREATE TABLE Action (object_id int NOT NULL, PRIMARY KEY (object_id));
+CREATE TABLE Action (object_id int NOT NULL, name varchar(255) NOT NULL, PRIMARY KEY (object_id));
 CREATE TABLE ObjectProperty (name varchar(255) NOT NULL, value varchar(500) NULL, type varchar(511) NULL, object_id int NOT NULL, PRIMARY KEY (name, object_id));
 CREATE TABLE Object (id int IDENTITY NOT NULL, type varchar(511) NULL, PRIMARY KEY (id));
 ALTER TABLE Log ADD CONSTRAINT FK_Log_Telemetry FOREIGN KEY (telemetry_id) REFERENCES Telemetry (id) ON DELETE Cascade;
