@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AaaS.Common", "AaaS.Common\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AaaS.Dal.Tests", "AaaS.Dal.Tests\AaaS.Dal.Tests.csproj", "{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.SeederClient", "AaaS.SeederClient\AaaS.SeederClient.csproj", "{BE96FEA0-2EE4-43A8-A035-75FBD4786947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AaaS.SeederClient", "AaaS.SeederClient\AaaS.SeederClient.csproj", "{BE96FEA0-2EE4-43A8-A035-75FBD4786947}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.Api", "AaaS.Api\AaaS.Api.csproj", "{B5DF2C29-D493-434A-BEF5-A3AE235EE017}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{BE96FEA0-2EE4-43A8-A035-75FBD4786947}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE96FEA0-2EE4-43A8-A035-75FBD4786947}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE96FEA0-2EE4-43A8-A035-75FBD4786947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5DF2C29-D493-434A-BEF5-A3AE235EE017}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5DF2C29-D493-434A-BEF5-A3AE235EE017}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5DF2C29-D493-434A-BEF5-A3AE235EE017}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5DF2C29-D493-434A-BEF5-A3AE235EE017}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

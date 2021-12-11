@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Actions
 {
-    interface IAction
+    public interface IAction
     {
         Task Execute();
     }
