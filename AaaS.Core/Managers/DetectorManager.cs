@@ -12,7 +12,7 @@ namespace AaaS.Core.Managers
     public class DetectorManager
     {
         private readonly IDetectorDao<BaseDetector, BaseAction> _detectorDao;
-        private readonly List<BaseDetector> _runningDetectors = new();
+        private readonly List<BaseDetector> _detectors = new();
         private readonly ActionManager _actionManager;
 
         public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, ActionManager actionManager)
@@ -24,8 +24,13 @@ namespace AaaS.Core.Managers
 
         private void LoadDetectorsFromDb()
         {
-            _runningDetectors.AddRange(_detectorDao.FindAllAsync().ToEnumerable());
-            _runningDetectors.ForEach(x => x.Action = _actionManager.FindActionById(x.Action.Id));
+            _detectors.AddRange(_detectorDao.FindAllAsync().ToEnumerable());
+            _detectors.ForEach(x => x.Action = _actionManager.FindActionById(x.Action.Id));
+        }
+
+        public IEnumerable<BaseDetector> GetAll()
+        {
+            return _detectors;
         }
 
         public async Task AddAndStartDetectorAsync(BaseDetector detector)
@@ -45,12 +50,12 @@ namespace AaaS.Core.Managers
 
             await _detectorDao.InsertAsync(detector);
             await detector.Start();
-            _runningDetectors.Add(detector);
+            _detectors.Add(detector);
         }
 
         public void StopAll()
         {
-            foreach (var runningDetector in _runningDetectors)
+            foreach (var runningDetector in _detectors)
             {
                 runningDetector.Stop();
             }
@@ -58,7 +63,7 @@ namespace AaaS.Core.Managers
 
         public async Task StartAll()
         {
-            foreach (var runningDetector in _runningDetectors)
+            foreach (var runningDetector in _detectors)
             {
                 await runningDetector.Start();
             }
@@ -66,7 +71,7 @@ namespace AaaS.Core.Managers
 
         public async Task UpdateDetectorAsync(BaseDetector newDetector)
         {
-            var listDetector = _runningDetectors.SingleOrDefault(x => x.Id == newDetector.Id);
+            var listDetector = _detectors.SingleOrDefault(x => x.Id == newDetector.Id);
             if (listDetector is null)
             {
                 throw new ArgumentException("Detector to update must already exit");
@@ -101,7 +106,7 @@ namespace AaaS.Core.Managers
         {
             detectorToDelete.Stop();
             await _detectorDao.DeleteAsync(detectorToDelete);
-            _runningDetectors.RemoveAll(x => x.Id == detectorToDelete.Id);
+            _detectors.RemoveAll(x => x.Id == detectorToDelete.Id);
         }
     }
 }

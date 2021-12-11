@@ -9,7 +9,8 @@ namespace AaaS.Core.Detectors
 {
     public class SumSlidingWindowDetector : SlidingWindowDetector
     {
-        public SumSlidingWindowDetector(IMetricDao metricDao = null) : base(metricDao) { }
+        public SumSlidingWindowDetector(IMetricDao metricDao) : base(metricDao) { }
+        public SumSlidingWindowDetector() : base(null) { }
 
         public async override Task<double> CalculateCheckValue()
         {

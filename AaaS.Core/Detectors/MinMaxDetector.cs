@@ -15,7 +15,8 @@ namespace AaaS.Core.Detectors
         public int MaxOccurs { get; set; }
         public TimeSpan TimeWindow { get; set; }
 
-        public MinMaxDetector(IMetricDao metricDao = null) : base(metricDao) { }
+        public MinMaxDetector(IMetricDao metricDao) : base(metricDao) { }
+        public MinMaxDetector() : base(null) { }
 
         protected async override Task Detect()
         {

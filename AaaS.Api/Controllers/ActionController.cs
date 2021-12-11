@@ -26,13 +26,13 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<IAction> GetAll()
+        public IEnumerable<AaaSAction> GetAll()
         {
             return _actionManager.GetAll();
         }
 
         [HttpGet("{id}")]
-        public IAction ById(int id)
+        public AaaSAction ById(int id)
         {
             return _actionManager.FindActionById(id);
         }
