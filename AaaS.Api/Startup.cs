@@ -1,6 +1,7 @@
 using AaaS.Api.Settings;
 using AaaS.Common;
 using AaaS.Core.Actions;
+using AaaS.Core.Detectors;
 using AaaS.Core.Managers;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Ado;
@@ -66,6 +67,8 @@ namespace AaaS.Api
             });
             services.AddSingleton(x => DefaultConnectionFactory.FromConfiguration(Configuration, "AaaSDbConnection"));
             services.AddTransient<IActionDao<BaseAction>, MSSQLActionDao<BaseAction>>();
+            services.AddTransient<IDetectorDao<BaseDetector, BaseAction>, MSSQLDetectorDao<BaseDetector, BaseAction>>();
+
             services.AddTransient<ILogDao, MSSQLLogDao>();
             services.AddTransient<IMetricDao, MSSQLMetricDao>();
             services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao> ();
@@ -75,6 +78,7 @@ namespace AaaS.Api
             services.AddSingleton<TimeMeasurementRepository>();
 
             services.AddSingleton<ActionManager>();
+            services.AddSingleton<DetectorManager>();
             services.AddAutoMapper(typeof(Startup));
 
         }
