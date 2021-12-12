@@ -37,7 +37,8 @@ namespace AaaS.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers(options => options.ReturnHttpNotAcceptable = true)
+                .AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AaaS.Api", Version = "v1" });
