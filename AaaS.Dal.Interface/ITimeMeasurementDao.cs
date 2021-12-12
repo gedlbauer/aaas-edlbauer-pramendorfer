@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Dal.Interface
 {
-    public interface ITimeMeasurementDao : IBaseDao<TimeMeasurement>
+    public interface ITimeMeasurementDao : ITelemetryDao<TimeMeasurement>
     {
     }
 }

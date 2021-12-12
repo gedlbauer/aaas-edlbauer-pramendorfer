@@ -30,12 +30,37 @@ namespace AaaS.Dal.Ado.Telemetry
         public IAsyncEnumerable<T> FindAllAsync()
             => template.QueryAsync(Query, MapRowToTelemetry);
 
+        public IAsyncEnumerable<T> FindAllByKeyAsync(string apiKey)
+            => template.QueryAsync(
+                Query + " inner join client as c on t.client_id=c.id where api_key=@key",
+                MapRowToTelemetry,
+                new QueryParameter("@key", apiKey));
+        public IAsyncEnumerable<T> FindByCreatorAsync(string apiKey, Guid creatorId)
+            => template.QueryAsync(
+                Query + " inner join client as c on t.client_id=c.id where api_key=@key and creator_id=@cid;",
+                MapRowToTelemetry,
+                new QueryParameter("@key", apiKey),
+                new QueryParameter("@cid", creatorId));
+
         public IAsyncEnumerable<T> FindSinceByClientAsync(DateTime dateTime, int clientId)
             => template.QueryAsync(
                 Query + " where creation_time=@ct and client_id=@clientId;",
                 MapRowToTelemetry,
                 new QueryParameter("@ct", dateTime),
                 new QueryParameter("@clientId", clientId));
+
+        public IAsyncEnumerable<T> FindAllByNameAsync(string apiKey, string name)
+            => template.QueryAsync(
+                Query + " inner join client as c on t.client_id=c.id where api_key=@key and t.name=@name;",
+                MapRowToTelemetry,
+                new QueryParameter("@key", apiKey),
+                new QueryParameter("@name", name));
+        public async Task<T> FindByIdAndKeyAsync(int id, string apiKey)
+            => await template.QuerySingleAsync(
+                    Query + " inner join client as c on t.client_id=c.id where t.id=@id and api_key=@key",
+                    MapRowToTelemetry,
+                    new QueryParameter("@id", id),
+                    new QueryParameter("@key", apiKey));
 
         public async Task<T> FindByIdAsync(int id)
             => await template.QuerySingleAsync(

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace AaaS.Dal.Interface
 {
-    public interface ILogDao : IBaseDao<Log>
+    public interface ILogDao : ITelemetryDao<Log>
     {
+        
     }
 }

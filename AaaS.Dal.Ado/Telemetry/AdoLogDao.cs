@@ -13,7 +13,7 @@ namespace AaaS.Dal.Ado.Telemetry
 {
     public abstract class AdoLogDao : AdoTelemetryDao<Log>, ILogDao
     {
-        protected override string Query => "Select t.Id, t.creation_time, t.Name, t.client_id, t.creator_id, " +
+        protected override string Query => "Select top 1000 t.Id, t.creation_time, t.Name, t.client_id, t.creator_id, " +
             "lt.name as typename, l.message, l.type_id from Telemetry as t Inner join[Log] " +
             "as l on l.telemetry_id=t.id inner join LogType as lt on l.[type_id]=lt.id";
 

@@ -1,7 +1,10 @@
+using AaaS.Api.Settings;
 using AaaS.Common;
 using AaaS.Core.Actions;
 using AaaS.Core.Managers;
+using AaaS.Core.Repositories;
 using AaaS.Dal.Ado;
+using AaaS.Dal.Ado.Telemetry;
 using AaaS.Dal.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,11 +39,44 @@ namespace AaaS.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AaaS.Api", Version = "v1" });
+                c.AddSecurityDefinition(ApiKeyConstants.HeaderName, new OpenApiSecurityScheme
+                {
+                    Description = $"Api key needed to access the endpoints. {ApiKeyConstants.HeaderName}: My_API_Key",
+                    In = ParameterLocation.Header,
+                    Name = ApiKeyConstants.HeaderName,
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Name =  ApiKeyConstants.HeaderName,
+                            Type = SecuritySchemeType.ApiKey,
+                            In = ParameterLocation.Header,
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id =  ApiKeyConstants.HeaderName
+                            },
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
             services.AddSingleton(x => DefaultConnectionFactory.FromConfiguration(Configuration, "AaaSDbConnection"));
             services.AddTransient<IActionDao<BaseAction>, MSSQLActionDao<BaseAction>>();
+            services.AddTransient<ILogDao, MSSQLLogDao>();
+            services.AddTransient<IMetricDao, MSSQLMetricDao>();
+            services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao> ();
+
+            services.AddSingleton<LogRepository>();
+            services.AddSingleton<MetricRepository>();
+            services.AddSingleton<TimeMeasurementRepository>();
+
             services.AddSingleton<ActionManager>();
             services.AddAutoMapper(typeof(Startup));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

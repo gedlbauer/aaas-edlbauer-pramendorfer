@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Dal.Interface
 {
-    public interface IMetricDao : IBaseDao<Metric>
+    public interface IMetricDao : ITelemetryDao<Metric>
     {
         IAsyncEnumerable<Metric> FindSinceByClientAsync(DateTime from, int clientId);
     }
