@@ -30,5 +30,11 @@ namespace AaaS.Api.Controllers
         {
             return _mapper.Map<IEnumerable<DetectorDto>>(_detectorManager.GetAll());
         }
+
+        [HttpGet("{id}")]
+        public DetectorDto ById(int id)
+        {
+            return _mapper.Map<DetectorDto>(_detectorManager.FindDetectorById(id));
+        }
     }
 }

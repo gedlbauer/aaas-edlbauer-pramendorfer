@@ -33,6 +33,11 @@ namespace AaaS.Core.Managers
             return _detectors;
         }
 
+        public BaseDetector FindDetectorById(int id)
+        {
+            return _detectors.SingleOrDefault(x => x.Id == id);
+        }
+
         public async Task AddAndStartDetectorAsync(BaseDetector detector)
         {
             if (detector.Id != default)
