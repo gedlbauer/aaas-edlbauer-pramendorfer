@@ -25,7 +25,7 @@ namespace AaaS.Api.JsonConverters
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var timespan = (TimeSpan)value;
-            var milliseonds = $"{timespan.TotalMilliseconds}";
+            var milliseonds = timespan.TotalMilliseconds;
             writer.WriteValue(milliseonds);
         }
     }

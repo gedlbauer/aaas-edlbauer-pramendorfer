@@ -1,5 +1,7 @@
 ﻿using AaaS.Api.Dtos.Detector;
 using AaaS.Core.Actions;
+using AaaS.Core.Detectors;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using AutoMapper;
 using System;
@@ -14,6 +16,10 @@ namespace AaaS.Api.MapperProfiles
         public DetectorProfile()
         {
             CreateMap<Detector<BaseAction>, DetectorDto>();
+            CreateMap<MinMaxDetectorInsertDto, MinMaxDetector>();
+            CreateMap<SumSlidingWindowDetectorInsertDto, SumSlidingWindowDetector>();
+            CreateMap<AverageSlidingWindowDetectorInsertDto, AverageSlidingWindowDetector>();
+            CreateMap<CurrentValueSlidingWindowDetectorInsertDto, CurrentValueSlidingWindowDetector>();
         }
     }
 }
