@@ -17,17 +17,17 @@ namespace AaaS.Core.Repositories
             _logDao = logDao;
         }
 
-        public IAsyncEnumerable<Log> FindAllAsync(string apiKey)
-            => _logDao.FindAllByKeyAsync(apiKey);
+        public IAsyncEnumerable<Log> FindAllAsync(int clientId)
+            => _logDao.FindAllByClientAsync(clientId);
 
-        public IAsyncEnumerable<Log> FindByAllByNameAsync(string apiKey, string name)
-            => _logDao.FindAllByNameAsync(apiKey, name);
+        public IAsyncEnumerable<Log> FindByAllByNameAsync(int clientId, string name)
+            => _logDao.FindAllByNameAsync(clientId, name);
 
-        public IAsyncEnumerable<Log> FindByCreatorAsync(string apiKey, Guid creatorId)
-            => _logDao.FindByCreatorAsync(apiKey, creatorId);
+        public IAsyncEnumerable<Log> FindByCreatorAsync(int clientId, Guid creatorId)
+            => _logDao.FindByCreatorAsync(clientId, creatorId);
 
-        public Task<Log> FindByIdAsync(string apiKey, int id)
-            => _logDao.FindByIdAndKeyAsync(id, apiKey);
+        public Task<Log> FindByIdAsync(int clientId, int id)
+            => _logDao.FindByIdAndClientAsync(id, clientId);
 
         public async Task InsertAsync(Log telemetry)
         {

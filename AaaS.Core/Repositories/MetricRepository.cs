@@ -16,17 +16,17 @@ namespace AaaS.Core.Repositories
         {
             _metricDao = metricDao;
         }
-        public IAsyncEnumerable<Metric> FindAllAsync(string apiKey)
-            => _metricDao.FindAllByKeyAsync(apiKey).Take(1000);
+        public IAsyncEnumerable<Metric> FindAllAsync(int clientId)
+            => _metricDao.FindAllByClientAsync(clientId);
 
-        public IAsyncEnumerable<Metric> FindByAllByNameAsync(string apiKey, string name)
-            => _metricDao.FindAllByNameAsync(apiKey, name);
+        public IAsyncEnumerable<Metric> FindByAllByNameAsync(int clientId, string name)
+            => _metricDao.FindAllByNameAsync(clientId, name);
 
-        public IAsyncEnumerable<Metric> FindByCreatorAsync(string apiKey, Guid creatorId)
-            => _metricDao.FindByCreatorAsync(apiKey, creatorId);
+        public IAsyncEnumerable<Metric> FindByCreatorAsync(int clientId, Guid creatorId)
+            => _metricDao.FindByCreatorAsync(clientId, creatorId);
 
-        public Task<Metric> FindByIdAsync(string apiKey, int id)
-            => _metricDao.FindByIdAndKeyAsync(id, apiKey);
+        public Task<Metric> FindByIdAsync(int clientId, int id)
+            => _metricDao.FindByIdAndClientAsync(id, clientId);
 
         public Task InsertAsync(Metric telemetry)
             => _metricDao.InsertAsync(telemetry);

@@ -9,10 +9,10 @@ namespace AaaS.Core.Repositories
 {
     public interface ITelemetryRepository<T> where T : Telemetry
     {
-        IAsyncEnumerable<T> FindByCreatorAsync(string apiKey, Guid creatorId);
-        IAsyncEnumerable<T> FindAllAsync(string apiKey);
-        IAsyncEnumerable<T> FindByAllByNameAsync(string apiKey, string name);
-        Task<T> FindByIdAsync(string apiKey, int id);
+        IAsyncEnumerable<T> FindByCreatorAsync(int clientId, Guid creatorId);
+        IAsyncEnumerable<T> FindAllAsync(int clientId);
+        IAsyncEnumerable<T> FindByAllByNameAsync(int clientId, string name);
+        Task<T> FindByIdAsync(int clientId, int id);
         Task InsertAsync(T telemetry);
     }
 }

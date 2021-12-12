@@ -2,6 +2,7 @@
 using AaaS.Core.Repositories;
 using AaaS.Domain;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace AaaS.Api.Controllers
 {
     [Route("api")]
     [ApiController]
+    [Authorize]
     public class LogController : TelemetryController<Log, LogDto, LogDto>
     {
         public LogController(LogRepository logRepository, IMapper mapper) : base(logRepository, mapper) { }

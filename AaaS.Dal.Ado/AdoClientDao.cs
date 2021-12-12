@@ -40,6 +40,12 @@ namespace AaaS.Dal.Ado
                 MapRowToClient,
                 new QueryParameter("@id", id));
 
+        public async Task<Client> FindByApiKeyAsync(string apiKey)
+          => await template.QuerySingleAsync(
+                "select * from Client where api_key=@key",
+                MapRowToClient,
+                new QueryParameter("@key", apiKey));
+
         public async Task InsertAsync(Client client)
         {
             const string SQL_INSERT = "insert into Client (name, api_key) values (@name, @key)";

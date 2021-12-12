@@ -9,5 +9,6 @@ namespace AaaS.Dal.Interface
 {
     public interface IClientDao : IBaseDao<Client>
     {
+        Task<Client> FindByApiKeyAsync(string apiKey);
     }
 }

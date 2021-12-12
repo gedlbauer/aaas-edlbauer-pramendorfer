@@ -1,3 +1,4 @@
+using AaaS.Api.Auth;
 using AaaS.Api.Settings;
 using AaaS.Common;
 using AaaS.Core.Actions;
@@ -71,7 +72,8 @@ namespace AaaS.Api
 
             services.AddTransient<ILogDao, MSSQLLogDao>();
             services.AddTransient<IMetricDao, MSSQLMetricDao>();
-            services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao> ();
+            services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao>();
+            services.AddTransient<IClientDao, MSSQLClientDao>();
 
             services.AddSingleton<LogRepository>();
             services.AddSingleton<MetricRepository>();
@@ -80,6 +82,13 @@ namespace AaaS.Api
             services.AddSingleton<ActionManager>();
             services.AddSingleton<DetectorManager>();
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = ApiKeyAuthenticationOptions.DefaultScheme;
+                o.DefaultChallengeScheme = ApiKeyAuthenticationOptions.DefaultScheme;
+            }).AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme, o => { });
+            services.AddAuthorization();
 
         }
 
@@ -97,6 +106,7 @@ namespace AaaS.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -30,17 +30,17 @@ namespace AaaS.Dal.Ado.Telemetry
         public IAsyncEnumerable<T> FindAllAsync()
             => template.QueryAsync(Query, MapRowToTelemetry);
 
-        public IAsyncEnumerable<T> FindAllByKeyAsync(string apiKey)
+        public IAsyncEnumerable<T> FindAllByClientAsync(int clientId)
             => template.QueryAsync(
-                Query + " inner join client as c on t.client_id=c.id where api_key=@key",
+                Query + " where client_id=@cid",
                 MapRowToTelemetry,
-                new QueryParameter("@key", apiKey));
-        public IAsyncEnumerable<T> FindByCreatorAsync(string apiKey, Guid creatorId)
+                new QueryParameter("@cid", clientId));
+        public IAsyncEnumerable<T> FindByCreatorAsync(int clientId, Guid creatorId)
             => template.QueryAsync(
-                Query + " inner join client as c on t.client_id=c.id where api_key=@key and creator_id=@cid;",
+                Query + " where client_id=@client_id and creator_id=@creator_id;",
                 MapRowToTelemetry,
-                new QueryParameter("@key", apiKey),
-                new QueryParameter("@cid", creatorId));
+                new QueryParameter("@client_id", clientId),
+                new QueryParameter("@creator_id", creatorId));
 
         public IAsyncEnumerable<T> FindSinceByClientAsync(DateTime dateTime, int clientId)
             => template.QueryAsync(
@@ -49,18 +49,18 @@ namespace AaaS.Dal.Ado.Telemetry
                 new QueryParameter("@ct", dateTime),
                 new QueryParameter("@clientId", clientId));
 
-        public IAsyncEnumerable<T> FindAllByNameAsync(string apiKey, string name)
+        public IAsyncEnumerable<T> FindAllByNameAsync(int clientId, string name)
             => template.QueryAsync(
-                Query + " inner join client as c on t.client_id=c.id where api_key=@key and t.name=@name;",
+                Query + " where client_id=@cid and t.name=@name;",
                 MapRowToTelemetry,
-                new QueryParameter("@key", apiKey),
+                new QueryParameter("@cid", clientId),
                 new QueryParameter("@name", name));
-        public async Task<T> FindByIdAndKeyAsync(int id, string apiKey)
+        public async Task<T> FindByIdAndClientAsync(int id, int clientId)
             => await template.QuerySingleAsync(
-                    Query + " inner join client as c on t.client_id=c.id where t.id=@id and api_key=@key",
+                    Query + " where t.id=@id and client_id=@cid",
                     MapRowToTelemetry,
                     new QueryParameter("@id", id),
-                    new QueryParameter("@key", apiKey));
+                    new QueryParameter("@cid", clientId));
 
         public async Task<T> FindByIdAsync(int id)
             => await template.QuerySingleAsync(

@@ -1,4 +1,5 @@
-﻿using AaaS.Api.Settings;
+﻿using AaaS.Api.Extensions;
+using AaaS.Api.Settings;
 using AaaS.Core.Repositories;
 using AaaS.Domain;
 using AutoMapper;
@@ -23,24 +24,21 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpGet("[controller]s/{id}")]
-        public async Task<ActionResult<TRead>> GetTelemetry(
-            [FromHeader(Name = ApiKeyConstants.HeaderName)] string apiKey,
-            int id)
+        public async Task<ActionResult<TRead>> GetTelemetry(int id)
         {
-            var telemetry = await _telemetryRepository.FindByIdAsync(apiKey, id);
+          
+            var telemetry = await _telemetryRepository.FindByIdAsync(User.GetId(), id);
             return telemetry == null ? NotFound() : _mapper.Map<TRead>(telemetry);
         }
 
         [HttpGet("[controller]s")]
-        public IEnumerable<TRead> GetTelemetries(
-            [FromHeader(Name = ApiKeyConstants.HeaderName)] string apiKey,
-            string name)
+        public IEnumerable<TRead> GetTelemetries(string name)
         {
             IEnumerable<T> telemetries;
             if (name != null)
-                telemetries = _telemetryRepository.FindByAllByNameAsync(apiKey, name).ToEnumerable();
+                telemetries = _telemetryRepository.FindByAllByNameAsync(User.GetId(), name).ToEnumerable();
             else
-                telemetries = _telemetryRepository.FindAllAsync(apiKey).ToEnumerable();
+                telemetries = _telemetryRepository.FindAllAsync(User.GetId()).ToEnumerable();
 
             return _mapper.Map<IEnumerable<TRead>>(telemetries);
         }
@@ -50,7 +48,7 @@ namespace AaaS.Api.Controllers
             [FromHeader(Name = ApiKeyConstants.HeaderName)] string apiKey,
             Guid creatorId)
         {
-            IEnumerable<T> telemetries = _telemetryRepository.FindByCreatorAsync(apiKey, creatorId).ToEnumerable();
+            IEnumerable<T> telemetries = _telemetryRepository.FindByCreatorAsync(User.GetId(), creatorId).ToEnumerable();
             return _mapper.Map<IEnumerable<TRead>>(telemetries);
         }
     }

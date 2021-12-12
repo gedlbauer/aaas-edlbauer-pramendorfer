@@ -9,9 +9,9 @@ namespace AaaS.Dal.Interface
 {
     public interface ITelemetryDao<T> : IBaseDao<T> where T : Telemetry
     {
-        Task<T> FindByIdAndKeyAsync(int id, string apiKey);
-        IAsyncEnumerable<T> FindByCreatorAsync(string apiKey, Guid creatorId);
-        IAsyncEnumerable<T> FindAllByKeyAsync(string apiKey);
-        IAsyncEnumerable<T> FindAllByNameAsync(string apiKey, string name);
+        Task<T> FindByIdAndClientAsync(int id, int clientId);
+        IAsyncEnumerable<T> FindByCreatorAsync(int clientId, Guid creatorId);
+        IAsyncEnumerable<T> FindAllByClientAsync(int clientId);
+        IAsyncEnumerable<T> FindAllByNameAsync(int clientId, string name);
     }
 }
