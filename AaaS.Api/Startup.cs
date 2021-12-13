@@ -1,4 +1,5 @@
 using AaaS.Api.Auth;
+using AaaS.Api.JsonConverters;
 using AaaS.Api.Settings;
 using AaaS.Common;
 using AaaS.Core.Actions;
@@ -40,7 +41,7 @@ namespace AaaS.Api
         {
 
             services.AddControllers(options => options.ReturnHttpNotAcceptable = true)
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new TimeSpanToMillisecondsConverter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AaaS.Api", Version = "v1" });
@@ -67,6 +68,10 @@ namespace AaaS.Api
                         },
                         Array.Empty<string>()
                     }
+                });
+                c.MapType(typeof(TimeSpan), () => new OpenApiSchema
+                {
+                    Type = "number"
                 });
             });
             services.AddSingleton(x => DefaultConnectionFactory.FromConfiguration(Configuration, "AaaSDbConnection"));

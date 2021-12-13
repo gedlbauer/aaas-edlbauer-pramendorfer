@@ -19,7 +19,7 @@ namespace AaaS.Api.JsonConverters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return TimeSpan.FromMilliseconds((int)reader.Value);
+            return TimeSpan.FromMilliseconds((long)reader.Value);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

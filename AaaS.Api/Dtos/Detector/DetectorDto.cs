@@ -15,8 +15,6 @@ namespace AaaS.Api.Dtos.Detector
         public ClientDto Client { get; set; }
         public AaaSAction Action { get; set; }
         public string TelemetryName { get; set; }
-
-        [JsonConverter(typeof(TimeSpanToMillisecondsConverter))]
         public TimeSpan CheckInterval { get; set; }
     }
 }

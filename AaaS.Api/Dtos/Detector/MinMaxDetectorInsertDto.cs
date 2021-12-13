@@ -12,14 +12,10 @@ namespace AaaS.Api.Dtos.Detector
         public int Min { get; set; }
         public int Max { get; set; }
         public int MaxOccurs { get; set; }
-
-        [JsonConverter(typeof(TimeSpanToMillisecondsConverter))]
         public TimeSpan TimeWindow { get; set; }
         public int ClientId { get; set; }
         public int ActionId { get; set; }
         public string TelemetryName { get; set; }
-
-        [JsonConverter(typeof(TimeSpanToMillisecondsConverter))]
         public TimeSpan CheckInterval { get; set; }
     }
 }
