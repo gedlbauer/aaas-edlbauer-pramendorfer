@@ -1,4 +1,5 @@
 ﻿using AaaS.Core.Actions;
+using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
@@ -12,11 +13,11 @@ namespace AaaS.Core.Detectors
     public abstract class BaseDetector : Detector<BaseAction>, IDetector
     {
 
-        public IMetricDao MetricDao { set; protected get; }
+        public MetricRepository MetricRepository { set; protected get; }
 
-        public BaseDetector(IMetricDao metricDao)
+        public BaseDetector(MetricRepository metricRepository)
         {
-            MetricDao = metricDao;
+            MetricRepository = metricRepository;
         }
 
         protected abstract Task Detect();
@@ -24,11 +25,14 @@ namespace AaaS.Core.Detectors
         public async Task Start()
         {
             isRunning = true;
-            while (isRunning)
+            new Task(async () =>
             {
-                await Detect();
-                await Task.Delay(CheckInterval);
-            }
+                while (isRunning)
+                {
+                    await Detect();
+                    await Task.Delay(CheckInterval);
+                }
+            }).Start();
         }
 
         public void Stop()

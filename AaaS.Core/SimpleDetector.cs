@@ -1,4 +1,5 @@
 ﻿using AaaS.Core.Detectors;
+using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
@@ -11,7 +12,7 @@ namespace AaaS.Core
 {
     public class SimpleDetector : BaseDetector
     {
-        public SimpleDetector(IMetricDao metricDao) : base(metricDao) { }
+        public SimpleDetector(MetricRepository metricRepository) : base(metricRepository) { }
 
         public SimpleDetector() : base(null) { }
 

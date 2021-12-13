@@ -1,4 +1,5 @@
-﻿using AaaS.Dal.Interface;
+﻿using AaaS.Core.Repositories;
+using AaaS.Dal.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace AaaS.Core.Detectors
 {
     public class CurrentValueSlidingWindowDetector : SlidingWindowDetector
     {
-        public CurrentValueSlidingWindowDetector(IMetricDao metricDao) : base(metricDao) { }
+        public CurrentValueSlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
         public CurrentValueSlidingWindowDetector() : base(null) { }
 
         public async override Task<double> CalculateCheckValue()
         {
-            var metrics = MetricDao.FindSinceByClientAsync(FromDate, Client.Id);
+            var metrics = MetricRepository.FindSinceByClientAsync(FromDate, Client.Id);
             return (await metrics.OrderBy(x => x.Timestamp).LastOrDefaultAsync())?.Value ?? 0;
         }
     }

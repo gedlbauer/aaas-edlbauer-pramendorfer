@@ -3,6 +3,7 @@ using AaaS.Api.Extensions;
 using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
 using AaaS.Core.Managers;
+using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using AutoMapper;
@@ -22,14 +23,16 @@ namespace AaaS.Api.Controllers
         private readonly IMapper _mapper;
         private readonly DetectorManager _detectorManager;
         private readonly ActionManager _actionManager;
+        private readonly MetricRepository _metricRepository;
         private readonly IClientDao _clientDao;
 
-        public DetectorController(DetectorManager detectorManager, IMapper mapper, ActionManager actionManager, IClientDao clientDao)
+        public DetectorController(DetectorManager detectorManager, IMapper mapper, ActionManager actionManager, IClientDao clientDao, MetricRepository metricRepository)
         {
             _detectorManager = detectorManager;
             _mapper = mapper;
             _actionManager = actionManager;
             _clientDao = clientDao;
+            _metricRepository = metricRepository;
         }
 
         [HttpGet]
@@ -72,6 +75,7 @@ namespace AaaS.Api.Controllers
             var clientId = User.GetId();
             var detector = _mapper.Map<MinMaxDetector>(detectorDto);
             await detector.ResolveNavigationProperties(detectorDto, clientId, _actionManager, _clientDao);
+            detector.MetricRepository = _metricRepository;
             return await InsertBaseDetector(detector);
         }
 

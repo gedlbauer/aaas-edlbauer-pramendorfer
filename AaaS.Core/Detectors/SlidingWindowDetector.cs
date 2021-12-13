@@ -1,4 +1,5 @@
-﻿using AaaS.Dal.Interface;
+﻿using AaaS.Core.Repositories;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace AaaS.Core.Detectors
 
         protected DateTime FromDate => DateTime.UtcNow.Subtract(TimeWindow);
 
-        protected SlidingWindowDetector(IMetricDao metricDao) : base(metricDao) { }
+        protected SlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
 
         public abstract Task<double> CalculateCheckValue();
 

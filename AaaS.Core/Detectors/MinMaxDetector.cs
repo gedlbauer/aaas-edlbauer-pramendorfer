@@ -1,4 +1,5 @@
-﻿using AaaS.Dal.Interface;
+﻿using AaaS.Core.Repositories;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,13 @@ namespace AaaS.Core.Detectors
         public int MaxOccurs { get; set; }
         public TimeSpan TimeWindow { get; set; }
 
-        public MinMaxDetector(IMetricDao metricDao) : base(metricDao) { }
+        public MinMaxDetector(MetricRepository metricRepository) : base(metricRepository) { }
         public MinMaxDetector() : base(null) { }
 
         protected async override Task Detect()
         {
             var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
-            var metrics = MetricDao.FindSinceByClientAsync(fromDate, Client.Id);
+            var metrics = MetricRepository.FindSinceByClientAsync(fromDate, Client.Id);
             if (await metrics.CountAsync(x => x.Value < Min || x.Value > Max) > MaxOccurs)
             {
                 await Action.Execute();

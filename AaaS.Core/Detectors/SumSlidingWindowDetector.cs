@@ -1,4 +1,5 @@
-﻿using AaaS.Dal.Interface;
+﻿using AaaS.Core.Repositories;
+using AaaS.Dal.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace AaaS.Core.Detectors
 {
     public class SumSlidingWindowDetector : SlidingWindowDetector
     {
-        public SumSlidingWindowDetector(IMetricDao metricDao) : base(metricDao) { }
+        public SumSlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
         public SumSlidingWindowDetector() : base(null) { }
 
         public async override Task<double> CalculateCheckValue()
         {
-            return await MetricDao.FindSinceByClientAsync(FromDate, Client.Id).SumAsync(x => x.Value);
+            return await MetricRepository.FindSinceByClientAsync(FromDate, Client.Id).SumAsync(x => x.Value);
         }
     }
 }

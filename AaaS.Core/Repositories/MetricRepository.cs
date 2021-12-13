@@ -19,6 +19,9 @@ namespace AaaS.Core.Repositories
         public IAsyncEnumerable<Metric> FindAllAsync(int clientId)
             => _metricDao.FindAllByClientAsync(clientId);
 
+        public IAsyncEnumerable<Metric> FindSinceByClientAsync(DateTime fromDate, int clientId)
+            => _metricDao.FindSinceByClientAsync(fromDate, clientId);
+
         public IAsyncEnumerable<Metric> FindByAllByNameAsync(int clientId, string name)
             => _metricDao.FindAllByNameAsync(clientId, name);
 
