@@ -1,7 +1,9 @@
 ﻿using AaaS.Api.Dtos.Detector;
+using AaaS.Api.Extensions;
 using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
 using AaaS.Core.Managers;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -17,13 +19,17 @@ namespace AaaS.Api.Controllers
     [ApiController]
     public class DetectorController : ControllerBase
     {
-        private readonly DetectorManager _detectorManager;
         private readonly IMapper _mapper;
+        private readonly DetectorManager _detectorManager;
+        private readonly ActionManager _actionManager;
+        private readonly IClientDao _clientDao;
 
-        public DetectorController(DetectorManager detectorManager, IMapper mapper)
+        public DetectorController(DetectorManager detectorManager, IMapper mapper, ActionManager actionManager, IClientDao clientDao)
         {
             _detectorManager = detectorManager;
             _mapper = mapper;
+            _actionManager = actionManager;
+            _clientDao = clientDao;
         }
 
         [HttpGet]
@@ -63,7 +69,9 @@ namespace AaaS.Api.Controllers
         [HttpPost("minmax")]
         public async Task<IActionResult> InsertMinMaxDetector(MinMaxDetectorInsertDto detectorDto)
         {
+            var clientId = User.GetId();
             var detector = _mapper.Map<MinMaxDetector>(detectorDto);
+            await detector.ResolveNavigationProperties(detectorDto, clientId, _actionManager, _clientDao);
             return await InsertBaseDetector(detector);
         }
 
