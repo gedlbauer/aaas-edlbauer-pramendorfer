@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Api.Dtos.Detector
 {
-    public class DetectorInsertBaseDto
+    public abstract class DetectorInsertBaseDto
     {
         public int ActionId { get; set; }
         public string TelemetryName { get; set; }

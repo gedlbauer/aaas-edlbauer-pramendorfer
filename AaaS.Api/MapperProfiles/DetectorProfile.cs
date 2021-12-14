@@ -17,9 +17,9 @@ namespace AaaS.Api.MapperProfiles
         {
             CreateMap<Detector<BaseAction>, DetectorDto>();
             CreateMap<MinMaxDetectorInsertDto, MinMaxDetector>();
-            CreateMap<SumSlidingWindowDetectorInsertDto, SumSlidingWindowDetector>();
-            CreateMap<AverageSlidingWindowDetectorInsertDto, AverageSlidingWindowDetector>();
-            CreateMap<CurrentValueSlidingWindowDetectorInsertDto, CurrentValueSlidingWindowDetector>();
+            CreateMap<SlidingWindowDetectorInsertDto, SumSlidingWindowDetector>();
+            CreateMap<SlidingWindowDetectorInsertDto, AverageSlidingWindowDetector>();
+            CreateMap<SlidingWindowDetectorInsertDto, CurrentValueSlidingWindowDetector>();
         }
     }
 }

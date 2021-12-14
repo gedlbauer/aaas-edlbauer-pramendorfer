@@ -48,24 +48,23 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpPost("averageslidingwindow")]
-        public async Task<IActionResult> InsertAverageSlidingWindowDetector(AverageSlidingWindowDetectorInsertDto detectorDto)
+        public async Task<IActionResult> InsertAverageSlidingWindowDetector(SlidingWindowDetectorInsertDto detectorDto)
         {
-            var detector = _mapper.Map<AverageSlidingWindowDetector>(detectorDto);
-            // TODO: mapper für DetectorInsertDtos implementieren (ClientId => Client + ActionId => Action)
+            var detector = await MapSlidingWindowDetector<AverageSlidingWindowDetector>(detectorDto);
             return await InsertBaseDetector(detector);
         }
 
         [HttpPost("currentvalueslidingwindow")]
-        public async Task<IActionResult> InsertCurrentValueSlidingWindowDetector(CurrentValueSlidingWindowDetectorInsertDto detectorDto)
+        public async Task<IActionResult> InsertCurrentValueSlidingWindowDetector(SlidingWindowDetectorInsertDto detectorDto)
         {
-            var detector = _mapper.Map<CurrentValueSlidingWindowDetector>(detectorDto);
+            var detector = await MapSlidingWindowDetector<CurrentValueSlidingWindowDetector>(detectorDto);
             return await InsertBaseDetector(detector);
         }
 
         [HttpPost("sumslidingwindow")]
-        public async Task<IActionResult> InsertSumSlidingWindowDetector(SumSlidingWindowDetectorInsertDto detectorDto)
+        public async Task<IActionResult> InsertSumSlidingWindowDetector(SlidingWindowDetectorInsertDto detectorDto)
         {
-            var detector = _mapper.Map<SumSlidingWindowDetector>(detectorDto);
+            var detector = await MapSlidingWindowDetector<SumSlidingWindowDetector>(detectorDto);
             return await InsertBaseDetector(detector);
         }
 
@@ -77,6 +76,15 @@ namespace AaaS.Api.Controllers
             await detector.ResolveNavigationProperties(detectorDto, clientId, _actionManager, _clientDao);
             detector.MetricRepository = _metricRepository;
             return await InsertBaseDetector(detector);
+        }
+
+        private async Task<T> MapSlidingWindowDetector<T>(SlidingWindowDetectorInsertDto detectorDto) where T : BaseDetector
+        {
+            var clientId = User.GetId();
+            var detector = _mapper.Map<T>(detectorDto);
+            detector.MetricRepository = _metricRepository;
+            await detector.ResolveNavigationProperties(detectorDto, clientId, _actionManager, _clientDao);
+            return detector;
         }
 
         private async Task<IActionResult> InsertBaseDetector(BaseDetector detector)
