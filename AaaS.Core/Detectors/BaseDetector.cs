@@ -30,6 +30,7 @@ namespace AaaS.Core.Detectors
                 while (isRunning)
                 {
                     await Detect();
+                    Console.WriteLine(TelemetryName +  " detected");
                     await Task.Delay(CheckInterval);
                 }
             }).Start();

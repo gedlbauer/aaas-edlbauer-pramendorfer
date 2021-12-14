@@ -2,6 +2,7 @@
 using AaaS.Api.Extensions;
 using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
+using AaaS.Core.Extensions;
 using AaaS.Core.Managers;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
@@ -73,8 +74,8 @@ namespace AaaS.Api.Controllers
         {
             var clientId = User.GetId();
             var detector = _mapper.Map<MinMaxDetector>(detectorDto);
-            await detector.ResolveNavigationProperties(detectorDto, clientId, _actionManager, _clientDao);
             detector.MetricRepository = _metricRepository;
+            await detector.ResolveNavigationProperties(detectorDto.ActionId, clientId, _actionManager, _clientDao);
             return await InsertBaseDetector(detector);
         }
 
@@ -83,7 +84,7 @@ namespace AaaS.Api.Controllers
             var clientId = User.GetId();
             var detector = _mapper.Map<T>(detectorDto);
             detector.MetricRepository = _metricRepository;
-            await detector.ResolveNavigationProperties(detectorDto, clientId, _actionManager, _clientDao);
+            await detector.ResolveNavigationProperties(detectorDto.ActionId, clientId, _actionManager, _clientDao);
             return detector;
         }
 

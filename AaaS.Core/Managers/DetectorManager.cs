@@ -1,5 +1,7 @@
 ﻿using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
+using AaaS.Core.Extensions;
+using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
 using System;
 using System.Collections.Generic;
@@ -11,21 +13,30 @@ namespace AaaS.Core.Managers
 {
     public class DetectorManager
     {
-        private readonly IDetectorDao<BaseDetector, BaseAction> _detectorDao;
         private readonly List<BaseDetector> _detectors = new();
+        private readonly IDetectorDao<BaseDetector, BaseAction> _detectorDao;
+        private readonly IClientDao _clientDao;
+        private readonly MetricRepository _metricRepository;
         private readonly ActionManager _actionManager;
 
-        public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, ActionManager actionManager)
+        public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, ActionManager actionManager, IClientDao clientDao, MetricRepository metricRepository)
         {
             _detectorDao = detectorDao;
             _actionManager = actionManager;
+            _clientDao = clientDao;
+            _metricRepository = metricRepository;
             LoadDetectorsFromDb();
+            StartAll().Wait();
         }
 
         private void LoadDetectorsFromDb()
         {
             _detectors.AddRange(_detectorDao.FindAllAsync().ToEnumerable());
-            _detectors.ForEach(x => x.Action = _actionManager.FindActionById(x.Action.Id));
+            _detectors.ForEach(async detector =>
+            {
+                detector.MetricRepository = _metricRepository;
+                await detector.ResolveNavigationProperties(detector.Action.Id, detector.Client.Id, _actionManager, _clientDao);
+            });
         }
 
         public IEnumerable<BaseDetector> GetAll()
@@ -48,7 +59,8 @@ namespace AaaS.Core.Managers
             if (detector.Action.Id == default)
             {
                 await _actionManager.AddActionAsync(detector.Action);
-            } else
+            }
+            else
             {
                 detector.Action = _actionManager.FindActionById(detector.Action.Id);
             }
