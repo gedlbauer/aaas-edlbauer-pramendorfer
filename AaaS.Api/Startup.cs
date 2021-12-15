@@ -44,8 +44,8 @@ namespace AaaS.Api
             {
                 options.ReturnHttpNotAcceptable = true;
                 options.Filters.Add(new ProducesAttribute("application/json"));
-            })
-                .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new TimeSpanToMillisecondsConverter()));
+            }).AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new TimeSpanToMillisecondsConverter()));
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AaaS.Api", Version = "v1" });
