@@ -39,14 +39,14 @@ namespace AaaS.Core.Managers
             });
         }
 
-        public IEnumerable<BaseDetector> GetAll()
+        public IEnumerable<BaseDetector> GetAll(int clientId)
         {
-            return _detectors;
+            return _detectors.Where(x => x.Client.Id == clientId);
         }
 
-        public BaseDetector FindDetectorById(int id)
+        public BaseDetector FindDetectorById(int clientId, int id)
         {
-            return _detectors.SingleOrDefault(x => x.Id == id);
+            return _detectors.SingleOrDefault(x => x.Client.Id == clientId && x.Id == id);
         }
 
         public async Task AddAndStartDetectorAsync(BaseDetector detector)

@@ -39,13 +39,13 @@ namespace AaaS.Api.Controllers
         [HttpGet]
         public IEnumerable<DetectorDto> GetAll()
         {
-            return _mapper.Map<IEnumerable<DetectorDto>>(_detectorManager.GetAll());
+            return _mapper.Map<IEnumerable<DetectorDto>>(_detectorManager.GetAll(User.GetId()));
         }
 
         [HttpGet("{id}")]
         public DetectorDto ById(int id)
         {
-            return _mapper.Map<DetectorDto>(_detectorManager.FindDetectorById(id));
+            return _mapper.Map<DetectorDto>(_detectorManager.FindDetectorById(User.GetId(), id));
         }
 
         [HttpPost("averageslidingwindow")]
