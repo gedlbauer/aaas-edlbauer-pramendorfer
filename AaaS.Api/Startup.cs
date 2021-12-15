@@ -40,7 +40,11 @@ namespace AaaS.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers(options => options.ReturnHttpNotAcceptable = true)
+            services.AddControllers(options =>
+            {
+                options.ReturnHttpNotAcceptable = true;
+                options.Filters.Add(new ProducesAttribute("application/json"));
+            })
                 .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new TimeSpanToMillisecondsConverter()));
             services.AddSwaggerGen(c =>
             {
