@@ -1,5 +1,6 @@
 ﻿using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace AaaS.Core.Detectors
 {
     public class AverageSlidingWindowDetector : SlidingWindowDetector
     {
-        public AverageSlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
+        public AverageSlidingWindowDetector(ITelemetryRepository<Metric> metricRepository) : base(metricRepository) { }
         public AverageSlidingWindowDetector() : base(null) { }
 
         public async override Task<double> CalculateCheckValue()

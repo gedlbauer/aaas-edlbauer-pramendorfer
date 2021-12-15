@@ -13,8 +13,10 @@ namespace AaaS.Api.MapperProfiles
         public TelemetryProfile()
         {
             CreateMap<Log, LogDto>();
-            CreateMap<Metric, MetricDto>();
+            CreateMap<Metric, MetricDto>().ReverseMap();
             CreateMap<TimeMeasurement, TimeMeasurementDto>();
+
+            CreateMap<MetricInsertDto, Metric>();
         }
     }
 }

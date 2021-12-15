@@ -28,6 +28,11 @@ namespace AaaS.Core.Repositories
         public Task<TimeMeasurement> FindByIdAsync(int clientId, int id)
             => _timeMeasurementDao.FindByIdAndClientAsync(id, clientId);
 
+        public IAsyncEnumerable<TimeMeasurement> FindSinceByClientAsync(DateTime from, int clientId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task InsertAsync(TimeMeasurement telemetry)
             => _timeMeasurementDao.InsertAsync(telemetry);
     }

@@ -9,6 +9,7 @@ using AaaS.Core.Repositories;
 using AaaS.Dal.Ado;
 using AaaS.Dal.Ado.Telemetry;
 using AaaS.Dal.Interface;
+using AaaS.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -87,9 +88,9 @@ namespace AaaS.Api
             services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao>();
             services.AddTransient<IClientDao, MSSQLClientDao>();
 
-            services.AddSingleton<LogRepository>();
-            services.AddSingleton<MetricRepository>();
-            services.AddSingleton<TimeMeasurementRepository>();
+            services.AddSingleton<ITelemetryRepository<Log>, LogRepository>();
+            services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository >();
+            services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository >();
 
             services.AddSingleton<ActionManager>();
             services.AddSingleton<DetectorManager>();

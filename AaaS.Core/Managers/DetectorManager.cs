@@ -3,6 +3,7 @@ using AaaS.Core.Detectors;
 using AaaS.Core.Extensions;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
+using AaaS.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,10 @@ namespace AaaS.Core.Managers
         private readonly List<BaseDetector> _detectors = new();
         private readonly IDetectorDao<BaseDetector, BaseAction> _detectorDao;
         private readonly IClientDao _clientDao;
-        private readonly MetricRepository _metricRepository;
+        private readonly ITelemetryRepository<Metric> _metricRepository;
         private readonly ActionManager _actionManager;
 
-        public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, ActionManager actionManager, IClientDao clientDao, MetricRepository metricRepository)
+        public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, ActionManager actionManager, IClientDao clientDao, ITelemetryRepository<Metric> metricRepository)
         {
             _detectorDao = detectorDao;
             _actionManager = actionManager;

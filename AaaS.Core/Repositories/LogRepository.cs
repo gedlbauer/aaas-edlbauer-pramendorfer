@@ -29,6 +29,11 @@ namespace AaaS.Core.Repositories
         public Task<Log> FindByIdAsync(int clientId, int id)
             => _logDao.FindByIdAndClientAsync(id, clientId);
 
+        public IAsyncEnumerable<Log> FindSinceByClientAsync(DateTime from, int clientId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task InsertAsync(Log telemetry)
         {
             await _logDao.InsertAsync(telemetry);

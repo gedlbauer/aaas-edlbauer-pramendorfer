@@ -13,9 +13,9 @@ namespace AaaS.Core.Detectors
     public abstract class BaseDetector : Detector<BaseAction>, IDetector
     {
 
-        public MetricRepository MetricRepository { set; protected get; }
+        public ITelemetryRepository<Metric> MetricRepository { set; protected get; }
 
-        public BaseDetector(MetricRepository metricRepository)
+        public BaseDetector(ITelemetryRepository<Metric> metricRepository)
         {
             MetricRepository = metricRepository;
         }
