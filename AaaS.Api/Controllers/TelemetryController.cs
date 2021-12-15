@@ -14,8 +14,8 @@ namespace AaaS.Api.Controllers
 
     public abstract class TelemetryController<T, TWrite, TRead> : ControllerBase where T : Telemetry
     {
-        private readonly ITelemetryRepository<T> _telemetryRepository;
-        private readonly IMapper _mapper;
+        protected readonly ITelemetryRepository<T> _telemetryRepository;
+        protected readonly IMapper _mapper;
 
         public TelemetryController(ITelemetryRepository<T> telemetryRepository, IMapper mapper)
         {

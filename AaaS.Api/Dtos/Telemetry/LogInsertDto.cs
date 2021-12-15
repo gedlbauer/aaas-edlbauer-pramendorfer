@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace AaaS.Api.Dtos.Telemetry
 {
-    public class MetricInsertDto
+    public class LogInsertDto
     {
         public DateTime Timestamp { get; set; }
         public string Name { get; set; }
         public Guid CreatorId { get; set; }
-        public double Value { get; set; }
+        public string Message { get; set; }
+        public int LogTypeId { get; set; }
     }
 }

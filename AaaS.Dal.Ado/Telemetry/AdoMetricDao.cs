@@ -17,6 +17,13 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public AdoMetricDao(IConnectionFactory factory, IClientDao clientDao) : base(factory, clientDao) { }
 
+        public async Task<Metric> FindMostRecentByNameAndClientAsync(int clientId, string name)
+            => await template.QuerySingleAsync(
+                "Select top 1 t.Id, t.creation_time, t.Name, t.client_id, t.creator_id, m.value from Telemetry as t Inner join[Metric] as m on m.telemetry_id=t.id where name=@name and client_id=@cid order by id desc",
+                MapRowToTelemetry,
+                new QueryParameter("@name", name),
+                new QueryParameter("@cid", clientId));
+
         protected override async Task InsertDerivationAsync(Metric obj)
         {
             const string SQL_INSERT = "insert into metric (telemetry_id, value) values (@id, @val)";
