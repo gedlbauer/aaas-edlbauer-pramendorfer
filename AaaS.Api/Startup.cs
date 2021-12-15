@@ -101,7 +101,9 @@ namespace AaaS.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // DetectorManager wird hier injected, damit er direkt beim Applikationsstart initialisiert wird, und nicht erst beim ersten Controller-Aufruf
+        //      |-> dadurch werden die Detectors gleich bei Appstart gestartet
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DetectorManager _)
         {
             if (env.IsDevelopment())
             {
@@ -109,7 +111,6 @@ namespace AaaS.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AaaS.Api v1"));
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
