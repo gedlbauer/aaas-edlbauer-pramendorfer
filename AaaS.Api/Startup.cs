@@ -89,7 +89,9 @@ namespace AaaS.Api
             services.AddTransient<IClientDao, MSSQLClientDao>();
 
             services.AddSingleton<ITelemetryRepository<Log>, LogRepository>();
-            services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository >();
+            services.AddSingleton<IMetricRepository, MetricRepository>();
+            // TODO change!
+            services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository>();
             services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository >();
 
             services.AddSingleton<ActionManager>();

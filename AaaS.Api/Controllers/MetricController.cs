@@ -1,4 +1,5 @@
 ﻿using AaaS.Api.Dtos.Telemetry;
+using AaaS.Api.Extensions;
 using AaaS.Core.Repositories;
 using AaaS.Domain;
 using AutoMapper;
@@ -14,7 +15,7 @@ namespace AaaS.Api.Controllers
     [ApiController]
     public class MetricController : TelemetryController<Metric, Metric, MetricDto>
     {
-        public MetricController(MetricRepository metricRepository, IMapper mapper) : base(metricRepository, mapper)
+        public MetricController(ITelemetryRepository<Metric> metricRepository, IMapper mapper) : base(metricRepository, mapper)
         {
 
         }

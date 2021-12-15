@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Repositories
 {
-    public class MetricRepository : ITelemetryRepository<Metric>
+    public class MetricRepository : IMetricRepository
     {
         private readonly IMetricDao _metricDao;
 
@@ -32,6 +32,18 @@ namespace AaaS.Core.Repositories
             => _metricDao.FindByIdAndClientAsync(id, clientId);
 
         public Task InsertAsync(Metric telemetry)
-            => _metricDao.InsertAsync(telemetry);
+           => InsertMeasurementAsync(telemetry);
+
+        public async Task InsertMeasurementAsync(Metric telemetry)
+            => await _metricDao.InsertAsync(telemetry);
+
+        public async Task InsertCounterAsync(Metric telemetry)
+        {
+            Metric latestMetric = await _metricDao.FindMostRecentByNameAndClientAsync(telemetry.Client.Id, telemetry.Name);
+            telemetry.Value = (latestMetric?.Value ?? 0) + 1;
+            await _metricDao.InsertAsync(telemetry);
+        }
+        
+         
     }
 }

@@ -12,11 +12,18 @@ namespace AaaS.Api.MapperProfiles
     {
         public TelemetryProfile()
         {
-            CreateMap<Log, LogDto>();
+            CreateMap<Log, LogDto>().ReverseMap();
             CreateMap<Metric, MetricDto>().ReverseMap();
-            CreateMap<TimeMeasurement, TimeMeasurementDto>();
+            CreateMap<TimeMeasurement, TimeMeasurementDto>().ReverseMap();
 
-            CreateMap<MetricInsertDto, Metric>();
+            CreateMap<CounterInsertDto, Metric>();
+            CreateMap<MeasurementInsertDto, Metric>();
+            CreateMap<TimeMeasurementInsertDto, TimeMeasurement>();
+            CreateMap<LogInsertDto, Log>()
+                .AfterMap((src, dest) =>
+                {
+                    dest.Type = new LogType() { Id = src.LogTypeId };
+                });
         }
     }
 }

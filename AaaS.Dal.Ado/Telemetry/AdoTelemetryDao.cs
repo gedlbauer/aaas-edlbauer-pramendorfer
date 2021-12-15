@@ -55,6 +55,7 @@ namespace AaaS.Dal.Ado.Telemetry
                 MapRowToTelemetry,
                 new QueryParameter("@cid", clientId),
                 new QueryParameter("@name", name));
+
         public async Task<T> FindByIdAndClientAsync(int id, int clientId)
             => await template.QuerySingleAsync(
                     Query + " where t.id=@id and client_id=@cid",
