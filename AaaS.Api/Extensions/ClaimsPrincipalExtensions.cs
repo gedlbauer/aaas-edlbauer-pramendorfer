@@ -10,7 +10,7 @@ namespace AaaS.Api.Extensions
     {
         public static int GetId(this ClaimsPrincipal user)
         {
-            return  int.Parse(user.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            return int.Parse(user.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
         }
     }
 }
