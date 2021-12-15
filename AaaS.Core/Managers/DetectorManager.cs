@@ -50,6 +50,11 @@ namespace AaaS.Core.Managers
             return _detectors.SingleOrDefault(x => x.Client.Id == clientId && x.Id == id);
         }
 
+        public BaseDetector FindDetectorById(int id)
+        {
+            return _detectors.SingleOrDefault(x => x.Id == id);
+        }
+
         public async Task AddAndStartDetectorAsync(BaseDetector detector)
         {
             if (detector.Id != default)
