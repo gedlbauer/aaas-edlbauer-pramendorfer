@@ -1,13 +1,16 @@
-﻿using AaaS.Dal.Interface;
+﻿
+
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace AaaS.Api.Auth
@@ -15,6 +18,7 @@ namespace AaaS.Api.Auth
     public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
     {
         public const string ApiKeyHeaderName = "X-Api-Key";
+        private const string ProblemDetailsContentType = "application/problem+json";
         private readonly IClientDao _clientDao;
 
         public ApiKeyAuthenticationHandler(
@@ -43,7 +47,7 @@ namespace AaaS.Api.Auth
 
             Client client = await _clientDao.FindByApiKeyAsync(providedApiKey);
 
-            if(client != null)
+            if (client != null)
             {
                 var claims = new List<Claim>
                     {
@@ -60,6 +64,20 @@ namespace AaaS.Api.Auth
             }
 
             return AuthenticateResult.NoResult();
+        }
+        protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            Response.StatusCode = 401;
+            Response.ContentType = ProblemDetailsContentType;
+            var problemDetails = new UnauthorizedProblemDetails();
+
+            await Response.WriteAsync(JsonSerializer.Serialize(
+                problemDetails,
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    IgnoreNullValues = true
+                }));
         }
 
     }

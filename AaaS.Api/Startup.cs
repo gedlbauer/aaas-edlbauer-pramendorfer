@@ -49,7 +49,8 @@ namespace AaaS.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AaaS.Api", Version = "v1" });
+                c.SwaggerDoc("controllers", new OpenApiInfo { Title = "AaaS.Api Web", Version = "v1" });
+                c.SwaggerDoc("commands", new OpenApiInfo { Title = "AaaS.Api Clients", Version = "v1" });
                 c.AddSecurityDefinition(ApiKeyConstants.HeaderName, new OpenApiSecurityScheme
                 {
                     Description = $"Api key needed to access the endpoints. {ApiKeyConstants.HeaderName}: My_API_Key",
@@ -78,7 +79,13 @@ namespace AaaS.Api
                 {
                     Type = "number"
                 });
+
+
             });
+   
+            services.AddMvc(c =>
+                c.Conventions.Add(new ApiExplorerGroupPerNamespaceConvention())
+            );
             services.AddSingleton(x => DefaultConnectionFactory.FromConfiguration(Configuration, "AaaSDbConnection"));
             services.AddTransient<IActionDao<BaseAction>, MSSQLActionDao<BaseAction>>();
             services.AddTransient<IDetectorDao<BaseDetector, BaseAction>, MSSQLDetectorDao<BaseDetector, BaseAction>>();
@@ -92,7 +99,7 @@ namespace AaaS.Api
             services.AddSingleton<IMetricRepository, MetricRepository>();
             // TODO change!
             services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository>();
-            services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository >();
+            services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository>();
 
             services.AddSingleton<ActionManager>();
             services.AddSingleton<DetectorManager>();
@@ -105,6 +112,8 @@ namespace AaaS.Api
             }).AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme, o => { });
             services.AddAuthorization();
 
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,7 +125,11 @@ namespace AaaS.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AaaS.Api v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/controllers/swagger.json", "AaaS.Api Web");
+                    c.SwaggerEndpoint("/swagger/commands/swagger.json", "AaaS.Api Clients");
+                });
             }
             app.UseHttpsRedirection();
 
