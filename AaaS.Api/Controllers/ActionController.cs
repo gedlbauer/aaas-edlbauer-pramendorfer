@@ -1,6 +1,9 @@
 ﻿using AaaS.Api.Dtos.Action;
+using AaaS.Api.Extensions;
 using AaaS.Core.Actions;
+using AaaS.Core.Extensions;
 using AaaS.Core.Managers;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -16,15 +19,17 @@ namespace AaaS.Api.Controllers
     [ApiController]
     public class ActionController : ControllerBase
     {
+        private readonly IClientDao _clientDao;
         private readonly ActionManager _actionManager;
         private readonly DetectorManager _detectorManager;
         private readonly IMapper _mapper;
 
-        public ActionController(ActionManager actionManager, DetectorManager detectorManager, IMapper mapper)
+        public ActionController(ActionManager actionManager, DetectorManager detectorManager, IClientDao clientDao, IMapper mapper)
         {
             _actionManager = actionManager;
             _detectorManager = detectorManager;
             _mapper = mapper;
+            _clientDao = clientDao;
         }
 
         [HttpGet]
@@ -44,10 +49,10 @@ namespace AaaS.Api.Controllers
         {
             var actionToDelete = _actionManager.FindActionById(id);
             if (actionToDelete is null) return NoContent();
-            //if (actionToDelete.Client.Id != User.GetId())
-            //{
-            //    return Forbid();
-            //}
+            if (actionToDelete.Client.Id != User.GetId())
+            {
+                return Forbid();
+            }
             if (_detectorManager.GetAll().Any(x => x.Action.Id == id))
             {
                 return Conflict(new { message = "There are still detectors that depend on this action" });
@@ -61,6 +66,7 @@ namespace AaaS.Api.Controllers
         public async Task<IActionResult> InsertWebHookAction(WebHookActionInsertDto action)
         {
             var webHookAction = _mapper.Map<WebHookAction>(action);
+            await webHookAction.ResolveNavigationProperties(User.GetId(), _clientDao);
             await _actionManager.AddActionAsync(webHookAction);
             return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = webHookAction.Id }, value: webHookAction);
         }
@@ -74,6 +80,7 @@ namespace AaaS.Api.Controllers
                 return checkError;
             }
             var mailAction = _mapper.Map<WebHookAction>(actionDto);
+            await mailAction.ResolveNavigationProperties(User.GetId(), _clientDao);
             await _actionManager.UpdateActionAsync(mailAction);
             return NoContent();
         }
@@ -84,6 +91,7 @@ namespace AaaS.Api.Controllers
         public async Task<IActionResult> InsertMailAction(MailActionInsertDto action)
         {
             var mailAction = _mapper.Map<MailAction>(action);
+            await mailAction.ResolveNavigationProperties(User.GetId(), _clientDao);
             await _actionManager.AddActionAsync(mailAction);
             return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = mailAction.Id }, value: mailAction);
         }
@@ -97,6 +105,7 @@ namespace AaaS.Api.Controllers
                 return checkError;
             }
             var mailAction = _mapper.Map<MailAction>(actionDto);
+            await mailAction.ResolveNavigationProperties(User.GetId(), _clientDao);
             await _actionManager.UpdateActionAsync(mailAction);
             return NoContent();
         }
@@ -109,10 +118,10 @@ namespace AaaS.Api.Controllers
             {
                 return NotFound(actionDtoId);
             }
-            //else if (oldAction.Client.Id != User.GetId())
-            //{
-            //    return Forbid();
-            //}
+            else if (oldAction.Client.Id != User.GetId())
+            {
+                return Forbid();
+            }
             else if (typeof(T) != oldAction.GetType())
             {
                 return Conflict("Type of Action must not be changed");
