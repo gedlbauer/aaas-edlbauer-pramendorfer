@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SendGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,6 +90,8 @@ namespace AaaS.Api
             services.AddSingleton(x => DefaultConnectionFactory.FromConfiguration(Configuration, "AaaSDbConnection"));
             services.AddTransient<IActionDao<BaseAction>, MSSQLActionDao<BaseAction>>();
             services.AddTransient<IDetectorDao<BaseDetector, BaseAction>, MSSQLDetectorDao<BaseDetector, BaseAction>>();
+
+            services.AddSingleton<SendGridClient>(services => new SendGridClient(Configuration.GetSection("SendGrid").GetValue<string>("ApiKey")));
 
             services.AddTransient<ILogDao, MSSQLLogDao>();
             services.AddTransient<IMetricDao, MSSQLMetricDao>();

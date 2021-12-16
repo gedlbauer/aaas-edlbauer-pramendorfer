@@ -1,4 +1,5 @@
-﻿using AaaS.Domain;
+﻿using AaaS.Dal.Ado.Attributes;
+using AaaS.Domain;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -15,11 +16,23 @@ namespace AaaS.Core.Actions
 
         public string MailContent { get; set; }
 
-        private readonly SendGridClient sendGridClient;
+        [Volatile]
+        public SendGridClient SendGridClient { set; protected get; }
 
-        public MailAction()
+        public MailAction(SendGridClient sendGridClient)
         {
-            sendGridClient = new SendGridClient("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");
+            SendGridClient = sendGridClient;
+        }
+
+        public MailAction() {
+            new Task(async () =>
+            {
+                await Task.Delay(10000);
+                if (SendGridClient is null)
+                {
+                    //throw new ArgumentException("SendGridClient is Null after 4s");
+                }
+            }).Start();
         }
 
         public async override Task Execute()
@@ -35,7 +48,7 @@ namespace AaaS.Core.Actions
             sendGridMessage.AddTo(recipientMail, recipientName);
             sendGridMessage.SetTemplateId(templateID);
             sendGridMessage.SetTemplateData(templateData);
-            var response = await sendGridClient.SendEmailAsync(sendGridMessage);
+            var response = await SendGridClient.SendEmailAsync(sendGridMessage);
             return response;
         }
 

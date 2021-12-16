@@ -1,5 +1,6 @@
 ﻿using AaaS.Core.Actions;
 using AaaS.Dal.Interface;
+using SendGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +13,27 @@ namespace AaaS.Core.Managers
     {
         private readonly IActionDao<BaseAction> _actionDao;
         private readonly List<BaseAction> _actions = new();
+        private readonly SendGridClient _sendGridClient;
 
-        public ActionManager(IActionDao<BaseAction> actionDao)
+        public ActionManager(IActionDao<BaseAction> actionDao, SendGridClient sendGridClient)
         {
             _actionDao = actionDao;
+            _sendGridClient = sendGridClient;
             LoadActionsFromDb();
         }
 
         private void LoadActionsFromDb()
         {
+            var actions = _actionDao.FindAllAsync();
+            actions.ForEachAsync(x =>
+            {
+                if (x.GetType() == typeof(MailAction))
+                {
+                    ((MailAction)x).SendGridClient = _sendGridClient;
+                }
+            });
             _actions.AddRange(_actionDao.FindAllAsync().ToEnumerable());
+            _actions.Select(x => x.Name).ToList().ForEach(x => Console.WriteLine(x));
         }
 
         public BaseAction FindActionById(int id)
@@ -47,6 +59,7 @@ namespace AaaS.Core.Managers
         public async Task AddActionAsync(BaseAction actionToAdd)
         {
             _actions.Add(actionToAdd);
+            Console.WriteLine($"inserted: {actionToAdd.Name}");
             await _actionDao.InsertAsync(actionToAdd);
         }
 

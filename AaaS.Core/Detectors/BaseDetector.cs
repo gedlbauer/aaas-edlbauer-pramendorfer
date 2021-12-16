@@ -1,5 +1,6 @@
 ﻿using AaaS.Core.Actions;
 using AaaS.Core.Repositories;
+using AaaS.Dal.Ado.Attributes;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
@@ -12,7 +13,7 @@ namespace AaaS.Core.Detectors
 {
     public abstract class BaseDetector : Detector<BaseAction>, IDetector
     {
-
+        [Volatile]
         public ITelemetryRepository<Metric> MetricRepository { set; protected get; }
 
         public BaseDetector(ITelemetryRepository<Metric> metricRepository)
@@ -30,7 +31,6 @@ namespace AaaS.Core.Detectors
                 while (isRunning)
                 {
                     await Detect();
-                    Console.WriteLine(TelemetryName +  " detected");
                     await Task.Delay(CheckInterval);
                 }
             }).Start();

@@ -57,14 +57,14 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestUpdate()
         {
-            var notExistingAction = new SimpleAction { Id = 100, Name = "Simple100", Email = "testmail@test.com", Client = new Client { ApiKey = "api1", Id = 1, Name = "Client1" }, TemplateText = "Das ist eine Testmail", Value = 12 };
+            var notExistingAction = new SimpleAction { Id = 100, Name = "Simple100", Email = "testmail@test.com", Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, TemplateText = "Das ist eine Testmail", Value = 12 };
             (await actionDao.UpdateAsync(notExistingAction)).Should().BeFalse();
 
-            var actionToUpdate = new SimpleAction { Email = "test@testmail.com", Name = "New123", Client = new Client { ApiKey = "api1", Id = 1, Name = "Client1" }, TemplateText = "Das ist eine veränderte Testaction", Id = 1, Value = 40 };
+            var actionToUpdate = new SimpleAction { Email = "test@testmail.com", Name = "New123", Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, TemplateText = "Das ist eine veränderte Testaction", Id = 1, Value = 40 };
             (await actionDao.UpdateAsync(actionToUpdate)).Should().BeTrue();
             (await actionDao.FindByIdAsync(1)).Should().BeEquivalentTo(actionToUpdate);
 
-            var actionToUpdate2 = new SimpleAction { Email = null, Name = "New456", Client = new Client { ApiKey = "api1", Id = 1, Name = "Client1" }, TemplateText = "Das ist eine veränderte Testaction", Id = 1, Value = 40 };
+            var actionToUpdate2 = new SimpleAction { Email = null, Name = "New456", Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, TemplateText = "Das ist eine veränderte Testaction", Id = 1, Value = 40 };
             (await actionDao.UpdateAsync(actionToUpdate2)).Should().BeTrue();
             (await actionDao.FindByIdAsync(1)).Should().BeEquivalentTo(actionToUpdate2);
         }
