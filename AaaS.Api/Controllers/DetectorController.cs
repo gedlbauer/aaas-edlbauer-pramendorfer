@@ -57,7 +57,7 @@ namespace AaaS.Api.Controllers
                 return Forbid();
             }
             await _detectorManager.DeleteDetectorAsync(detectorToDelete);
-            return NoContent(); // TODO Test delete
+            return NoContent();
         }
 
         #region AverageSlidingWindowDetector
