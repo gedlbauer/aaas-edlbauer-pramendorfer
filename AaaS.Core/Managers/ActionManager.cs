@@ -29,9 +29,19 @@ namespace AaaS.Core.Managers
             return _actions.SingleOrDefault(x => x.Id == id);
         }
 
+        public BaseAction FindActionById(int clientId, int id)
+        {
+            return _actions.SingleOrDefault(x => x.Id == id && x.Client.Id == clientId);
+        }
+
         public IEnumerable<BaseAction> GetAll()
         {
             return _actions;
+        }
+
+        public IEnumerable<BaseAction> GetAllFromClient(int clientId)
+        {
+            return _actions.Where(x => x.Client.Id == clientId);
         }
 
         public async Task AddActionAsync(BaseAction actionToAdd)

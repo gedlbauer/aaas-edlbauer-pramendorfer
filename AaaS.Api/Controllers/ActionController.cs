@@ -35,13 +35,13 @@ namespace AaaS.Api.Controllers
         [HttpGet]
         public IEnumerable<AaaSAction> GetAll()
         {
-            return _actionManager.GetAll();
+            return _actionManager.GetAllFromClient(User.GetId());
         }
 
         [HttpGet("{id}")]
         public AaaSAction ById(int id)
         {
-            return _actionManager.FindActionById(id);
+            return _actionManager.FindActionById(User.GetId(), id);
         }
 
         [HttpDelete("{id}")]
