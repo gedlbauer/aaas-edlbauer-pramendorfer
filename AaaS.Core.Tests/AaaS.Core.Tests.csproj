@@ -26,4 +26,8 @@
     <ProjectReference Include="..\AaaS.Dal.Interface\AaaS.Dal.Interface.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Managers\" />
+  </ItemGroup>
+
 </Project>
