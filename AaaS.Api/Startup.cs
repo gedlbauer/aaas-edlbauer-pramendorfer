@@ -79,8 +79,6 @@ namespace AaaS.Api
                 {
                     Type = "number"
                 });
-
-
             });
    
             services.AddMvc(c =>
@@ -95,7 +93,7 @@ namespace AaaS.Api
             services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao>();
             services.AddTransient<IClientDao, MSSQLClientDao>();
 
-            services.AddSingleton<ITelemetryRepository<Log>, LogRepository>();
+            services.AddSingleton<ILogRepository, LogRepository>();
             services.AddSingleton<IMetricRepository, MetricRepository>();
             // TODO change!
             services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository>();

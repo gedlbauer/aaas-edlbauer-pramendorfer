@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Repositories
 {
-    public class LogRepository : ITelemetryRepository<Log>
+    public class LogRepository : ILogRepository
     {
         private readonly ILogDao _logDao;
 
@@ -19,6 +19,9 @@ namespace AaaS.Core.Repositories
 
         public IAsyncEnumerable<Log> FindAllAsync(int clientId)
             => _logDao.FindAllByClientAsync(clientId);
+
+        public IAsyncEnumerable<LogType> FindAllLogTypesAsync()
+            => _logDao.FindAllLogTypesAsync();
 
         public IAsyncEnumerable<Log> FindByAllByNameAsync(int clientId, string name)
             => _logDao.FindAllByNameAsync(clientId, name);

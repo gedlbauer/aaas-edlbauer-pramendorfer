@@ -28,6 +28,9 @@ namespace AaaS.ClientSDK
             _httpClient.DefaultRequestHeaders.Add("X-API-KEY", _apiKey);
         }
 
+        public async Task<IEnumerable<LogType>> GetLogTypes()
+            => await _aaasClient.TypesAsync();
+
         public async Task InsertLog(LogInsertDto log)
             => await _aaasClient.LogsAsync(log);
         

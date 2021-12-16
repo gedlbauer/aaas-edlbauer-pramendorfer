@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AaaS.Dal.Interface
+namespace AaaS.Core.Repositories
 {
-    public interface ILogDao : ITelemetryDao<Log>
+    public interface ILogRepository : ITelemetryRepository<Log>
     {
         IAsyncEnumerable<LogType> FindAllLogTypesAsync();
     }

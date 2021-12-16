@@ -17,6 +17,8 @@ namespace AaaS.DemoClient
         private readonly PerformanceCounter _ramCounter;
         private readonly Random _random = new();
 
+        public IEnumerable<LogType> LogTypes { get; private set; }
+
         /**
          * Only works on windows os
          */
@@ -27,11 +29,11 @@ namespace AaaS.DemoClient
             _creatorId = Guid.NewGuid();
             _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
             _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-
         }
 
         public async Task Start()
         {
+            LogTypes = await _aaasService.GetLogTypes();
             while(true)
             {
                 await MetricCpu();
@@ -47,7 +49,7 @@ namespace AaaS.DemoClient
             await _aaasService.InsertLog(new LogInsertDto
             {
                 CreatorId = _creatorId,
-                LogTypeId = new Random().Next(1, 3),
+                LogTypeId = LogTypes.ElementAt(_random.Next(0, LogTypes.Count())).Id,
                 Message = $"Mouse at {Console.CursorLeft} / {Console.CursorTop}",
                 Name = "Cursor Position",
                 Timestamp = DateTime.Now

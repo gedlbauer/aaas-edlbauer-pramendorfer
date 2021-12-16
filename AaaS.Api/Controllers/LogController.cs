@@ -16,7 +16,14 @@ namespace AaaS.Api.Controllers
     [Authorize]
     public class LogController : TelemetryController<Log, LogDto, LogDto>
     {
-        public LogController(ITelemetryRepository<Log> logRepository, IMapper mapper) : base(logRepository, mapper) { }
+        private readonly ILogRepository _logRepository;
+        public LogController(ILogRepository logRepository, IMapper mapper) : base(logRepository, mapper) {
+            _logRepository = logRepository;
+        }
 
+        [HttpGet("[controller]s/types")]
+        public IEnumerable<LogType> GetLogTypes()
+            => _logRepository.FindAllLogTypesAsync().ToEnumerable();
+        
     }
 }
