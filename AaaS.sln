@@ -21,7 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AaaS.Api", "AaaS.Api\AaaS.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AaaS.ClientSDK", "AaaS.ClientSDK\AaaS.ClientSDK.csproj", "{5218BD46-69EE-494F-A100-891126779CB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.DemoClient", "AaaS.DemoClient\AaaS.DemoClient.csproj", "{1488E41A-5F81-4F4F-9CA0-14E994350C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AaaS.DemoClient", "AaaS.DemoClient\AaaS.DemoClient.csproj", "{1488E41A-5F81-4F4F-9CA0-14E994350C4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AaaS.Core.Tests", "AaaS.Core.Tests\AaaS.Core.Tests.csproj", "{B4332F66-FACB-440B-9A12-C11C877599A0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DEB792FE-AA07-4FBF-82BC-9F5630B1B325}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,9 +73,17 @@ Global
 		{1488E41A-5F81-4F4F-9CA0-14E994350C4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1488E41A-5F81-4F4F-9CA0-14E994350C4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1488E41A-5F81-4F4F-9CA0-14E994350C4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4332F66-FACB-440B-9A12-C11C877599A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4332F66-FACB-440B-9A12-C11C877599A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4332F66-FACB-440B-9A12-C11C877599A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4332F66-FACB-440B-9A12-C11C877599A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C9479F2C-CA88-4C7C-BE8F-44ECD7BB236D} = {DEB792FE-AA07-4FBF-82BC-9F5630B1B325}
+		{B4332F66-FACB-440B-9A12-C11C877599A0} = {DEB792FE-AA07-4FBF-82BC-9F5630B1B325}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EF3249B9-D126-4954-BAAE-4DF8CF379234}
