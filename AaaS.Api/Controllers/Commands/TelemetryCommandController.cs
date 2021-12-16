@@ -34,6 +34,7 @@ namespace AaaS.Api.Controllers.Commands
         [HttpPut("counters")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateCounter(CounterInsertDto metricDto)
         {
             Metric metric = _mapper.Map<Metric>(metricDto);
@@ -49,6 +50,7 @@ namespace AaaS.Api.Controllers.Commands
         [HttpPut("measurements")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateMeasurement(MeasurementInsertDto metricDto)
         {
             Metric metric = _mapper.Map<Metric>(metricDto);
@@ -64,9 +66,9 @@ namespace AaaS.Api.Controllers.Commands
         [HttpPut("logs")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateLog(LogInsertDto logDto)
         {
-            throw new Exception("test");
             Log log = _mapper.Map<Log>(logDto);
             log.Client = new Client { Id = User.GetId() };
             await _logRepository.InsertAsync(log);
@@ -80,6 +82,7 @@ namespace AaaS.Api.Controllers.Commands
         [HttpPut("time-measurements")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTimeMeasurements(TimeMeasurementInsertDto measurementDto)
         {
             TimeMeasurement measurement = _mapper.Map<TimeMeasurement>(measurementDto);
