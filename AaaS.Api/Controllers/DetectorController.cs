@@ -39,7 +39,7 @@ namespace AaaS.Api.Controllers
         [HttpGet]
         public IEnumerable<DetectorDto> GetAll()
         {
-            return _mapper.Map<IEnumerable<DetectorDto>>(_detectorManager.GetAll(User.GetId()));
+            return _mapper.Map<IEnumerable<DetectorDto>>(_detectorManager.GetAllFromClient(User.GetId()));
         }
 
         [HttpGet("{id}")]
@@ -52,7 +52,7 @@ namespace AaaS.Api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var detectorToDelete = _detectorManager.FindDetectorById(id);
-            if(detectorToDelete is not null && detectorToDelete.Client.Id != User.GetId())
+            if (detectorToDelete is not null && detectorToDelete.Client.Id != User.GetId())
             {
                 return Forbid();
             }
@@ -123,7 +123,7 @@ namespace AaaS.Api.Controllers
             var userId = User.GetId();
 
             var checkError = DoUpdateValidationChecks<MinMaxDetector>(detectorDto.Id);
-            if(checkError is not null)
+            if (checkError is not null)
             {
                 return checkError;
             }
@@ -179,10 +179,10 @@ namespace AaaS.Api.Controllers
             return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = detector.Id }, value: _mapper.Map<DetectorDto>(detector));
         }
 
-        private async Task<IActionResult> UpdateBaseDetector<T>(SlidingWindowDetectorUpdateDto detectorDto) where T: BaseDetector
+        private async Task<IActionResult> UpdateBaseDetector<T>(SlidingWindowDetectorUpdateDto detectorDto) where T : BaseDetector
         {
             var checkError = DoUpdateValidationChecks<T>(detectorDto.Id);
-            if(checkError is not null)
+            if (checkError is not null)
             {
                 return checkError;
             }

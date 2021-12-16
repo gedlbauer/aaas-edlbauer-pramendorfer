@@ -40,9 +40,14 @@ namespace AaaS.Core.Managers
             });
         }
 
-        public IEnumerable<BaseDetector> GetAll(int clientId)
+        public IEnumerable<BaseDetector> GetAllFromClient(int clientId)
         {
             return _detectors.Where(x => x.Client.Id == clientId);
+        }
+
+        public IEnumerable<BaseDetector> GetAll()
+        {
+            return _detectors;
         }
 
         public BaseDetector FindDetectorById(int clientId, int id)
@@ -127,9 +132,12 @@ namespace AaaS.Core.Managers
 
         public async Task DeleteDetectorAsync(BaseDetector detectorToDelete)
         {
-            detectorToDelete.Stop();
-            await _detectorDao.DeleteAsync(detectorToDelete);
-            _detectors.RemoveAll(x => x.Id == detectorToDelete.Id);
+            if (detectorToDelete is not null)
+            {
+                detectorToDelete.Stop();
+                await _detectorDao.DeleteAsync(detectorToDelete);
+                _detectors.RemoveAll(x => x.Id == detectorToDelete.Id);
+            }
         }
     }
 }

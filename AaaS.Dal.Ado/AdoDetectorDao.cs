@@ -14,7 +14,7 @@ using System.Transactions;
 
 namespace AaaS.Dal.Ado
 {
-    public abstract class AdoDetectorDao<TDetector, TAction> : IDetectorDao<TDetector, TAction> 
+    public abstract class AdoDetectorDao<TDetector, TAction> : IDetectorDao<TDetector, TAction>
         where TDetector : Detector<TAction>
         where TAction : AaaSAction
     {
@@ -77,6 +77,10 @@ namespace AaaS.Dal.Ado
             if (detector.Client.Id < 1)
             {
                 await clientDao.InsertAsync(detector.Client);
+                if (detector.Action?.Client.Id < 1)
+                {
+                    detector.Action.Client = detector.Client;
+                }
             }
             if (detector.Action.Id < 1)
             {
