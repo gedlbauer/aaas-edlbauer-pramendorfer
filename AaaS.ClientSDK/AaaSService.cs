@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AaaS.ClientSDK.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -11,32 +12,33 @@ namespace AaaS.ClientSDK
     {
         private const string baseUrl = "https://localhost:5001";
         private readonly string _apiKey;
-        public AaaSService(string apiKey)
+        private readonly HttpClient _httpClient;
+        private readonly Client _aaasClient;
+        public AaaSService(HttpClient client, AaaSServiceOptions options)
         {
-            _apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+            _apiKey = options?.ApiKey ?? throw new ArgumentNullException(nameof(options));
+            _httpClient = client ?? throw new ArgumentNullException(nameof(client));
+            SetupHttpClient();
+            _aaasClient = new Client(baseUrl, _httpClient);
+        }
+
+        private void SetupHttpClient()
+        {
+            _httpClient.DefaultRequestHeaders.Add("X-API-KEY", _apiKey);
         }
 
         public async Task InsertLog(LogInsertDto log)
-        {
-            using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("X-API-KEY", _apiKey);
-            await new Client(baseUrl, client).LogsAsync(log);
-        }
+            => await _aaasClient.LogsAsync(log);
+        
 
         public async Task InsertTimeMeasurement(TimeMeasurementInsertDto timeMeasurement)
-        {
-            using HttpClient client = new();
-            await new Client(baseUrl, client).TimeMeasurementsAsync(timeMeasurement);
-        }
+            => await _aaasClient.TimeMeasurementsAsync(timeMeasurement);
+        
         public async Task InsertCounter(CounterInsertDto counter)
-        {
-            using HttpClient client = new();
-            await new Client(baseUrl, client).CountersAsync(counter);
-        }
+            => await _aaasClient.CountersAsync(counter);
+        
         public async Task InsertMeasurement(MeasurementInsertDto measurement)
-        {
-            using HttpClient client = new();
-            await new Client(baseUrl, client).MeasurementsAsync(measurement);
-        }
+            => await _aaasClient.MeasurementsAsync(measurement);
+        
     }
 }
