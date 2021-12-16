@@ -32,6 +32,16 @@ namespace AaaS.Api.Controllers
             _clientDao = clientDao;
         }
 
+        [HttpGet("test")]
+        public IEnumerable<object> Test()
+        {
+            return _actionManager.GetAll().Select(x => new
+            {
+                Name = x.Name,
+                HasSendGridClient = x.GetType() != typeof(MailAction) || (x.GetType() == typeof(MailAction) && ((MailAction)x).GetSendGridClient() is not null)
+            });
+        }
+
         [HttpGet]
         public IEnumerable<AaaSAction> GetAll()
         {
