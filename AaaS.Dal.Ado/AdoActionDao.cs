@@ -18,12 +18,14 @@ namespace AaaS.Dal.Ado
     {
         private readonly AdoTemplate template;
         private readonly IObjectPropertyDao objectPropertyDao;
+        private readonly IClientDao clientDao;
         protected abstract string LastInsertedIdQuery { get; }
 
-        public AdoActionDao(IConnectionFactory factory, IObjectPropertyDao objectPropertyDao)
+        public AdoActionDao(IConnectionFactory factory, IObjectPropertyDao objectPropertyDao, IClientDao clientDao)
         {
             template = new AdoTemplate(factory);
             this.objectPropertyDao = objectPropertyDao;
+            this.clientDao = clientDao;
         }
 
         public IAsyncEnumerable<T> FindAllAsync()
@@ -49,12 +51,17 @@ namespace AaaS.Dal.Ado
         public async Task InsertAsync(T action)
         {
             const string SQL_INSERT_OBJECT = "INSERT INTO Object (type) values (@type);";
-            const string SQL_INSERT_ACTION = "INSERT INTO Action (object_id, name) values (@object_id, @name);";
+            const string SQL_INSERT_ACTION = "INSERT INTO Action (object_id, client_id, name) values (@object_id, @client_id, @name);";
+            if (action.Client.Id < 1)
+            {
+                await clientDao.InsertAsync(action.Client);
+            }
             action.Id = Convert.ToInt32(
                 await template.ExecuteScalarAsync<object>($"{SQL_INSERT_OBJECT};{LastInsertedIdQuery}",
                 new QueryParameter("@type", action.GetType().AssemblyQualifiedName)));
             await template.ExecuteScalarAsync<object>($"{SQL_INSERT_ACTION}; {LastInsertedIdQuery}",
                 new QueryParameter("@object_id", action.Id),
+                new QueryParameter("@client_id", action.Client.Id),
                 new QueryParameter("@name", action.Name));
             await InsertProperties(action);
         }
@@ -79,8 +86,8 @@ namespace AaaS.Dal.Ado
 
         public async Task<bool> UpdateAsync(T action)
         {
-            const string SQL_UPDATE_ACTION = "UPDATE action SET name=@name WHERE object_id=@objectId;";
-            var updatedRows = await template.ExecuteAsync(SQL_UPDATE_ACTION, new QueryParameter("@name", action.Name), new QueryParameter("@objectId", action.Id));
+            const string SQL_UPDATE_ACTION = "UPDATE action SET name=@name, client_id=@clientId WHERE object_id=@objectId;";
+            var updatedRows = await template.ExecuteAsync(SQL_UPDATE_ACTION, new QueryParameter("@name", action.Name), new QueryParameter("@objectId", action.Id), new QueryParameter("@clientId", action.Client.Id));
             if (updatedRows <= 0) // updated rows ist auch 1, wenn eine Reihe geupdated wurde, jedoch alle Werte gleich sind
             {
                 return false;
@@ -104,6 +111,7 @@ namespace AaaS.Dal.Ado
             var action = (T)Activator.CreateInstance(type);
             action.Id = (int)record["id"];
             action.Name = (string) record["name"];
+            action.Client = await clientDao.FindByIdAsync((int)record["client_id"]);
             if (action is not null)
                 await LoadProperties(action);
             return action;
@@ -111,7 +119,7 @@ namespace AaaS.Dal.Ado
 
         public async Task<bool> DeleteAsync(T action)
         {
-            using TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            using TransactionScope scope = new(TransactionScopeAsyncFlowOption.Enabled);
             const string SQL_DELETE_ACTION = "DELETE FROM Action WHERE object_id=@object_id";
             const string SQL_DELETE_OBJECT = "DELETE FROM Object WHERE id=@id";
             int deletedRows = await template.ExecuteAsync(SQL_DELETE_ACTION, new QueryParameter("@object_id", action.Id));

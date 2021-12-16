@@ -48,7 +48,6 @@ namespace AaaS.Dal.Tests
         [Fact]
         public async Task TestFindAll()
         {
-            output.WriteLine(new SimpleDetector().GetType().AssemblyQualifiedName);
             (await detectorDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(DetectorList);
         }
 
@@ -72,18 +71,18 @@ namespace AaaS.Dal.Tests
         [AutoRollback]
         public async Task TestUpdate()
         {
-            var notExistingDetector = new SimpleDetector { Id = 100, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1, Name="Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+            var notExistingDetector = new SimpleDetector { Id = 100, TelemetryName = "TestTelemetry1", Action = new SimpleAction { Id = 1, Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, Name = "Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
             (await detectorDao.UpdateAsync(notExistingDetector)).Should().BeFalse();
 
-            var detectorWithExistingFKs = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Id = 1, Name = "Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+            var detectorWithExistingFKs = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Id = 1, Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, Name = "Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
             (await detectorDao.UpdateAsync(detectorWithExistingFKs)).Should().BeTrue();
             (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(detectorWithExistingFKs);
-            
-            var detectorWithNonExistingAction = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Name="abcAction", Email = "abc", TemplateText = "def", Value = 12 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
+
+            var detectorWithNonExistingAction = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Name = "abcAction", Email = "abc", TemplateText = "def", Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, Value = 12 }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { Id = 1, ApiKey = "customkey1", Name = "client1" } };
             (await detectorDao.UpdateAsync(detectorWithNonExistingAction)).Should().BeTrue();
             (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(detectorWithNonExistingAction);
 
-            var detectorWithNonExistingClient = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Id = 1, Name = "Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { ApiKey = "customkey11", Name = "client1" } };
+            var detectorWithNonExistingClient = new SimpleDetector { Id = 3, TelemetryName = "TestTelemetryUpdated", Action = new SimpleAction { Id = 1, Client = new Client { ApiKey = "customkey1", Id = 1, Name = "client1" }, Name = "Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client { ApiKey = "customkey11", Name = "client1" } };
             (await detectorDao.UpdateAsync(detectorWithNonExistingClient)).Should().BeTrue();
             (await detectorDao.FindByIdAsync(3)).Should().BeEquivalentTo(detectorWithNonExistingClient);
         }
@@ -96,7 +95,7 @@ namespace AaaS.Dal.Tests
             {
                 TelemetryName = "InsertTestTelemetry",
                 Client = new Client { ApiKey = "DetectorInsertKey", Name = "Detector Insert Client" },
-                Action = new SimpleAction { Email = "insert@mail.com", Name="NewAction123", Value = 127, TemplateText = "This Action needs to be inserted first." },
+                Action = new SimpleAction { Email = "insert@mail.com", Name = "NewAction123", Value = 127, Client = new Client { ApiKey = "DetectorInsertKey", Name = "Detector Insert Client" }, TemplateText = "This Action needs to be inserted first." },
                 CheckInterval = TimeSpan.FromMilliseconds(1000),
                 Name = "InsertTestDetector"
             };
@@ -122,7 +121,13 @@ namespace AaaS.Dal.Tests
             (await clientDao.FindAllAsync().CountAsync()).Should().Be(clientCountBeforeInsert);
         }
 
-        public static IEnumerable<BaseDetector> DetectorList => new List<BaseDetector> {
-                new SimpleDetector { Id=3, TelemetryName = "TestTelemetry1", Action = new SimpleAction{ Id = 1, Name="Simple1" }, CheckInterval = TimeSpan.FromMilliseconds(1000), Client = new Client{Id=1, ApiKey = "customkey1", Name="client1" } }};
+        public IEnumerable<BaseDetector> DetectorList => new List<BaseDetector> {
+                new SimpleDetector { Id=3,
+                    TelemetryName = "TestTelemetry1",
+                    Action = new SimpleAction{ Id = 1, Name="Simple1", Client= new Client{ ApiKey ="customkey1", Id = 1, Name = "client1" } },
+                    CheckInterval = TimeSpan.FromMilliseconds(1000),
+                    Client = new Client{ Id=1, ApiKey = "customkey1", Name="client1" }
+                }
+        };
     }
 }

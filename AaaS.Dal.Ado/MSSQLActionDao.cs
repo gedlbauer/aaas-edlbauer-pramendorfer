@@ -10,7 +10,7 @@ namespace AaaS.Dal.Ado
 {
     public class MSSQLActionDao<T> : AdoActionDao<T> where T : AaaSAction
     {
-        public MSSQLActionDao(IConnectionFactory factory) : base(factory, new MSSQLObjectPropertyDao(factory))
+        public MSSQLActionDao(IConnectionFactory factory) : base(factory, new MSSQLObjectPropertyDao(factory), new MSSQLClientDao(factory))
         {
         }
 
