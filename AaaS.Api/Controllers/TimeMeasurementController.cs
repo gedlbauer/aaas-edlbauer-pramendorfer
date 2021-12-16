@@ -14,7 +14,7 @@ namespace AaaS.Api.Controllers
     [ApiController]
     public class TimeMeasurementController : TelemetryController<TimeMeasurement, TimeMeasurementDto, TimeMeasurementDto>
     {
-        public TimeMeasurementController(TimeMeasurementRepository repo, IMapper mapper) : base(repo, mapper)
+        public TimeMeasurementController(ITelemetryRepository<TimeMeasurement> repo, IMapper mapper) : base(repo, mapper)
         {
 
         }

@@ -66,7 +66,6 @@ namespace AaaS.Api.Controllers.Commands
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateLog(LogInsertDto logDto)
         {
-            throw new Exception("test");
             Log log = _mapper.Map<Log>(logDto);
             log.Client = new Client { Id = User.GetId() };
             await _logRepository.InsertAsync(log);
