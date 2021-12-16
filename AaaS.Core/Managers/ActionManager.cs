@@ -63,8 +63,11 @@ namespace AaaS.Core.Managers
 
         public async Task DeleteActionAsync(BaseAction action)
         {
-            await _actionDao.DeleteAsync(action);
-            _actions.RemoveAll(x => x.Id == action.Id);
+            if (action is not null)
+            {
+                await _actionDao.DeleteAsync(action);
+                _actions.RemoveAll(x => x.Id == action.Id);
+            }
         }
     }
 }

@@ -10,6 +10,8 @@ namespace AaaS.Api.MapperProfiles
         {
             CreateMap<WebHookActionInsertDto, WebHookAction>();
             CreateMap<MailActionInsertDto, MailAction>();
+            CreateMap<MailActionUpdateDto, MailAction>();
+            CreateMap<WebHookActionUpdateDto, WebHookAction>();
         }
     }
 }
