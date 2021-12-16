@@ -1,4 +1,5 @@
 ﻿using AaaS.Common;
+using AaaS.Dal.Ado.Attributes;
 using AaaS.Dal.Ado.Utilities;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
@@ -68,7 +69,7 @@ namespace AaaS.Dal.Ado
 
         private async Task InsertProperties(T action)
         {
-            var properties = action.GetType().GetProperties();
+            var properties = ObjectLoaderUtilities.GetPropertiesToStoreAsObjectProperty<T, AaaSAction>(action);
             foreach (var property in properties)
             {
                 var propName = property.Name;
@@ -101,7 +102,7 @@ namespace AaaS.Dal.Ado
             {
                 return false;
             }
-            return await ObjectLoaderUtilities.UpdateProperties(action.Id, action, objectPropertyDao);
+            return await ObjectLoaderUtilities.UpdateProperties<T, AaaSAction>(action.Id, action, objectPropertyDao);
         }
 
         public async Task<T> MapRowToAction(IDataRecord record)

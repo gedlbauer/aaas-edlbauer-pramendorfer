@@ -1,4 +1,5 @@
-﻿using AaaS.Dal.Interface;
+﻿using AaaS.Dal.Ado.Attributes;
+using AaaS.Dal.Interface;
 using AaaS.Domain;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,16 @@ namespace AaaS.Dal.Ado.Utilities
 {
     public static class ObjectLoaderUtilities
     {
+        public static IEnumerable<PropertyInfo> GetPropertiesToStoreAsObjectProperty<T, BaseType>(T obj)
+        {
+            var baseProperties = typeof(BaseType).GetProperties();
+            var properties = obj.GetType()
+                .GetProperties()
+                .Where(prop => !baseProperties.Any(baseProp => baseProp.Name == prop.Name && (baseProp.PropertyType == prop.PropertyType || prop.PropertyType.IsSubclassOf(baseProp.PropertyType)))) // Properties from Base Class are already stored in Db Table
+                .Where(prop => Attribute.GetCustomAttribute(prop, typeof(VolatileAttribute)) is null); // Ignore Properties that are defined as Volatile
+            return properties;
+        }
+
         public static async Task LoadPropertiesFromId<T>(int id, T objectToLoad, IObjectPropertyDao objectPropertyDao)
         {
             var properties = await objectPropertyDao.FindByObjectIdAsync(id).ToListAsync();
@@ -32,13 +43,13 @@ namespace AaaS.Dal.Ado.Utilities
             }
         }
 
-        public static async Task<bool> UpdateProperties<T>(int id, T action, IObjectPropertyDao objectPropertyDao)
+        public static async Task<bool> UpdateProperties<T, BaseType>(int id, T obj, IObjectPropertyDao objectPropertyDao)
         {
             var updated = false;
-            var properties = action.GetType().GetProperties();
+            var properties = GetPropertiesToStoreAsObjectProperty<T, BaseType>(obj);
             foreach (var property in properties)
             {
-                if (property.GetValue(action) is null)
+                if (property.GetValue(obj) is null)
                 {
                     if (await objectPropertyDao.DeleteAsync(new ObjectProperty { ObjectId = id, Name = property.Name }))
                         updated = true;
@@ -50,7 +61,7 @@ namespace AaaS.Dal.Ado.Utilities
                         ObjectId = id,
                         Name = property.Name,
                         TypeName = property.PropertyType.AssemblyQualifiedName,
-                        Value = JsonSerializer.Serialize(property.GetValue(action))
+                        Value = JsonSerializer.Serialize(property.GetValue(obj))
                     };
                     if (await objectPropertyDao.FindByObjectIdAndNameAsync(objectProperty.ObjectId, objectProperty.Name) is not null)
                     {

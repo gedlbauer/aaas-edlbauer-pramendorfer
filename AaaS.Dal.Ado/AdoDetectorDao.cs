@@ -98,9 +98,7 @@ namespace AaaS.Dal.Ado
 
         private async Task InsertProperties(TDetector detector)
         {
-            var staticDetectorProperties = typeof(Detector<AaaSAction>).GetProperties();
-            var properties = detector.GetType().GetProperties()
-                .Where(x => !staticDetectorProperties.Any(y => x.Name == y.Name && x.PropertyType == y.PropertyType));
+            var properties = ObjectLoaderUtilities.GetPropertiesToStoreAsObjectProperty<TDetector, Detector<AaaSAction>>(detector);
             foreach (var property in properties)
             {
                 var propName = property.Name;
@@ -149,7 +147,7 @@ namespace AaaS.Dal.Ado
             {
                 return false;
             }
-            if (await ObjectLoaderUtilities.UpdateProperties(obj.Id, obj, objectPropertyDao) || updatedRows > 0)
+            if (await ObjectLoaderUtilities.UpdateProperties<TDetector, Detector<AaaSAction>>(obj.Id, obj, objectPropertyDao) || updatedRows > 0)
             {
                 updated = true;
             }
