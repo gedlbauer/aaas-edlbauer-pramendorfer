@@ -19,11 +19,11 @@ namespace AaaS.Api.Controllers.Commands
     public class TelemetryCommandController : ControllerBase
     {
         private readonly IMetricRepository _metricRepository;
-        private readonly ITelemetryRepository<Log> _logRepository;
+        private readonly ILogRepository _logRepository;
         private readonly ITelemetryRepository<TimeMeasurement> _timeMeasurementRepository;
         private readonly IMapper _mapper;
 
-        public TelemetryCommandController(IMetricRepository metricRepository, ITelemetryRepository<Log> logRepository, ITelemetryRepository<TimeMeasurement> timeMeasurementRepository, IMapper mapper)
+        public TelemetryCommandController(IMetricRepository metricRepository, ILogRepository logRepository, ITelemetryRepository<TimeMeasurement> timeMeasurementRepository, IMapper mapper)
         {
             _mapper = mapper;
             _metricRepository = metricRepository;
@@ -78,6 +78,10 @@ namespace AaaS.Api.Controllers.Commands
                 new { id = log.Id },
                 _mapper.Map<LogDto>(log));
         }
+
+        [HttpGet("[controller]s/logs/types")]
+        public IEnumerable<LogType> GetLogTypes()
+         => _logRepository.FindAllLogTypesAsync().ToEnumerable();
 
         [HttpPut("time-measurements")]
         [ProducesResponseType(StatusCodes.Status201Created)]

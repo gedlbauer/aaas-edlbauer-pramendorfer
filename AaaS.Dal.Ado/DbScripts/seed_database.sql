@@ -4,6 +4,8 @@ INSERT INTO client (name, api_key) values ('client3', 'customkey3');
 
 -- Logs
 INSERT INTO LogType (name) VALUES ('Error')
+INSERT INTO LogType (name) VALUES ('Message')
+INSERT INTO LogType (name) VALUES ('Warning')
 
 INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'log1', 1, '09b87c32-d36a-4050-861a-244f86f754a5')
 INSERT INTO log (telemetry_id, type_id, message) VALUES (1, 1, 'message from log 1')

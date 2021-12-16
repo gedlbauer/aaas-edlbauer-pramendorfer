@@ -35,6 +35,15 @@ namespace AaaS.Dal.Ado.Telemetry
             };
         }
 
+        public IAsyncEnumerable<LogType> FindAllLogTypesAsync()
+        {
+            const string SQL_GET_LOG_TYPES = "select * from LogType";
+            return template.QueryAsync(SQL_GET_LOG_TYPES, MapRowToLogType);
+        }
+
+        private LogType MapRowToLogType(IDataRecord row)
+            => new LogType { Id = (int)row["id"], Name = (string)row["name"] };
+
         protected override async Task InsertDerivationAsync(Log log)
         {
             const string SQL_INSERT_LOG = "insert into log (telemetry_id, type_id, message) values (@id, @tid, @message)";
@@ -53,5 +62,6 @@ namespace AaaS.Dal.Ado.Telemetry
                 new QueryParameter("@message", log.Message),
                 new QueryParameter("@id", log.Id));
         }
+
     }
 }
