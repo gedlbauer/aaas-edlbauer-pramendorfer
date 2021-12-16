@@ -25,13 +25,13 @@ INSERT INTO TimeMeasurement (telemetry_id, start_time, end_time) VALUES (5, GETD
 INSERT INTO TimeMeasurement (telemetry_id, start_time, end_time) VALUES (6, GETDATE()-2, GETDATE())
 
 begin --Actions
-INSERT INTO Object(type) VALUES ('AaaS.Core.SimpleAction, AaaS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
+INSERT INTO Object(type) VALUES ('AaaS.Dal.Tests.TestObjects.SimpleAction, AaaS.Dal.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
 INSERT INTO Action(object_id, client_id, name) VALUES(1, 1, 'Simple1')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (1, 'Email', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"testmail@test.com"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (1, 'TemplateText', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"Das ist eine Testmail"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (1, 'Value', 'System.Int32, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '12')
 
-INSERT INTO Object(type) VALUES ('AaaS.Core.SimpleAction, AaaS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
+INSERT INTO Object(type) VALUES ('AaaS.Dal.Tests.TestObjects.SimpleAction, AaaS.Dal.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
 INSERT INTO Action(object_id, client_id, name) VALUES(2, 2, 'Simple2')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (2, 'Email', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"testmail@test.com"')
 INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (2, 'TemplateText', 'System.String, System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e', '"Das ist eine Testmail"')
@@ -39,6 +39,6 @@ INSERT INTO ObjectProperty(object_id, name, type, value) VALUES (2, 'Value', 'Sy
 end
 
 begin --Detectors
-INSERT INTO Object(type) VALUES ('AaaS.Core.SimpleDetector, AaaS.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
+INSERT INTO Object(type) VALUES ('AaaS.Dal.Tests.TestObjects.SimpleDetector, AaaS.Dal.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')
 INSERT INTO Detector(object_id, client_id, telemetry_name, action_id, check_interval) VALUES (3, 1, 'TestTelemetry1', 1, 1000)
 end

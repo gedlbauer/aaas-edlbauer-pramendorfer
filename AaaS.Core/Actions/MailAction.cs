@@ -30,11 +30,6 @@ namespace AaaS.Core.Actions
             _sendGridClient = client;
         }
 
-        public SendGridClient GetSendGridClient()
-        {
-            return _sendGridClient;
-        }
-
         public async override Task Execute()
         {
             //await SendMailFromTemplate("d-a56ee3e37dce4ec58b51545ea2107d81", new { mailContent = MailContent }, MailAddress);
