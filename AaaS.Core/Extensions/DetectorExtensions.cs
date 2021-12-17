@@ -13,7 +13,7 @@ namespace AaaS.Core.Extensions
     {
         public static async Task ResolveNavigationProperties(this BaseDetector detector, int actionId, int clientId, IActionManager actionManager, IClientDao clientDao)
         {
-            detector.Action = actionManager.FindActionById(actionId);
+            detector.Action = actionManager.FindActionById(clientId, actionId);
             detector.Client = await clientDao.FindByIdAsync(clientId);
         }
     }
