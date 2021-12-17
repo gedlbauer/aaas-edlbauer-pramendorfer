@@ -24,7 +24,7 @@ namespace AaaS.Dal.Tests.TestObjects
 
         protected override Task Detect()
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new object());
         }
     }
 }

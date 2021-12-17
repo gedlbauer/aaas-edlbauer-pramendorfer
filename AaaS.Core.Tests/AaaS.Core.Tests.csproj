@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AaaS.Core\AaaS.Core.csproj" />
     <ProjectReference Include="..\AaaS.Dal.Interface\AaaS.Dal.Interface.csproj" />
+    <ProjectReference Include="..\AaaS.Dal.Tests\AaaS.Dal.Tests.csproj" />
   </ItemGroup>
 
 </Project>
