@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AaaS.DemoClient
@@ -16,6 +17,7 @@ namespace AaaS.DemoClient
         private readonly PerformanceCounter _cpuCounter;
         private readonly PerformanceCounter _ramCounter;
         private readonly Random _random = new();
+        private CancellationTokenSource TokenSource { get; set; }
 
         public IEnumerable<LogType> LogTypes { get; private set; }
 
@@ -31,17 +33,28 @@ namespace AaaS.DemoClient
             _ramCounter = new PerformanceCounter("Memory", "Available MBytes");
         }
 
-        public async Task Start()
+        public void Start()
         {
-            LogTypes = await _aaasService.GetLogTypes();
-            while(true)
+            TokenSource?.Cancel();
+            TokenSource = new CancellationTokenSource();
+            Task.Factory.StartNew(async () =>
             {
-                await MetricCpu();
-                await MetricRam();
-                await Log();
-                await TimeMeasurement();
-                await Task.Delay(_delay);
-            }
+                LogTypes = await _aaasService.GetLogTypes();
+                while (true)
+                {
+                    await MetricCpu();
+                    await MetricRam();
+                    await Log();
+                    await TimeMeasurement();
+                    await Task.Delay(_delay);
+                }
+            }, TokenSource.Token);
+        }
+
+        public async Task Stop()
+        {
+            await _aaasService.Stop();
+            TokenSource.Cancel();
         }
 
         private async Task Log()
