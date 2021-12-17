@@ -1,6 +1,7 @@
 ﻿using AaaS.Core.Actions;
 using Microsoft.Extensions.Hosting;
 using SendGrid;
+using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace AaaS.Core.HostedServices
 {
     public class HeartbeatService : BackgroundService
     {
-        private readonly SendGridClient _sendGrid;
+        private readonly ISendGridClient _sendGrid;
         private Dictionary<Guid, DateTime> Heartbeats { get; } = new();
 
-        public HeartbeatService(SendGridClient sendGridClient)
+        public HeartbeatService(ISendGridClient sendGridClient)
         {
             _sendGrid = sendGridClient;
         }
@@ -39,8 +40,8 @@ namespace AaaS.Core.HostedServices
             {
                 try
                 {
-                    CheckHeartbeats();
-                    await Task.Delay(30_000, stoppingToken);
+                    await CheckHeartbeats();
+                    await Task.Delay(5_000, stoppingToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -49,27 +50,27 @@ namespace AaaS.Core.HostedServices
             }
         }
 
-        private void CheckHeartbeats()
+        private async Task CheckHeartbeats()
         {
             foreach (var hearbeat in Heartbeats)
             {
-         
-                if((DateTime.UtcNow - hearbeat.Value).TotalSeconds > 30)
+                if((DateTime.UtcNow - hearbeat.Value).TotalSeconds > 5)
                 {
+                    await SendWarningEmail(hearbeat.Key);
                     Heartbeats.Remove(hearbeat.Key);
                 }
             }
         }
 
-        private async Task SendWarningEmail()
+        private async Task SendWarningEmail(Guid creatorId)
         {
-            //var sendGridMessage = new SendGridMessage();
-            //sendGridMessage.SetFrom("s2010307058@students.fh-hagenberg.at", "AaaS");
-            //sendGridMessage.AddTo(recipientMail, recipientName);
-            //sendGridMessage.SetTemplateId(templateID);
-            //sendGridMessage.SetTemplateData(templateData);
-            //var response = await _sendGridClient.SendEmailAsync(sendGridMessage);
-            //await SendMailFromTemplate("d-a56ee3e37dce4ec58b51545ea2107d81", new { mailContent = MailContent }, MailAddress);
+            var message = new SendGridMessage();
+            message.SetFrom("s2010307058@students.fh-hagenberg.at", "AaaS");
+            message.SetSubject("Client instance anomaly");
+            message.AddContent("text/plain", $"Client instance ${creatorId} did log off, but stopped sending hearbeats!");
+            message.AddTo("s2010307089@students.fh-hagenberg.at", "Admin");
+
+            await _sendGrid.SendEmailAsync(message);
         }
     }
 }

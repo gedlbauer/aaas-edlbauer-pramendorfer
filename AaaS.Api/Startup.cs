@@ -115,9 +115,13 @@ namespace AaaS.Api
             services.AddAuthorization();
 
 
-            var hearbeatService = new HeartbeatService();
-            services.AddSingleton(hearbeatService);
-            services.AddHostedService(_ => hearbeatService);
+            
+            services.AddSingleton(sp =>
+            {
+                var sendGridClient = sp.GetService<ISendGridClient>();
+                return new HeartbeatService(sendGridClient);
+            });
+            services.AddHostedService(sp => sp.GetService<HeartbeatService>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
