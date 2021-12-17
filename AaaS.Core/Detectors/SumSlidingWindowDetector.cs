@@ -10,12 +10,14 @@ namespace AaaS.Core.Detectors
 {
     public class SumSlidingWindowDetector : SlidingWindowDetector
     {
-        public SumSlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
+        public SumSlidingWindowDetector(IMetricRepository metricRepository) : base(metricRepository) { }
         public SumSlidingWindowDetector() : base(null) { }
 
         protected async override Task<double> CalculateCheckValue()
         {
-            return await MetricRepository.FindSinceByClientAsync(FromDate, Client.Id).SumAsync(x => x.Value);
+            return await MetricRepository.FindSinceByClientAsync(FromDate, Client.Id)
+                .Where(x => x.Name == TelemetryName) // TODO Eventuell nach Repo verschieben
+                .SumAsync(x => x.Value);
         }
     }
 }
