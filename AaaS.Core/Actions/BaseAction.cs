@@ -9,11 +9,7 @@ namespace AaaS.Core.Actions
 {
     public abstract class BaseAction : AaaSAction, IAction
     {
-        private static int cnt = 0;
-        public BaseAction()
-        {
-            Console.WriteLine($"Action Created! (#{cnt++})");
-        }
+        public BaseAction() { }
         public abstract Task Execute();
     }
 }
