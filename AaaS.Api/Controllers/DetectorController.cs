@@ -23,11 +23,11 @@ namespace AaaS.Api.Controllers
     {
         private readonly IMapper _mapper;
         private readonly DetectorManager _detectorManager;
-        private readonly ActionManager _actionManager;
+        private readonly IActionManager _actionManager;
         private readonly ITelemetryRepository<Metric> _metricRepository;
         private readonly IClientDao _clientDao;
 
-        public DetectorController(DetectorManager detectorManager, IMapper mapper, ActionManager actionManager, IClientDao clientDao, ITelemetryRepository<Metric> metricRepository)
+        public DetectorController(DetectorManager detectorManager, IMapper mapper, IActionManager actionManager, IClientDao clientDao, ITelemetryRepository<Metric> metricRepository)
         {
             _detectorManager = detectorManager;
             _mapper = mapper;
