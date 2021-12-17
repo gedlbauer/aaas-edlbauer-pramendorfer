@@ -11,22 +11,68 @@ namespace AaaS.ClientSDK
     public class AaaSService
     {
         private const string baseUrl = "https://localhost:5001";
-        private readonly string _apiKey;
+        private static AaaSService instance;
+        private readonly AaaSServiceOptions _options;
         private readonly HttpClient _httpClient;
         private readonly Client _aaasClient;
         private readonly Dictionary<string, TimeMeasurementInsertDto> _timeMeasurements = new();
-        public AaaSService(HttpClient client, AaaSServiceOptions options)
+
+        private bool IsRunning { get; set; }
+
+        public static AaaSService Instance
         {
-            _apiKey = options?.ApiKey ?? throw new ArgumentNullException(nameof(options));
+            get
+            {
+                if (instance == null)
+                {
+                    throw new Exception("AaaSService not created");
+                }
+                return instance;
+            }
+        }
+        public static void Create(HttpClient client, AaaSServiceOptions options)
+        {
+            if (instance != null)
+            {
+                throw new Exception("AaaSService already created");
+            }
+            instance = new AaaSService(client, options);
+
+        }
+
+        private AaaSService(HttpClient client, AaaSServiceOptions options)
+        {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _httpClient = client ?? throw new ArgumentNullException(nameof(client));
             SetupHttpClient();
             _aaasClient = new Client(baseUrl, _httpClient);
+            IsRunning = true;
+            _ = StartHeartbeating();
         }
 
         private void SetupHttpClient()
         {
-            _httpClient.DefaultRequestHeaders.Add("X-API-KEY", _apiKey);
+            _httpClient.DefaultRequestHeaders.Add("X-API-KEY", _options.ApiKey);
         }
+
+        private async Task StartHeartbeating()
+        {
+            while(IsRunning)
+            {
+                await SendHeartbeat();
+                await Task.Delay(5000);
+            }
+        }
+
+        public async Task Stop()
+        {
+            IsRunning = false;
+            await _aaasClient.LogoffAsync(_options.CreatorId);
+        }
+          
+        
+        private async Task SendHeartbeat()
+            => await _aaasClient.HeartbeatCommandAsync(_options.CreatorId);
 
         public async Task<IEnumerable<LogType>> GetLogTypes()
             => await _aaasClient.TypesAsync();

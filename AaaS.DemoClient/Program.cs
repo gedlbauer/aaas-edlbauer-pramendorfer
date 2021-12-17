@@ -14,12 +14,18 @@ namespace AaaS.DemoClient
         static async Task Main(string[] args)
         {
             using HttpClient client = new HttpClient();
-            var demoClient = new AaaSDemo(new AaaSService(client, new AaaSServiceOptions
-            {
-                ApiKey = apiKey
-            }), eventsPerMinute);
+            Guid guid = Guid.Parse("417a4011-1a53-4a76-a697-5e488ac068fc");
+            AaaSService.Create(client, new AaaSServiceOptions { ApiKey = apiKey, CreatorId = guid });
+            var demoClient = new AaaSDemo(AaaSService.Instance, eventsPerMinute);
 
-            await demoClient.Start();
+            demoClient.Start();
+
+            Console.WriteLine("Client running");
+            Console.WriteLine("Press Escape to stop client");
+            if (Console.ReadKey().Key == ConsoleKey.Escape)
+            {
+                await AaaSService.Instance.Stop();
+            }
         }
     }
 }

@@ -9,5 +9,6 @@ namespace AaaS.ClientSDK.Options
     public class AaaSServiceOptions
     {
         public string ApiKey { get; set; }
+        public Guid CreatorId { get; set; }
     }
 }
