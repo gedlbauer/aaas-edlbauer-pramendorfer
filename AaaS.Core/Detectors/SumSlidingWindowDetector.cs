@@ -13,7 +13,7 @@ namespace AaaS.Core.Detectors
         public SumSlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
         public SumSlidingWindowDetector() : base(null) { }
 
-        public async override Task<double> CalculateCheckValue()
+        protected async override Task<double> CalculateCheckValue()
         {
             return await MetricRepository.FindSinceByClientAsync(FromDate, Client.Id).SumAsync(x => x.Value);
         }

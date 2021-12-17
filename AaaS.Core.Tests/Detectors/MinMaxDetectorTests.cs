@@ -14,7 +14,7 @@ namespace AaaS.Core.Tests.Detectors
 {
     public class MinMaxDetectorTests
     {
-        private Client SampleClient = new Client
+        private readonly Client SampleClient = new()
         {
             Name = "Sample",
             ApiKey = "SampleKey",
