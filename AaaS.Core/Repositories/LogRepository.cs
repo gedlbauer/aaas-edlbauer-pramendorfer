@@ -32,14 +32,11 @@ namespace AaaS.Core.Repositories
         public Task<Log> FindByIdAsync(int clientId, int id)
             => _logDao.FindByIdAndClientAsync(id, clientId);
 
-        public IAsyncEnumerable<Log> FindSinceByClientAndTelemetryNameAsync(DateTime from, int clientId, string TelemetryName)
-        {
-            throw new NotImplementedException();
-        }
+        public IAsyncEnumerable<Log> FindSinceByClientAndTelemetryNameAsync(DateTime from, int clientId, string telemetryName)
+            => _logDao.FindSinceByClientAndTelemetryNameAsync(from, clientId, telemetryName);
 
         public async Task InsertAsync(Log telemetry)
-        {
-            await _logDao.InsertAsync(telemetry);
-        }
+            => await _logDao.InsertAsync(telemetry);
+
     }
 }

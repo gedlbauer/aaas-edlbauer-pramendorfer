@@ -61,6 +61,17 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
+        public async Task TestFindAllSince()
+        {
+            var metrics = await metricDao.FindSinceByClientAndTelemetryNameAsync(DateTime.Now.AddDays(-1), 1, "metric1").ToListAsync();
+
+            metrics.Count.Should().Be(1);
+            metrics.Should().ContainSingle(m => m.Client.Id == 1 && m.Name == "metric1");
+
+            (await metricDao.FindSinceByClientAndTelemetryNameAsync(DateTime.Now, 1, "metric1").ToListAsync()).Count.Should().Be(0);
+        }
+
+        [Fact]
         public async Task TestFindOne()
         {
             (await metricDao.FindByIdAsync(-1)).Should().BeNull();

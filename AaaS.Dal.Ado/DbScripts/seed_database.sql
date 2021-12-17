@@ -12,17 +12,19 @@ INSERT INTO log (telemetry_id, type_id, message) VALUES (1, 1, 'message from log
 INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'log2', 2, '09b87c32-d36a-4050-861a-244f86f754a6')
 INSERT INTO log (telemetry_id, type_id, message) VALUES (2, 1, 'message from log 2')
 
--- TimeMeasurements
+-- Metrics TimeMeasurements
 INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'metric1', 1, '09b87c32-d36a-4050-861a-244f86f754a7')
 INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'metric2', 2, '09b87c32-d36a-4050-861a-244f86f754a8')
 INSERT INTO metric (telemetry_id, value) VALUES (3, 10)
 INSERT INTO metric (telemetry_id, value) VALUES (4, 20)
 
--- Metrics
+-- TimeMeasurements
 INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'time1', 1, '09b87c32-d36a-4050-861a-244f86f754a7')
+INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'time2', 2, '09b87c32-d36a-4050-861a-244f86f754a8')
 INSERT INTO telemetry (creation_time, name, client_id, creator_id) VALUES (GETDATE(), 'time2', 2, '09b87c32-d36a-4050-861a-244f86f754a8')
 INSERT INTO TimeMeasurement (telemetry_id, start_time, end_time) VALUES (5, GETDATE()-1, GETDATE())
 INSERT INTO TimeMeasurement (telemetry_id, start_time, end_time) VALUES (6, GETDATE()-2, GETDATE())
+INSERT INTO TimeMeasurement (telemetry_id, start_time, end_time) VALUES (7, GETDATE()-1, GETDATE())
 
 begin --Actions
 INSERT INTO Object(type) VALUES ('AaaS.Dal.Tests.TestObjects.SimpleAction, AaaS.Dal.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null')

@@ -41,7 +41,7 @@ namespace AaaS.Core.HostedServices
                 try
                 {
                     await CheckHeartbeats();
-                    await Task.Delay(5_000, stoppingToken);
+                    await Task.Delay(30_000, stoppingToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -54,7 +54,7 @@ namespace AaaS.Core.HostedServices
         {
             foreach (var hearbeat in Heartbeats)
             {
-                if((DateTime.UtcNow - hearbeat.Value).TotalSeconds > 5)
+                if((DateTime.UtcNow - hearbeat.Value).TotalSeconds > 30)
                 {
                     await SendWarningEmail(hearbeat.Key);
                     Heartbeats.Remove(hearbeat.Key);

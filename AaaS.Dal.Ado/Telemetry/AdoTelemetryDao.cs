@@ -35,6 +35,7 @@ namespace AaaS.Dal.Ado.Telemetry
                 Query + " where client_id=@cid",
                 MapRowToTelemetry,
                 new QueryParameter("@cid", clientId));
+
         public IAsyncEnumerable<T> FindByCreatorAsync(int clientId, Guid creatorId)
             => template.QueryAsync(
                 Query + " where client_id=@client_id and creator_id=@creator_id;",
