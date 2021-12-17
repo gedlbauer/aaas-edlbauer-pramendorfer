@@ -1,5 +1,6 @@
 ﻿using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
+using AaaS.Core.Exceptions;
 using AaaS.Core.Extensions;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
@@ -66,14 +67,26 @@ namespace AaaS.Core.Managers
             {
                 throw new ArgumentException("Cannot insert Detector with given id!");
             }
-
+            if (detector.Action is null)
+            {
+                throw new KeyNotFoundException("This action does not exist");
+            }
             if (detector.Action.Id == default)
             {
                 await _actionManager.AddActionAsync(detector.Action);
             }
             else
             {
-                detector.Action = _actionManager.FindActionById(detector.Action.Id);
+                var action = _actionManager.FindActionById(detector.Action.Id);
+                if (action is null)
+                {
+                    throw new KeyNotFoundException("This action does not exist");
+                }
+                if(action.Client.Id != detector.Client.Id)
+                {
+                    throw new AaaSAuthorizationException("This action belongs to a different user!");
+                }
+                detector.Action = action;
             }
 
             await _detectorDao.InsertAsync(detector);
@@ -111,6 +124,10 @@ namespace AaaS.Core.Managers
 
             if (newDetector.Action is not null)
             {
+                if (newDetector.Action.Client.Id != newDetector.Client.Id)
+                {
+                    throw new AaaSAuthorizationException("This action belongs to a different user!");
+                }
                 if (newDetector.Action.Id == default)
                 {
                     await _actionManager.AddActionAsync(newDetector.Action);
@@ -119,6 +136,10 @@ namespace AaaS.Core.Managers
                 {
                     await _actionManager.UpdateActionAsync(newDetector.Action);
                 }
+            }
+            else
+            {
+                throw new AaaSAuthorizationException("Could not find Action with given id from given user");
             }
             if (await _detectorDao.UpdateAsync(newDetector))
             {

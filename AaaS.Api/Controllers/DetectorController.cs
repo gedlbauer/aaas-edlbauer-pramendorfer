@@ -2,6 +2,7 @@
 using AaaS.Api.Extensions;
 using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
+using AaaS.Core.Exceptions;
 using AaaS.Core.Extensions;
 using AaaS.Core.Managers;
 using AaaS.Core.Repositories;
@@ -64,14 +65,13 @@ namespace AaaS.Api.Controllers
         [HttpPost("averageslidingwindow")]
         public async Task<IActionResult> InsertAverageSlidingWindowDetector(SlidingWindowDetectorInsertDto detectorDto)
         {
-            var detector = await MapSlidingWindowDetectorInsertDto<AverageSlidingWindowDetector>(detectorDto);
-            return await InsertBaseDetector(detector);
+            return await InsertSlidingWindowDetector<AverageSlidingWindowDetector>(detectorDto);
         }
 
         [HttpPut("averageslidingwindow")]
         public async Task<IActionResult> UpdateAverageSlidingWindowDetector(SlidingWindowDetectorUpdateDto detectorDto)
         {
-            return await UpdateBaseDetector<AverageSlidingWindowDetector>(detectorDto);
+            return await UpdateSlidingWindowDetector<AverageSlidingWindowDetector>(detectorDto);
         }
 
         #endregion
@@ -80,14 +80,13 @@ namespace AaaS.Api.Controllers
         [HttpPost("currentvalueslidingwindow")]
         public async Task<IActionResult> InsertCurrentValueSlidingWindowDetector(SlidingWindowDetectorInsertDto detectorDto)
         {
-            var detector = await MapSlidingWindowDetectorInsertDto<CurrentValueSlidingWindowDetector>(detectorDto);
-            return await InsertBaseDetector(detector);
+            return await InsertSlidingWindowDetector<CurrentValueSlidingWindowDetector>(detectorDto);
         }
 
         [HttpPut("currentvalueslidingwindow")]
         public async Task<IActionResult> UpdateCurrentValueSlidingWindowDetector(SlidingWindowDetectorUpdateDto detectorDto)
         {
-            return await UpdateBaseDetector<CurrentValueSlidingWindowDetector>(detectorDto);
+            return await UpdateSlidingWindowDetector<CurrentValueSlidingWindowDetector>(detectorDto);
         }
         #endregion
 
@@ -95,14 +94,13 @@ namespace AaaS.Api.Controllers
         [HttpPost("sumslidingwindow")]
         public async Task<IActionResult> InsertSumSlidingWindowDetector(SlidingWindowDetectorInsertDto detectorDto)
         {
-            var detector = await MapSlidingWindowDetectorInsertDto<SumSlidingWindowDetector>(detectorDto);
-            return await InsertBaseDetector(detector);
+            return await InsertSlidingWindowDetector<SumSlidingWindowDetector>(detectorDto);
         }
 
         [HttpPut("sumslidingwindow")]
         public async Task<IActionResult> UpdateSumSlidingWindowDetector(SlidingWindowDetectorUpdateDto detectorDto)
         {
-            return await UpdateBaseDetector<SumSlidingWindowDetector>(detectorDto);
+            return await UpdateSlidingWindowDetector<SumSlidingWindowDetector>(detectorDto);
         }
         #endregion
 
@@ -114,6 +112,10 @@ namespace AaaS.Api.Controllers
             var detector = _mapper.Map<MinMaxDetector>(detectorDto);
             detector.MetricRepository = _metricRepository;
             await detector.ResolveNavigationProperties(detectorDto.ActionId, clientId, _actionManager, _clientDao);
+            if (detector.Action is null)
+            {
+                return Conflict();
+            }
             return await InsertBaseDetector(detector);
         }
 
@@ -131,7 +133,10 @@ namespace AaaS.Api.Controllers
             var detector = _mapper.Map<MinMaxDetector>(detectorDto);
             detector.MetricRepository = _metricRepository;
             await detector.ResolveNavigationProperties(detectorDto.ActionId, userId, _actionManager, _clientDao);
-
+            if (detector.Action is null)
+            {
+                return Conflict();
+            }
             await _detectorManager.UpdateDetectorAsync(detector);
             return NoContent();
         }
@@ -179,7 +184,18 @@ namespace AaaS.Api.Controllers
             return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = detector.Id }, value: _mapper.Map<DetectorDto>(detector));
         }
 
-        private async Task<IActionResult> UpdateBaseDetector<T>(SlidingWindowDetectorUpdateDto detectorDto) where T : BaseDetector
+        private async Task<IActionResult> InsertSlidingWindowDetector<T>(SlidingWindowDetectorInsertDto detectorDto) where T : BaseDetector
+        {
+            var detector = await MapSlidingWindowDetectorInsertDto<T>(detectorDto);
+            await detector.ResolveNavigationProperties(detectorDto.ActionId, User.GetId(), _actionManager, _clientDao);
+            if (detector.Action is null)
+            {
+                return Conflict();
+            }
+            return await InsertBaseDetector(detector);
+        }
+
+        private async Task<IActionResult> UpdateSlidingWindowDetector<T>(SlidingWindowDetectorUpdateDto detectorDto) where T : BaseDetector
         {
             var checkError = DoUpdateValidationChecks<T>(detectorDto.Id);
             if (checkError is not null)
@@ -187,6 +203,11 @@ namespace AaaS.Api.Controllers
                 return checkError;
             }
             var detector = await MapSlidingWindowDetectorUpdateDto<T>(detectorDto);
+            await detector.ResolveNavigationProperties(detectorDto.ActionId, User.GetId(), _actionManager, _clientDao);
+            if (detector.Action is null)
+            {
+                return Conflict();
+            }
             await _detectorManager.UpdateDetectorAsync(detector);
             return NoContent();
         }
