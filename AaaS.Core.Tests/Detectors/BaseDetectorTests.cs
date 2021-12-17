@@ -16,7 +16,7 @@ namespace AaaS.Core.Tests.Detectors
         public async Task CheckIntervalIsRight()
         {
             var detectorMock = new Mock<BaseDetector>(null);
-            detectorMock.Protected().Setup("Detect");
+            detectorMock.Protected().Setup("Detect").Verifiable();
             detectorMock.Object.CheckInterval = TimeSpan.FromMilliseconds(100);
             await detectorMock.Object.Start();
             await Task.Delay(180);
