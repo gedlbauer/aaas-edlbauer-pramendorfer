@@ -45,8 +45,8 @@ namespace AaaS.Core.Tests.Detectors
 
             var minMaxDetector = new MinMaxDetector(metricRepoMock.Object)
             {
-                Max = 7,
-                Min = 3,
+                Max = 6,
+                Min = 2,
                 MaxOccurs = 4,
                 CheckInterval = TimeSpan.FromMinutes(60),
                 TelemetryName = "Sample Metric",
@@ -71,8 +71,8 @@ namespace AaaS.Core.Tests.Detectors
 
             var minMaxDetector = new MinMaxDetector(metricRepoMock.Object)
             {
-                Max = 10,
-                Min = 1,
+                Max = 7,
+                Min = 2,
                 MaxOccurs = 4,
                 CheckInterval = TimeSpan.FromMilliseconds(10),
                 TelemetryName = "Sample Metric",
