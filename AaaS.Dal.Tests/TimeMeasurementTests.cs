@@ -76,9 +76,28 @@ namespace AaaS.Dal.Tests
         {
             var times = await timeDao.FindAllAsync().ToListAsync();
 
-            times.Count.Should().Be(2);
+            times.Count.Should().Be(3);
             times.Should().ContainSingle(l => l.Id == 5 && l.Client.Id == 1 && l.Name == "time1");
             times.Should().ContainSingle(l => l.Id == 6 && l.Client.Id == 2 && l.Name == "time2");
+        }
+
+        [Fact]
+        public async Task TestFindByCreator()
+        {
+            Guid expectedGuid = Guid.Parse("09b87c32-d36a-4050-861a-244f86f754a8");
+            var times = await timeDao.FindByCreatorAsync(2, expectedGuid).ToListAsync();
+
+            times.Count.Should().Be(2);
+            times.Should().OnlyContain(x => x.CreatorId == expectedGuid && x.Client.Id == 2);
+        }
+
+        [Fact]
+        public async Task FindByName()
+        {
+            var times = await timeDao.FindAllByNameAsync(2, "time2").ToListAsync();
+
+            times.Count.Should().Be(2);
+            times.Should().OnlyContain(x => x.Name == "time2");
         }
 
 

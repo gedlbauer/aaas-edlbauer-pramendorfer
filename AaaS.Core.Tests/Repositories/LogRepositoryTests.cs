@@ -65,8 +65,7 @@ namespace AaaS.Core.Tests.Repositories
             (await logRepo.FindByIdAsync(SampleLog.Id, SampleLog.Client.Id)).Should().BeNull();
         }
 
-        [Fact]
-
+    
 
     }
 }

@@ -64,6 +64,17 @@ namespace AaaS.Dal.Tests
         }
 
         [Fact]
+        public async Task TestFindByClient()
+        {
+            var logs = await logDao.FindAllByClientAsync(1).ToListAsync();
+
+            logs.Count.Should().Be(1);
+            logs.Should().ContainSingle(l => l.Id == 1 && l.Client.Id == 1 && l.Name == "log1");
+
+            (await logDao.FindAllByClientAsync(-1).ToListAsync()).Count.Should().Be(0);
+        }
+
+        [Fact]
         public async Task TestFindOne()
         {
             (await logDao.FindByIdAsync(-1)).Should().BeNull();
