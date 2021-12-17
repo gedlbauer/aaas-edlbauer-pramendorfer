@@ -20,11 +20,11 @@ namespace AaaS.Api.Controllers
     public class ActionController : ControllerBase
     {
         private readonly IClientDao _clientDao;
-        private readonly ActionManager _actionManager;
+        private readonly IActionManager _actionManager;
         private readonly DetectorManager _detectorManager;
         private readonly IMapper _mapper;
 
-        public ActionController(ActionManager actionManager, DetectorManager detectorManager, IClientDao clientDao, IMapper mapper)
+        public ActionController(IActionManager actionManager, DetectorManager detectorManager, IClientDao clientDao, IMapper mapper)
         {
             _actionManager = actionManager;
             _detectorManager = detectorManager;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Managers
 {
-    public class ActionManager
+    public class ActionManager : IActionManager
     {
         private readonly IActionDao<BaseAction> _actionDao;
         private readonly List<BaseAction> _actions = new();

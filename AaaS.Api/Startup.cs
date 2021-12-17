@@ -103,7 +103,7 @@ namespace AaaS.Api
             services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository>();
             services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository>();
 
-            services.AddSingleton<ActionManager>();
+            services.AddSingleton<IActionManager, ActionManager>();
             services.AddSingleton<DetectorManager>();
             services.AddAutoMapper(typeof(Startup));
 

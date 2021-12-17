@@ -11,7 +11,7 @@ namespace AaaS.Core.Extensions
 {
     public static class DetectorExtensions
     {
-        public static async Task ResolveNavigationProperties(this BaseDetector detector, int actionId, int clientId, ActionManager actionManager, IClientDao clientDao)
+        public static async Task ResolveNavigationProperties(this BaseDetector detector, int actionId, int clientId, IActionManager actionManager, IClientDao clientDao)
         {
             detector.Action = actionManager.FindActionById(actionId);
             detector.Client = await clientDao.FindByIdAsync(clientId);
