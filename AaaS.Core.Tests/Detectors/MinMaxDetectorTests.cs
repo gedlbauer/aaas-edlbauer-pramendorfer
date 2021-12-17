@@ -14,14 +14,14 @@ namespace AaaS.Core.Tests.Detectors
 {
     public class MinMaxDetectorTests
     {
-        private readonly Client SampleClient = new()
+        private static readonly Client SampleClient = new()
         {
             Name = "Sample",
             ApiKey = "SampleKey",
             Id = 1
         };
 
-        private IAsyncEnumerable<Metric> SampleMetrics => new List<Metric>
+        private static IAsyncEnumerable<Metric> SampleMetrics => new List<Metric>
         {
             new Metric{Timestamp=DateTime.UtcNow.AddMinutes(-9), Name="Sample Metric", Client=SampleClient, Id=1, CreatorId=Guid.Empty, Value=1},
             new Metric{Timestamp=DateTime.UtcNow.AddMinutes(-8), Name="Sample Metric", Client=SampleClient, Id=2, CreatorId=Guid.Empty, Value=2},
