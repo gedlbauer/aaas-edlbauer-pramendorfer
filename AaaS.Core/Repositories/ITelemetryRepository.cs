@@ -12,7 +12,7 @@ namespace AaaS.Core.Repositories
         IAsyncEnumerable<T> FindByCreatorAsync(int clientId, Guid creatorId);
         IAsyncEnumerable<T> FindAllAsync(int clientId);
         IAsyncEnumerable<T> FindByAllByNameAsync(int clientId, string name);
-        IAsyncEnumerable<T> FindSinceByClientAsync(DateTime from, int clientId);
+        IAsyncEnumerable<T> FindSinceByClientAndTelemetryNameAsync(DateTime from, int clientId, string telemetryName);
         Task<T> FindByIdAsync(int clientId, int id);
         Task InsertAsync(T telemetry);
     }

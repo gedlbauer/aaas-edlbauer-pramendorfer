@@ -50,8 +50,8 @@ namespace AaaS.Core.Tests.Detectors
         public async Task ReturnsCorrectValueIfValueExistsWithinTimeSpan()
         {
             var repoMock = new Mock<IMetricRepository>();
-            repoMock.Setup(repo => repo.FindSinceByClientAsync(It.IsAny<DateTime>(), It.IsAny<int>()))
-                .Returns<DateTime, int>((fromDate, clientId) => SampleMetrics.Where(x => x.Timestamp >= fromDate));
+            repoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns<DateTime, int, string>((fromDate, clientId, telemetryName) => SampleMetrics.Where(x => x.Timestamp >= fromDate && x.Name == telemetryName));
             var currValDetector = new CurrentValueSlidingWindowDetectorWrapper(repoMock.Object)
             {
                 CheckInterval = TimeSpan.FromMinutes(10),
@@ -68,8 +68,8 @@ namespace AaaS.Core.Tests.Detectors
         public async Task ReturnsCorrectValueIfNoValueExistsWithinTimeSpan()
         {
             var repoMock = new Mock<IMetricRepository>();
-            repoMock.Setup(repo => repo.FindSinceByClientAsync(It.IsAny<DateTime>(), It.IsAny<int>()))
-                .Returns<DateTime, int>((fromDate, clientId) => SampleMetrics.Where(x => x.Timestamp >= fromDate));
+            repoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns<DateTime, int, string>((fromDate, clientId, telemetryName) => SampleMetrics.Where(x => x.Timestamp >= fromDate && x.Name == telemetryName));
             var currValDetector = new CurrentValueSlidingWindowDetectorWrapper(repoMock.Object)
             {
                 CheckInterval = TimeSpan.FromSeconds(10),
@@ -86,8 +86,8 @@ namespace AaaS.Core.Tests.Detectors
         public async Task IgnoresWrongTelemetries()
         {
             var repoMock = new Mock<IMetricRepository>();
-            repoMock.Setup(repo => repo.FindSinceByClientAsync(It.IsAny<DateTime>(), It.IsAny<int>()))
-                .Returns<DateTime, int>((fromDate, clientId) => SampleMetrics.Where(x => x.Timestamp >= fromDate));
+            repoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns<DateTime, int, string>((fromDate, clientId, telemetryName) => SampleMetrics.Where(x => x.Timestamp >= fromDate && x.Name == telemetryName));
             var currValDetector = new CurrentValueSlidingWindowDetectorWrapper(repoMock.Object)
             {
                 CheckInterval = TimeSpan.FromMinutes(10),

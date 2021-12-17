@@ -22,8 +22,7 @@ namespace AaaS.Core.Detectors
         protected async override Task Detect()
         {
             var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
-            var metrics = MetricRepository.FindSinceByClientAsync(fromDate, Client.Id)
-                .Where(x => x.Name == TelemetryName); // TODO Eventuell nach Repo verschieben
+            var metrics = MetricRepository.FindSinceByClientAndTelemetryNameAsync(fromDate, Client.Id, TelemetryName);
             if (await metrics.CountAsync(x => x.Value < Min || x.Value > Max) > MaxOccurs)
             {
                 await Action.Execute();

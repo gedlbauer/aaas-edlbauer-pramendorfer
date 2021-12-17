@@ -16,8 +16,7 @@ namespace AaaS.Core.Detectors
 
         protected async override Task<double> CalculateCheckValue()
         {
-            var items = MetricRepository.FindSinceByClientAsync(FromDate, Client.Id)
-                .Where(x => x.Name == TelemetryName); // TODO Eventuell nach Repo verschieben
+            var items = MetricRepository.FindSinceByClientAndTelemetryNameAsync(FromDate, Client.Id, TelemetryName);
             return await items.AnyAsync() ? await items.AverageAsync(x => x.Value) : 0;
         }
     }

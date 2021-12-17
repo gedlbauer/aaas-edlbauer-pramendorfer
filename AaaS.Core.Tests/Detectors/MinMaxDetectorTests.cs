@@ -39,7 +39,7 @@ namespace AaaS.Core.Tests.Detectors
         public async Task TestDetectorExecutesOnAnomaly()
         {
             var metricRepoMock = new Mock<IMetricRepository>();
-            metricRepoMock.Setup(repo => repo.FindSinceByClientAsync(It.IsAny<DateTime>(), It.IsAny<int>())).Returns(SampleMetrics);
+            metricRepoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>())).Returns(SampleMetrics);
 
             var actionMock = new Mock<BaseAction>();
 
@@ -65,7 +65,7 @@ namespace AaaS.Core.Tests.Detectors
         public async Task TestDetectorDoesNotExecuteOnNoAnomaly()
         {
             var metricRepoMock = new Mock<IMetricRepository>();
-            metricRepoMock.Setup(repo => repo.FindSinceByClientAsync(It.IsAny<DateTime>(), It.IsAny<int>())).Returns(SampleMetrics);
+            metricRepoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>())).Returns(SampleMetrics);
 
             var actionMock = new Mock<BaseAction>();
 

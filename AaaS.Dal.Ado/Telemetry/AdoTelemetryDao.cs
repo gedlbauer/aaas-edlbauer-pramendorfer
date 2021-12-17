@@ -42,12 +42,13 @@ namespace AaaS.Dal.Ado.Telemetry
                 new QueryParameter("@client_id", clientId),
                 new QueryParameter("@creator_id", creatorId));
 
-        public IAsyncEnumerable<T> FindSinceByClientAsync(DateTime dateTime, int clientId)
+        public IAsyncEnumerable<T> FindSinceByClientAndTelemetryNameAsync(DateTime dateTime, int clientId, string telemetryName)
             => template.QueryAsync(
-                Query + " where creation_time>=@ct and client_id=@clientId;",
+                Query + " where creation_time>=@ct and client_id=@clientId and name=@telemetryName;",
                 MapRowToTelemetry,
                 new QueryParameter("@ct", dateTime),
-                new QueryParameter("@clientId", clientId));
+                new QueryParameter("@clientId", clientId),
+                new QueryParameter("@telemetryName", telemetryName));
 
         public IAsyncEnumerable<T> FindAllByNameAsync(int clientId, string name)
             => template.QueryAsync(
