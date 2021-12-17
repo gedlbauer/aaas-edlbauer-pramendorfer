@@ -104,7 +104,7 @@ namespace AaaS.Api
             services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository>();
 
             services.AddSingleton<IActionManager, ActionManager>();
-            services.AddSingleton<DetectorManager>();
+            services.AddSingleton<IDetectorManager, DetectorManager>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddAuthentication(o =>
@@ -123,7 +123,7 @@ namespace AaaS.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // DetectorManager wird hier injected, damit er direkt beim Applikationsstart initialisiert wird, und nicht erst beim ersten Controller-Aufruf
         //      |-> dadurch werden die Detectors gleich bei Appstart gestartet
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DetectorManager _)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDetectorManager _)
         {
             if (env.IsDevelopment())
             {

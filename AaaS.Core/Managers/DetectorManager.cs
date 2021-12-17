@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core.Managers
 {
-    public class DetectorManager
+    public class DetectorManager : IDetectorManager
     {
         private readonly List<BaseDetector> _detectors = new();
         private readonly IDetectorDao<BaseDetector, BaseAction> _detectorDao;
