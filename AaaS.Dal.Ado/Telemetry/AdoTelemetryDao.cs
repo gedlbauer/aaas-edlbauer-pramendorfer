@@ -44,7 +44,7 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public IAsyncEnumerable<T> FindSinceByClientAsync(DateTime dateTime, int clientId)
             => template.QueryAsync(
-                Query + " where creation_time=@ct and client_id=@clientId;",
+                Query + " where creation_time>=@ct and client_id=@clientId;",
                 MapRowToTelemetry,
                 new QueryParameter("@ct", dateTime),
                 new QueryParameter("@clientId", clientId));
