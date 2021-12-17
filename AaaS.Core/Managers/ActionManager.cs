@@ -57,6 +57,10 @@ namespace AaaS.Core.Managers
 
         public async Task AddActionAsync(BaseAction actionToAdd)
         {
+            if(actionToAdd.Client is null || actionToAdd.Client.Id == default)
+            {
+                throw new ArgumentException("Client Id must be set!");
+            }
             if(actionToAdd.GetType() == typeof(MailAction))
             {
                 ((MailAction)actionToAdd).SetSendGridClient(_sendGridClient);
@@ -67,6 +71,10 @@ namespace AaaS.Core.Managers
 
         public async Task UpdateActionAsync(BaseAction action)
         {
+            if (action.Client is null || action.Client.Id == default)
+            {
+                throw new ArgumentException("Client Id must be set!");
+            }
             var listAction = _actions.SingleOrDefault(x => x.Id == action.Id);
             if (listAction is null)
             {
