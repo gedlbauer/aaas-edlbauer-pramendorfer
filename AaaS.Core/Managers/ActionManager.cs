@@ -13,9 +13,9 @@ namespace AaaS.Core.Managers
     {
         private readonly IActionDao<BaseAction> _actionDao;
         private readonly List<BaseAction> _actions = new();
-        private readonly SendGridClient _sendGridClient;
+        private readonly ISendGridClient _sendGridClient;
 
-        public ActionManager(IActionDao<BaseAction> actionDao, SendGridClient sendGridClient)
+        public ActionManager(IActionDao<BaseAction> actionDao, ISendGridClient sendGridClient)
         {
             _actionDao = actionDao;
             _sendGridClient = sendGridClient;
