@@ -14,7 +14,7 @@ namespace AaaS.Core.Detectors
         public AverageSlidingWindowDetector(ITelemetryRepository<Metric> metricRepository) : base(metricRepository) { }
         public AverageSlidingWindowDetector() : base(null) { }
 
-        public async override Task<double> CalculateCheckValue()
+        protected async override Task<double> CalculateCheckValue()
         {
             var items = MetricRepository.FindSinceByClientAsync(FromDate, Client.Id);
             return await items.AnyAsync() ? await items.AverageAsync(x => x.Value) : 0;

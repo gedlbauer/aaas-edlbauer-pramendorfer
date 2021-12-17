@@ -10,12 +10,13 @@ namespace AaaS.Core.Detectors
 {
     public class CurrentValueSlidingWindowDetector : SlidingWindowDetector
     {
-        public CurrentValueSlidingWindowDetector(MetricRepository metricRepository) : base(metricRepository) { }
+        public CurrentValueSlidingWindowDetector(IMetricRepository metricRepository) : base(metricRepository) { }
         public CurrentValueSlidingWindowDetector() : base(null) { }
 
-        public async override Task<double> CalculateCheckValue()
+        protected async override Task<double> CalculateCheckValue()
         {
-            var metrics = MetricRepository.FindSinceByClientAsync(FromDate, Client.Id);
+            var metrics = MetricRepository.FindSinceByClientAsync(FromDate, Client.Id)
+                .Where(x => x.Name == TelemetryName); // TODO Eventuell nach Repo verschieben
             return (await metrics.OrderBy(x => x.Timestamp).LastOrDefaultAsync())?.Value ?? 0;
         }
     }

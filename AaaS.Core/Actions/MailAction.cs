@@ -16,23 +16,18 @@ namespace AaaS.Core.Actions
 
         public string MailContent { get; set; }
 
-        [Volatile]
-        public SendGridClient SendGridClient { set; protected get; }
+        private SendGridClient _sendGridClient;
 
         public MailAction(SendGridClient sendGridClient)
         {
-            SendGridClient = sendGridClient;
+            _sendGridClient = sendGridClient;
         }
 
-        public MailAction() {
-            new Task(async () =>
-            {
-                await Task.Delay(10000);
-                if (SendGridClient is null)
-                {
-                    //throw new ArgumentException("SendGridClient is Null after 4s");
-                }
-            }).Start();
+        public MailAction() { }
+
+        public void SetSendGridClient(SendGridClient client)
+        {
+            _sendGridClient = client;
         }
 
         public async override Task Execute()
@@ -48,7 +43,7 @@ namespace AaaS.Core.Actions
             sendGridMessage.AddTo(recipientMail, recipientName);
             sendGridMessage.SetTemplateId(templateID);
             sendGridMessage.SetTemplateData(templateData);
-            var response = await SendGridClient.SendEmailAsync(sendGridMessage);
+            var response = await _sendGridClient.SendEmailAsync(sendGridMessage);
             return response;
         }
 

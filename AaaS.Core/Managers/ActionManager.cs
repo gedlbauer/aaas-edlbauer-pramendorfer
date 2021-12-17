@@ -24,16 +24,15 @@ namespace AaaS.Core.Managers
 
         private void LoadActionsFromDb()
         {
-            var actions = _actionDao.FindAllAsync();
-            actions.ForEachAsync(x =>
+            var actions = _actionDao.FindAllAsync().ToListAsync().Result;
+            foreach(var x in actions)
             {
                 if (x.GetType() == typeof(MailAction))
                 {
-                    ((MailAction)x).SendGridClient = _sendGridClient;
+                    ((MailAction)x).SetSendGridClient(_sendGridClient);
                 }
-            });
-            _actions.AddRange(_actionDao.FindAllAsync().ToEnumerable());
-            _actions.Select(x => x.Name).ToList().ForEach(x => Console.WriteLine(x));
+            }
+            _actions.AddRange(actions);
         }
 
         public BaseAction FindActionById(int id)
@@ -58,8 +57,11 @@ namespace AaaS.Core.Managers
 
         public async Task AddActionAsync(BaseAction actionToAdd)
         {
+            if(actionToAdd.GetType() == typeof(MailAction))
+            {
+                ((MailAction)actionToAdd).SetSendGridClient(_sendGridClient);
+            }
             _actions.Add(actionToAdd);
-            Console.WriteLine($"inserted: {actionToAdd.Name}");
             await _actionDao.InsertAsync(actionToAdd);
         }
 

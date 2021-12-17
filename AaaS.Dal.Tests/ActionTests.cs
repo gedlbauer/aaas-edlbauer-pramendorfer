@@ -3,6 +3,7 @@ using AaaS.Dal.Ado;
 using AaaS.Dal.Interface;
 using AaaS.Dal.Tests.Attributes;
 using AaaS.Dal.Tests.Infrastructure;
+using AaaS.Dal.Tests.TestObjects;
 using AaaS.Domain;
 using FluentAssertions;
 using Microsoft.Data.SqlClient;
@@ -40,6 +41,7 @@ namespace AaaS.Dal.Tests
         [Fact]
         public async Task TestFindAll()
         {
+            var type = typeof(SimpleAction).AssemblyQualifiedName;
             (await actionDao.FindAllAsync().ToListAsync()).Should().BeEquivalentTo(ActionList);
         }
 

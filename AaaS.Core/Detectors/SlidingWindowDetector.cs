@@ -20,7 +20,7 @@ namespace AaaS.Core.Detectors
 
         protected SlidingWindowDetector(ITelemetryRepository<Metric> metricRepository) : base(metricRepository) { }
 
-        public abstract Task<double> CalculateCheckValue();
+        protected abstract Task<double> CalculateCheckValue();
 
         protected async override Task Detect()
         {

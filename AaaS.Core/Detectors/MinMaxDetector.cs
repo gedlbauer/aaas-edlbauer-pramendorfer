@@ -16,13 +16,14 @@ namespace AaaS.Core.Detectors
         public int MaxOccurs { get; set; }
         public TimeSpan TimeWindow { get; set; }
 
-        public MinMaxDetector(MetricRepository metricRepository) : base(metricRepository) { }
+        public MinMaxDetector(IMetricRepository metricRepository) : base(metricRepository) { }
         public MinMaxDetector() : base(null) { }
 
         protected async override Task Detect()
         {
             var fromDate = DateTime.UtcNow.Subtract(TimeWindow);
-            var metrics = MetricRepository.FindSinceByClientAsync(fromDate, Client.Id);
+            var metrics = MetricRepository.FindSinceByClientAsync(fromDate, Client.Id)
+                .Where(x => x.Name == TelemetryName); // TODO Eventuell nach Repo verschieben
             if (await metrics.CountAsync(x => x.Value < Min || x.Value > Max) > MaxOccurs)
             {
                 await Action.Execute();
