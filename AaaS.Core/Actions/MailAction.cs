@@ -16,24 +16,24 @@ namespace AaaS.Core.Actions
 
         public string MailContent { get; set; }
 
-        private SendGridClient _sendGridClient;
+        private ISendGridClient _sendGridClient;
 
-        public MailAction(SendGridClient sendGridClient)
+        public MailAction(ISendGridClient sendGridClient)
         {
             _sendGridClient = sendGridClient;
         }
 
         public MailAction() { }
 
-        public void SetSendGridClient(SendGridClient client)
+        public void SetSendGridClient(ISendGridClient client)
         {
             _sendGridClient = client;
         }
 
         public async override Task Execute()
         {
-            //await SendMailFromTemplate("d-a56ee3e37dce4ec58b51545ea2107d81", new { mailContent = MailContent }, MailAddress);
-            Console.WriteLine($"{MailContent.Take(30)}... sent to {MailAddress}"); // TODO: Mail tatsächlich abschicken lassen
+            await SendMailFromTemplate("d-a56ee3e37dce4ec58b51545ea2107d81", new { mailContent = MailContent }, MailAddress);
+            //Console.WriteLine($"{MailContent?.Take(30)}... sent to {MailAddress}"); // TODO: Mail tatsächlich abschicken lassen
         }
 
         public async Task<SendGrid.Response> SendMailFromTemplate(string templateID, object templateData, string recipientMail, string recipientName = null)
