@@ -44,9 +44,7 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpGet("creators/creatorId/[controller]s")]
-        public IEnumerable<TRead> GetTelemetriesByCreator(
-            [FromHeader(Name = ApiKeyConstants.HeaderName)] string apiKey,
-            Guid creatorId)
+        public IEnumerable<TRead> GetTelemetriesByCreator(Guid creatorId)
         {
             IEnumerable<T> telemetries = _telemetryRepository.FindByCreatorAsync(User.GetId(), creatorId).ToEnumerable();
             return _mapper.Map<IEnumerable<TRead>>(telemetries);

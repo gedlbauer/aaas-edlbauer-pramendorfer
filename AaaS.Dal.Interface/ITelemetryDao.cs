@@ -13,5 +13,6 @@ namespace AaaS.Dal.Interface
         IAsyncEnumerable<T> FindByCreatorAsync(int clientId, Guid creatorId);
         IAsyncEnumerable<T> FindAllByClientAsync(int clientId);
         IAsyncEnumerable<T> FindAllByNameAsync(int clientId, string name);
+        IAsyncEnumerable<T> FindSinceByClientAndTelemetryNameAsync(DateTime from, int clientId, string telemetryName);
     }
 }
