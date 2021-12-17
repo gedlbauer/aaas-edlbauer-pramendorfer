@@ -1,4 +1,5 @@
 ﻿using AaaS.Core.Repositories;
+using AaaS.Core.Tests.Infrastructure;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using FluentAssertions;
@@ -22,7 +23,7 @@ namespace AaaS.Core.Tests.Repositories
                 Id = 1,
                 Name = "test-user"
             },
-            CreatorId = Guid.NewGuid(),
+            CreatorId = Guid.Parse("2f729e58-3fe4-4dab-964f-912fc0d845fd"),
             Id = 1,
             Message = "test-message",
             Name = "test-log",
@@ -35,6 +36,16 @@ namespace AaaS.Core.Tests.Repositories
         };
 
         [Fact]
+        public async Task TestInsert()
+        {
+            var logDaoMock = new Mock<ILogDao>();
+            var logRepo = new LogRepository(logDaoMock.Object);
+            await logRepo.InsertAsync(SampleLog);
+
+            logDaoMock.Verify(x => x.InsertAsync(It.IsAny<Log>()), Times.Once());
+        }
+
+        [Fact]
         public async Task TestFindById()
         {
             var logDaoMock = new Mock<ILogDao>();
@@ -43,7 +54,7 @@ namespace AaaS.Core.Tests.Repositories
             var logRepo = new LogRepository(logDaoMock.Object);
             var actualLog = await logRepo.FindByIdAsync(SampleLog.Id, SampleLog.Client.Id);
 
-            actualLog.Should().BeEquivalentTo(SampleLog);
+            actualLog.Should().BeEquivalentTo(SampleLog, FluentAssertionsExtensions.ApproximateDateTime);
         }
 
         [Fact]
@@ -53,5 +64,9 @@ namespace AaaS.Core.Tests.Repositories
             var logRepo = new LogRepository(logDaoMock.Object);
             (await logRepo.FindByIdAsync(SampleLog.Id, SampleLog.Client.Id)).Should().BeNull();
         }
+
+        [Fact]
+
+
     }
 }

@@ -114,8 +114,6 @@ namespace AaaS.Api
             }).AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme, o => { });
             services.AddAuthorization();
 
-
-            
             services.AddSingleton(sp =>
             {
                 var sendGridClient = sp.GetService<ISendGridClient>();

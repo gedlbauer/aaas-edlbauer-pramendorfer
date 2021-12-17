@@ -26,7 +26,6 @@ namespace AaaS.Api.Controllers.Commands
         public IActionResult PutHeartbeat(Guid creatorId)
         {
             _hearbeatService.AddHeartbeat(creatorId);
-            
             return Ok();
         }
 
