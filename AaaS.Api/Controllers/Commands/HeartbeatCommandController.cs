@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AaaS.Core.HostedServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,17 +15,25 @@ namespace AaaS.Api.Controllers.Commands
     [Authorize]
     public class HeartbeatCommandController : ControllerBase
     {
+        private readonly HeartbeatService _hearbeatService;
+
+        public HeartbeatCommandController(HeartbeatService heartbeatService)
+        {
+            _hearbeatService = heartbeatService;
+        }
+
         [HttpPost]
         public IActionResult PutHeartbeat(Guid creatorId)
         {
-            Console.WriteLine($"Heartbeat from {creatorId}");
+            _hearbeatService.AddHeartbeat(creatorId);
+            
             return Ok();
         }
 
         [HttpPost("logoff")]
         public IActionResult LogOff(Guid creatorId)
         {
-            Console.WriteLine($"{creatorId} logged off");
+            _hearbeatService.LogOffClient(creatorId);
             return Ok();
         }
     }
