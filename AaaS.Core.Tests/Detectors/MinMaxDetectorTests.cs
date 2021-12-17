@@ -86,5 +86,6 @@ namespace AaaS.Core.Tests.Detectors
             minMaxDetector.Stop();
             actionMock.Verify(action => action.Execute(), Times.Never());
         }
+
     }
 }
