@@ -9,7 +9,7 @@ namespace AaaS.Dal.Interface
 {
     public interface IMetricDao : ITelemetryDao<Metric>
     {
-        IAsyncEnumerable<Metric> FindSinceByClientAsync(DateTime from, int clientId);
+        IAsyncEnumerable<Metric> FindSinceByClientAndTelemetryNameAsync(DateTime from, int clientId, string telemetryName);
         Task<Metric> FindMostRecentByNameAndClientAsync(int clientId, string name);
     }
 }

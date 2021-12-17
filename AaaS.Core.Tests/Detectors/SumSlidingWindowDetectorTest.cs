@@ -2,7 +2,6 @@
 using AaaS.Core.Repositories;
 using AaaS.Domain;
 using Moq;
-using Moq.Protected;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +11,11 @@ using Xunit;
 
 namespace AaaS.Core.Tests.Detectors
 {
-    public class CurrentValueSlidingWindowDetectorTests
+    public class SumSlidingWindowDetectorTest
     {
-        private class CurrentValueSlidingWindowDetectorWrapper : CurrentValueSlidingWindowDetector
+        private class SumSlidingWindowDetectorWrapper : SumSlidingWindowDetector
         {
-            public CurrentValueSlidingWindowDetectorWrapper(IMetricRepository metricRepository) : base(metricRepository)
+            public SumSlidingWindowDetectorWrapper(IMetricRepository metricRepository) : base(metricRepository)
             {
             }
 
@@ -52,7 +51,7 @@ namespace AaaS.Core.Tests.Detectors
             var repoMock = new Mock<IMetricRepository>();
             repoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Returns<DateTime, int, string>((fromDate, clientId, telemetryName) => SampleMetrics.Where(x => x.Timestamp >= fromDate && x.Name == telemetryName));
-            var currValDetector = new CurrentValueSlidingWindowDetectorWrapper(repoMock.Object)
+            var currValDetector = new SumSlidingWindowDetectorWrapper(repoMock.Object)
             {
                 CheckInterval = TimeSpan.FromMinutes(10),
                 Client = new Client { Id = 1 },
@@ -61,7 +60,7 @@ namespace AaaS.Core.Tests.Detectors
             };
             var result = await currValDetector.ExecuteCheck();
 
-            Assert.Equal(10, result);
+            Assert.Equal(55, result);
         }
 
         [Fact]
@@ -70,7 +69,7 @@ namespace AaaS.Core.Tests.Detectors
             var repoMock = new Mock<IMetricRepository>();
             repoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Returns<DateTime, int, string>((fromDate, clientId, telemetryName) => SampleMetrics.Where(x => x.Timestamp >= fromDate && x.Name == telemetryName));
-            var currValDetector = new CurrentValueSlidingWindowDetectorWrapper(repoMock.Object)
+            var currValDetector = new SumSlidingWindowDetectorWrapper(repoMock.Object)
             {
                 CheckInterval = TimeSpan.FromSeconds(10),
                 Client = new Client { Id = 1 },
@@ -88,7 +87,7 @@ namespace AaaS.Core.Tests.Detectors
             var repoMock = new Mock<IMetricRepository>();
             repoMock.Setup(repo => repo.FindSinceByClientAndTelemetryNameAsync(It.IsAny<DateTime>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Returns<DateTime, int, string>((fromDate, clientId, telemetryName) => SampleMetrics.Where(x => x.Timestamp >= fromDate && x.Name == telemetryName));
-            var currValDetector = new CurrentValueSlidingWindowDetectorWrapper(repoMock.Object)
+            var currValDetector = new SumSlidingWindowDetectorWrapper(repoMock.Object)
             {
                 CheckInterval = TimeSpan.FromMinutes(10),
                 Client = new Client { Id = 1 },

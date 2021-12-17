@@ -90,7 +90,7 @@ namespace AaaS.Api
             services.AddTransient<IActionDao<BaseAction>, MSSQLActionDao<BaseAction>>();
             services.AddTransient<IDetectorDao<BaseDetector, BaseAction>, MSSQLDetectorDao<BaseDetector, BaseAction>>();
 
-            services.AddSingleton<SendGridClient>(services => new SendGridClient(Configuration.GetSection("SendGrid").GetValue<string>("ApiKey")));
+            services.AddSingleton<ISendGridClient>(services => new SendGridClient(Configuration.GetSection("SendGrid").GetValue<string>("ApiKey")));
 
             services.AddTransient<ILogDao, MSSQLLogDao>();
             services.AddTransient<IMetricDao, MSSQLMetricDao>();
