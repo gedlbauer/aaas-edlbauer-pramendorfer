@@ -4,6 +4,7 @@ using AaaS.Api.Settings;
 using AaaS.Common;
 using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
+using AaaS.Core.HostedServices;
 using AaaS.Core.Managers;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Ado;
@@ -114,7 +115,9 @@ namespace AaaS.Api
             services.AddAuthorization();
 
 
-
+            var hearbeatService = new HeartbeatService();
+            services.AddSingleton(hearbeatService);
+            services.AddHostedService(_ => hearbeatService);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
