@@ -18,7 +18,7 @@ namespace AaaS.Core.Detectors
 
         protected DateTime FromDate => DateTime.UtcNow.Subtract(TimeWindow);
 
-        protected SlidingWindowDetector(ITelemetryRepository<Metric> metricRepository) : base(metricRepository) { }
+        protected SlidingWindowDetector(IMetricRepository metricRepository) : base(metricRepository) { }
 
         protected abstract Task<double> CalculateCheckValue();
 

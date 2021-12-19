@@ -11,7 +11,7 @@ namespace AaaS.Core.Detectors
 {
     public class AverageSlidingWindowDetector : SlidingWindowDetector
     {
-        public AverageSlidingWindowDetector(ITelemetryRepository<Metric> metricRepository) : base(metricRepository) { }
+        public AverageSlidingWindowDetector(IMetricRepository metricRepository) : base(metricRepository) { }
         public AverageSlidingWindowDetector() : base(null) { }
 
         protected async override Task<double> CalculateCheckValue()

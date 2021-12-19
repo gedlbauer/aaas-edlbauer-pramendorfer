@@ -18,10 +18,10 @@ namespace AaaS.Core.Managers
         private readonly List<BaseDetector> _detectors = new();
         private readonly IDetectorDao<BaseDetector, BaseAction> _detectorDao;
         private readonly IClientDao _clientDao;
-        private readonly ITelemetryRepository<Metric> _metricRepository;
+        private readonly IMetricRepository _metricRepository;
         private readonly IActionManager _actionManager;
 
-        public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, IActionManager actionManager, IClientDao clientDao, ITelemetryRepository<Metric> metricRepository)
+        public DetectorManager(IDetectorDao<BaseDetector, BaseAction> detectorDao, IActionManager actionManager, IClientDao clientDao, IMetricRepository metricRepository)
         {
             _detectorDao = detectorDao;
             _actionManager = actionManager;

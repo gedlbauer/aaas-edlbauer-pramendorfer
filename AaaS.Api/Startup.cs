@@ -99,8 +99,6 @@ namespace AaaS.Api
 
             services.AddSingleton<ILogRepository, LogRepository>();
             services.AddSingleton<IMetricRepository, MetricRepository>();
-            // TODO change!
-            services.AddSingleton<ITelemetryRepository<Metric>, MetricRepository>();
             services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository>();
 
             services.AddSingleton<IActionManager, ActionManager>();
