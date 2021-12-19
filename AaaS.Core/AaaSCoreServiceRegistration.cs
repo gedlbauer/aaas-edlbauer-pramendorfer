@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace AaaS.Core
 {
-    public static class AaaSCoreSerivceRegistration
+    public static class AaaSCoreServiceRegistration
     {
         public static IServiceCollection ApplicationServiceRegistration(this IServiceCollection services)
         {

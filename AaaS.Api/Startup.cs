@@ -56,11 +56,11 @@ namespace AaaS.Api
             {
                 c.SwaggerDoc("controllers", new OpenApiInfo { Title = "AaaS.Api Web", Version = "v1" });
                 c.SwaggerDoc("commands", new OpenApiInfo { Title = "AaaS.Api Clients", Version = "v1" });
-                c.AddSecurityDefinition(ApiKeyConstants.HeaderName, new OpenApiSecurityScheme
+                c.AddSecurityDefinition(ApiKeyAuthenticationHandler.ApiKeyHeaderName, new OpenApiSecurityScheme
                 {
-                    Description = $"Api key needed to access the endpoints. {ApiKeyConstants.HeaderName}: My_API_Key",
+                    Description = $"Api key needed to access the endpoints. {ApiKeyAuthenticationHandler.ApiKeyHeaderName}: My_API_Key",
                     In = ParameterLocation.Header,
-                    Name = ApiKeyConstants.HeaderName,
+                    Name = ApiKeyAuthenticationHandler.ApiKeyHeaderName,
                     Type = SecuritySchemeType.ApiKey
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -68,13 +68,13 @@ namespace AaaS.Api
                     {
                         new OpenApiSecurityScheme
                         {
-                            Name =  ApiKeyConstants.HeaderName,
+                            Name =  ApiKeyAuthenticationHandler.ApiKeyHeaderName,
                             Type = SecuritySchemeType.ApiKey,
                             In = ParameterLocation.Header,
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id =  ApiKeyConstants.HeaderName
+                                Id =  ApiKeyAuthenticationHandler.ApiKeyHeaderName
                             },
                         },
                         Array.Empty<string>()
