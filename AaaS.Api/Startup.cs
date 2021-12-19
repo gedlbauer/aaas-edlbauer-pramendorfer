@@ -2,6 +2,7 @@ using AaaS.Api.Auth;
 using AaaS.Api.JsonConverters;
 using AaaS.Api.Settings;
 using AaaS.Common;
+using AaaS.Core;
 using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
 using AaaS.Core.HostedServices;
@@ -89,22 +90,7 @@ namespace AaaS.Api
                 c.Conventions.Add(new ApiExplorerGroupPerNamespaceConvention())
             );
             services.AddSingleton(x => DefaultConnectionFactory.FromConfiguration(Configuration, "AaaSDbConnection"));
-            services.AddTransient<IActionDao<BaseAction>, MSSQLActionDao<BaseAction>>();
-            services.AddTransient<IDetectorDao<BaseDetector, BaseAction>, MSSQLDetectorDao<BaseDetector, BaseAction>>();
-
             services.AddSingleton<ISendGridClient>(services => new SendGridClient(Configuration.GetSection("SendGrid").GetValue<string>("ApiKey")));
-
-            services.AddTransient<ILogDao, MSSQLLogDao>();
-            services.AddTransient<IMetricDao, MSSQLMetricDao>();
-            services.AddTransient<ITimeMeasurementDao, MSSQLTimeMeasurementDao>();
-            services.AddTransient<IClientDao, MSSQLClientDao>();
-
-            services.AddSingleton<ILogRepository, LogRepository>();
-            services.AddSingleton<IMetricRepository, MetricRepository>();
-            services.AddSingleton<ITelemetryRepository<TimeMeasurement>, TimeMeasurementRepository>();
-
-            services.AddSingleton<IActionManager, ActionManager>();
-            services.AddSingleton<IDetectorManager, DetectorManager>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddAuthentication(o =>
@@ -114,14 +100,14 @@ namespace AaaS.Api
             }).AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme, o => { });
             services.AddAuthorization();
 
-
             services.Configure<HeartbeatOptions>(Configuration.GetSection(HeartbeatOptions.Position));
             services.AddSingleton(sp =>
             {
                 var sendGridClient = sp.GetService<ISendGridClient>();
                 return new HeartbeatService(sendGridClient, sp.GetService<IOptions<HeartbeatOptions>>());
             });
-            services.AddHostedService(sp => sp.GetService<HeartbeatService>());
+
+            services.ApplicationServiceRegistration();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
