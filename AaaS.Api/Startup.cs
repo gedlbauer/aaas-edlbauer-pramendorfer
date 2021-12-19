@@ -6,6 +6,7 @@ using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
 using AaaS.Core.HostedServices;
 using AaaS.Core.Managers;
+using AaaS.Core.Options;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Ado;
 using AaaS.Dal.Ado.Telemetry;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -112,10 +114,12 @@ namespace AaaS.Api
             }).AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme, o => { });
             services.AddAuthorization();
 
+
+            services.Configure<HeartbeatOptions>(Configuration.GetSection(HeartbeatOptions.Position));
             services.AddSingleton(sp =>
             {
                 var sendGridClient = sp.GetService<ISendGridClient>();
-                return new HeartbeatService(sendGridClient);
+                return new HeartbeatService(sendGridClient, sp.GetService<IOptions<HeartbeatOptions>>());
             });
             services.AddHostedService(sp => sp.GetService<HeartbeatService>());
         }

@@ -1,5 +1,7 @@
 ﻿using AaaS.Core.Actions;
+using AaaS.Core.Options;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -14,11 +16,13 @@ namespace AaaS.Core.HostedServices
     public class HeartbeatService : BackgroundService
     {
         private readonly ISendGridClient _sendGrid;
+        private readonly HeartbeatOptions _options;
         private Dictionary<Guid, DateTime> Heartbeats { get; } = new();
 
-        public HeartbeatService(ISendGridClient sendGridClient)
+        public HeartbeatService(ISendGridClient sendGridClient, IOptions<HeartbeatOptions> options)
         {
             _sendGrid = sendGridClient;
+            _options = options.Value;
         }
 
         public void AddHeartbeat(Guid creatorId)
@@ -41,7 +45,7 @@ namespace AaaS.Core.HostedServices
                 try
                 {
                     await CheckHeartbeats();
-                    await Task.Delay(30_000, stoppingToken);
+                    await Task.Delay(_options.Interval, stoppingToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -54,7 +58,7 @@ namespace AaaS.Core.HostedServices
         {
             foreach (var hearbeat in Heartbeats)
             {
-                if((DateTime.UtcNow - hearbeat.Value).TotalSeconds > 30)
+                if((DateTime.UtcNow - hearbeat.Value).TotalMilliseconds > _options.Threshold)
                 {
                     await SendWarningEmail(hearbeat.Key);
                     Heartbeats.Remove(hearbeat.Key);
@@ -68,7 +72,7 @@ namespace AaaS.Core.HostedServices
             message.SetFrom("s2010307058@students.fh-hagenberg.at", "AaaS");
             message.SetSubject("Client instance anomaly");
             message.AddContent("text/plain", $"Client instance ${creatorId} did log off, but stopped sending hearbeats!");
-            message.AddTo("s2010307089@students.fh-hagenberg.at", "Admin");
+            message.AddTo(_options.WarningEMailAddress, "Admin");
 
             await _sendGrid.SendEmailAsync(message);
         }
