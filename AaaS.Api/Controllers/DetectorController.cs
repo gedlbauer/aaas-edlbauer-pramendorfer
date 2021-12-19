@@ -9,6 +9,7 @@ using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,6 +21,7 @@ namespace AaaS.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DetectorController : ControllerBase
     {
         private readonly IMapper _mapper;

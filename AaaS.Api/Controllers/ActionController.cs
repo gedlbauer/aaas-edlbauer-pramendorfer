@@ -6,6 +6,7 @@ using AaaS.Core.Managers;
 using AaaS.Dal.Interface;
 using AaaS.Domain;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +18,7 @@ namespace AaaS.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ActionController : ControllerBase
     {
         private readonly IClientDao _clientDao;

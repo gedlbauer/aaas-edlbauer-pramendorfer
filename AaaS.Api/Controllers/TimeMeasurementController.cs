@@ -2,6 +2,7 @@
 using AaaS.Core.Repositories;
 using AaaS.Domain;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace AaaS.Api.Controllers
 {
     [Route("api")]
     [ApiController]
+    [Authorize]
     public class TimeMeasurementController : TelemetryController<TimeMeasurement, TimeMeasurementDto, TimeMeasurementDto>
     {
         public TimeMeasurementController(ITelemetryRepository<TimeMeasurement> repo, IMapper mapper) : base(repo, mapper)
