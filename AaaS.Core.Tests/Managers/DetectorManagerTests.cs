@@ -46,13 +46,7 @@ namespace AaaS.Core.Tests.Managers
                 Id = 1,
                 CheckInterval = TimeSpan.FromSeconds(1),
                 Client = clients[0],
-                Action = new WebHookAction
-                {
-                    Id = 1,
-                    Name = "Test Action",
-                    RequestUrl = "test.me",
-                    Client = clients[0]
-                },
+                Action = actions[0],
                 TelemetryName = "Test Telemetry",
                 Name = "x"
             }
@@ -79,6 +73,7 @@ namespace AaaS.Core.Tests.Managers
             var actionManagerMock = new Mock<IActionManager>();
             actionManagerMock.Setup(x => x.GetAll()).Returns(actions);
             actionManagerMock.Setup(x => x.GetAllFromClient(It.IsAny<int>())).Returns(actions);
+            actionManagerMock.Setup(x => x.FindActionById(It.IsAny<int>(), It.IsAny<int>())).Returns<int, int>((clientId, id) => actions.SingleOrDefault(x => x.Id == id && x.Client.Id == clientId));
             return actionManagerMock;
         }
         private static Mock<IMetricRepository> GetDefaultMetricRepositoryMock()
@@ -91,7 +86,7 @@ namespace AaaS.Core.Tests.Managers
 
         public class GetTests
         {
-            [Fact(Skip = "true")]
+            [Fact]
             public void TestFindById()
             {
                 BaseDetector expected = detectors.SingleOrDefault(x => x.Id == 1);
