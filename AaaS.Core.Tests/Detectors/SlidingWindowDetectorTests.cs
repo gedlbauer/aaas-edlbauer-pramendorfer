@@ -42,7 +42,7 @@ namespace AaaS.Core.Tests.Detectors
             actionMock.Verify(x => x.Execute(), Times.Once());
         }
 
-        [Fact(Skip = "true")]
+        [Fact]
         public async Task TestActionExecuteFiresOnAnomalyWhenSmallerIsUsed()
         {
             var actionMock = new Mock<BaseAction>();
