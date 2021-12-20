@@ -1,5 +1,6 @@
 ﻿using AaaS.Core.Actions;
 using AaaS.Core.Detectors;
+using AaaS.Core.Exceptions;
 using AaaS.Core.Managers;
 using AaaS.Core.Repositories;
 using AaaS.Dal.Interface;
@@ -96,6 +97,7 @@ namespace AaaS.Core.Tests.Managers
             actionManagerMock.Setup(x => x.GetAll()).Returns(actions);
             actionManagerMock.Setup(x => x.GetAllFromClient(It.IsAny<int>())).Returns(actions);
             actionManagerMock.Setup(x => x.FindActionById(It.IsAny<int>(), It.IsAny<int>())).Returns<int, int>((clientId, id) => actions.SingleOrDefault(x => x.Id == id && x.Client.Id == clientId));
+            actionManagerMock.Setup(x => x.FindActionById(It.IsAny<int>())).Returns<int>(id => actions.SingleOrDefault(x => x.Id == id));
             return actionManagerMock;
         }
         private static Mock<IMetricRepository> GetDefaultMetricRepositoryMock()
@@ -159,179 +161,242 @@ namespace AaaS.Core.Tests.Managers
                 Assert.Equal(expected, manager.GetAllFromClient(clientId));
             }
 
-            //public class AddTests
-            //{
-            //    [Fact]
-            //    public async Task TestInsert()
-            //    {
-            //        var actionToInsert = new WebHookAction
-            //        {
-            //            Name = "Inserted Action",
-            //            RequestUrl = "test.me",
-            //            Client = new Client
-            //            {
-            //                ApiKey = "xxx",
-            //                Id = 2,
-            //                Name = "Client 2"
-            //            }
-            //        };
+            public class AddTests
+            {
+                [Fact]
+                public async Task TestInsert()
+                {
+                    var detectorToInsert = new SimpleDetector
+                    {
+                        Name = "Inserted Detector",
+                        Action = actions[0],
+                        TelemetryName = "Insert Detector Test",
+                        CheckInterval = TimeSpan.FromSeconds(1000),
+                        Client = new Client
+                        {
+                            ApiKey = "xxx",
+                            Id = 2,
+                            Name = "Client 2"
+                        }
+                    };
 
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await manager.AddActionAsync(actionToInsert);
-            //        actionDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseAction>()), Times.Once());
-            //    }
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await manager.AddAndStartDetectorAsync(detectorToInsert);
+                    detectorDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseDetector>()), Times.Once());
+                }
 
-            //    [Fact]
-            //    public async Task TestInsertWithNullClient()
-            //    {
-            //        var actionToInsert = new WebHookAction
-            //        {
-            //            Name = "Inserted Action",
-            //            RequestUrl = "test.me"
-            //        };
+                [Fact]
+                public async Task TestInsertWithNullClient()
+                {
+                    var detectorToInsert = new SimpleDetector
+                    {
+                        Name = "Inserted Detector",
+                        Action = actions[0],
+                        CheckInterval = TimeSpan.FromSeconds(100)
+                    };
 
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await Assert.ThrowsAsync<ArgumentException>(async () => await manager.AddActionAsync(actionToInsert));
-            //        actionDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseAction>()), Times.Never());
-            //    }
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await Assert.ThrowsAsync<ArgumentException>(async () => await manager.AddAndStartDetectorAsync(detectorToInsert));
+                    detectorDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
 
-            //    [Fact]
-            //    public async Task TestInsertWithInvalidClient()
-            //    {
-            //        var actionToInsert = new WebHookAction
-            //        {
-            //            Name = "Inserted Action",
-            //            RequestUrl = "test.me",
-            //            Client = new Client
-            //            {
-            //                ApiKey = "xxx",
-            //                Id = 0,
-            //                Name = "Client 3"
-            //            }
-            //        };
+                [Fact]
+                public async Task TestInsertWithInvalidClient()
+                {
+                    var detectorToInsert = new SimpleDetector
+                    {
+                        Name = "Inserted Detector",
+                        Action = new WebHookAction
+                        {
+                            Client = new Client
+                            {
+                                ApiKey = "xxx",
+                                Id = 0,
+                                Name = "Client 3"
+                            }
+                        },
+                        CheckInterval = TimeSpan.FromSeconds(100),
+                        Client = new Client
+                        {
+                            ApiKey = "xxx",
+                            Id = 0,
+                            Name = "Client 3"
+                        }
+                    };
 
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await Assert.ThrowsAsync<ArgumentException>(async () => await manager.AddActionAsync(actionToInsert));
-            //        actionDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseAction>()), Times.Never());
-            //    }
-            //}
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await Assert.ThrowsAsync<ArgumentException>(async () => await manager.AddAndStartDetectorAsync(detectorToInsert));
+                    detectorDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
 
-            //public class UpdateTests
-            //{
-            //    [Fact]
-            //    public async Task TestUpdate()
-            //    {
-            //        var actionToUpdate = new WebHookAction
-            //        {
-            //            Id = 1,
-            //            Name = "Updated Action",
-            //            RequestUrl = "test.me",
-            //            Client = new Client
-            //            {
-            //                ApiKey = "xxx",
-            //                Id = 3,
-            //                Name = "Client 2"
-            //            }
-            //        };
+                [Fact]
+                public async Task TestInsertWithConflictingActionClient()
+                {
+                    var detectorToInsert = new SimpleDetector
+                    {
+                        Name = "Inserted Detector",
+                        Action = actions[0],
+                        CheckInterval = TimeSpan.FromSeconds(100),
+                        Client = clients[1]
+                    };
 
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await manager.UpdateActionAsync(actionToUpdate);
-            //        actionDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseAction>()), Times.Once());
-            //    }
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.InsertAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await Assert.ThrowsAsync<AaaSAuthorizationException>(async () => await manager.AddAndStartDetectorAsync(detectorToInsert));
+                    detectorDaoMock.Verify(x => x.InsertAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
+            }
 
-            //    [Fact]
-            //    public async Task TestUpdateWithNullClient()
-            //    {
-            //        var actionToUpdate = new WebHookAction
-            //        {
-            //            Id = 1,
-            //            Name = "Updated Action",
-            //            RequestUrl = "test.me"
-            //        };
+            public class UpdateTests
+            {
+                [Fact]
+                public async Task TestUpdate()
+                {
+                    var detectorToUpdate = new SimpleDetector
+                    {
+                        Id = 1,
+                        CheckInterval = TimeSpan.FromSeconds(1),
+                        Client = clients[0],
+                        Action = actions[0],
+                        TelemetryName = "Test Telemetry with updated Telemetry Name",
+                        Name = "Also with new Name"
+                    };
 
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await Assert.ThrowsAsync<ArgumentException>(async () => await manager.UpdateActionAsync(actionToUpdate));
-            //        actionDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseAction>()), Times.Never());
-            //    }
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var actionManagerMock = GetDefaultActionManagerMock();
+                    actionManagerMock.Setup(x => x.AddActionAsync(It.IsAny<BaseAction>())).Verifiable();
+
+                    var manager = new DetectorManager(detectorDaoMock.Object, actionManagerMock.Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await manager.UpdateDetectorAsync(detectorToUpdate);
+                    detectorDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseDetector>()), Times.Once());
+                    actionManagerMock.Verify(x => x.AddActionAsync(It.IsAny<BaseAction>()), Times.Never());
+                }
+
+                [Fact]
+                public async Task TestUpdateWithNewAction()
+                {
+                    var detectorToUpdate = new SimpleDetector
+                    {
+                        Id = 1,
+                        CheckInterval = TimeSpan.FromSeconds(1),
+                        Client = clients[0],
+                        Action = new WebHookAction
+                        {
+                            Client = clients[0],
+                            Name = "Test Action tmp",
+                            RequestUrl = "tst.tmp"
+                        },
+                        TelemetryName = "Test Telemetry2",
+                        Name = "xasdf"
+                    };
+
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var actionManagerMock = GetDefaultActionManagerMock();
+                    actionManagerMock.Setup(x => x.AddActionAsync(It.IsAny<BaseAction>())).Verifiable();
+
+                    var manager = new DetectorManager(detectorDaoMock.Object, actionManagerMock.Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await manager.UpdateDetectorAsync(detectorToUpdate);
+                    detectorDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseDetector>()), Times.Once());
+                    actionManagerMock.Verify(x => x.AddActionAsync(It.IsAny<BaseAction>()), Times.Once());
+                }
+
+                [Fact]
+                public async Task TestUpdateWithInvalidClient()
+                {
+                    var detectorToUpdate = new SimpleDetector
+                    {
+                        Id = 1,
+                        CheckInterval = TimeSpan.FromSeconds(1),
+                        Client = clients[0],
+                        Action = actions[1],
+                        TelemetryName = "Test Telemetry2",
+                        Name = "xasdf"
+                    };
+
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await Assert.ThrowsAsync<AaaSAuthorizationException>(async () => await manager.UpdateDetectorAsync(detectorToUpdate));
+                    detectorDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
+
+                [Fact]
+                public async Task TestUpdateWithNullClient()
+                {
+                    var detectorToUpdate = new SimpleDetector
+                    {
+                        Id = 1,
+                        CheckInterval = TimeSpan.FromSeconds(1),
+                        Client = null,
+                        Action = actions[1],
+                        TelemetryName = "Test Telemetry2",
+                        Name = "xasdf"
+                    };
+
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await Assert.ThrowsAsync<ArgumentException>(async () => await manager.UpdateDetectorAsync(detectorToUpdate));
+                    detectorDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
+
+                [Fact]
+                public async Task TestUpdateWithoutId()
+                {
+                    var detectorToUpdate = new SimpleDetector
+                    {
+                        CheckInterval = TimeSpan.FromSeconds(1),
+                        Client = clients[0],
+                        Action = new WebHookAction
+                        {
+                            Client = clients[0],
+                            Name = "Test Action tmp",
+                            RequestUrl = "tst.tmp"
+                        },
+                        TelemetryName = "Test Telemetry2",
+                        Name = "xasdf"
+                    };
+
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await Assert.ThrowsAsync<ArgumentException>(async () => await manager.UpdateDetectorAsync(detectorToUpdate));
+                    detectorDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
+            }
 
 
-            //    [Fact]
-            //    public async Task TestUpdateWithInvalidClient()
-            //    {
-            //        var actionToUpdate = new WebHookAction
-            //        {
-            //            Id = 1,
-            //            Name = "Updated Action",
-            //            RequestUrl = "test.me",
-            //            Client = new Client
-            //            {
-            //                ApiKey = "xxx",
-            //                Id = 0,
-            //                Name = "Client 3"
-            //            }
-            //        };
+            public class DeleteTests
+            {
+                [Fact]
+                public async Task TestDelete()
+                {
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.DeleteAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await manager.DeleteDetectorAsync(detectors[0]);
+                    detectorDaoMock.Verify(x => x.DeleteAsync(It.IsAny<BaseDetector>()), Times.Once());
+                }
 
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await Assert.ThrowsAsync<ArgumentException>(async () => await manager.UpdateActionAsync(actionToUpdate));
-            //        actionDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseAction>()), Times.Never());
-            //    }
-            //    [Fact]
-            //    public async Task TestUpdateWithoutId()
-            //    {
-            //        var actionToUpdate = new WebHookAction
-            //        {
-            //            Name = "Updated Action",
-            //            RequestUrl = "test.me",
-            //            Client = new Client
-            //            {
-            //                ApiKey = "xxx",
-            //                Id = 2,
-            //                Name = "Client 3"
-            //            }
-            //        };
-
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.UpdateAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await Assert.ThrowsAsync<ArgumentException>(async () => await manager.UpdateActionAsync(actionToUpdate));
-            //        actionDaoMock.Verify(x => x.UpdateAsync(It.IsAny<BaseAction>()), Times.Never());
-            //    }
-
-            //}
-
-
-            //public class DeleteTests
-            //{
-            //    [Fact]
-            //    public async Task TestDelete()
-            //    {
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.DeleteAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await manager.DeleteActionAsync(actions[0]);
-            //        actionDaoMock.Verify(x => x.DeleteAsync(It.IsAny<BaseAction>()), Times.Once());
-            //    }
-            //    [Fact]
-            //    public async Task TestDeleteWithNull()
-            //    {
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        actionDaoMock.Setup(x => x.DeleteAsync(It.IsAny<BaseAction>())).Verifiable();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        await manager.DeleteActionAsync(null);
-            //        actionDaoMock.Verify(x => x.DeleteAsync(It.IsAny<BaseAction>()), Times.Never());
-            //    }
+                [Fact]
+                public async Task TestDeleteWithNull()
+                {
+                    var detectorDaoMock = GetDefaultDetectorDaoMock();
+                    detectorDaoMock.Setup(x => x.DeleteAsync(It.IsAny<BaseDetector>())).Verifiable();
+                    var manager = new DetectorManager(detectorDaoMock.Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                    await manager.DeleteDetectorAsync(null);
+                    detectorDaoMock.Verify(x => x.DeleteAsync(It.IsAny<BaseDetector>()), Times.Never());
+                }
+            }
         }
     }
 }

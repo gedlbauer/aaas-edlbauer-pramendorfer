@@ -67,6 +67,10 @@ namespace AaaS.Core.Managers
             {
                 throw new ArgumentException("Cannot insert Detector with given id!");
             }
+            if (detector.Client is null || await _clientDao.FindByIdAsync(detector.Client.Id) is null)
+            {
+                throw new ArgumentException("Invalid Client");
+            }
             if (detector.Action is null)
             {
                 throw new KeyNotFoundException("This action does not exist");
@@ -75,19 +79,18 @@ namespace AaaS.Core.Managers
             {
                 await _actionManager.AddActionAsync(detector.Action);
             }
-            else
+
+            var action = _actionManager.FindActionById(detector.Action.Id);
+            if (action is null)
             {
-                var action = _actionManager.FindActionById(detector.Action.Id);
-                if (action is null)
-                {
-                    throw new KeyNotFoundException("This action does not exist");
-                }
-                if(action.Client.Id != detector.Client.Id)
-                {
-                    throw new AaaSAuthorizationException("This action belongs to a different user!");
-                }
-                detector.Action = action;
+                throw new KeyNotFoundException("This action does not exist");
             }
+            if (action.Client.Id != detector.Client.Id)
+            {
+                throw new AaaSAuthorizationException("This action belongs to a different user!");
+            }
+            detector.Action = action;
+
 
             await _detectorDao.InsertAsync(detector);
             await detector.Start();
@@ -113,6 +116,10 @@ namespace AaaS.Core.Managers
         public async Task UpdateDetectorAsync(BaseDetector newDetector)
         {
             var listDetector = _detectors.SingleOrDefault(x => x.Id == newDetector.Id);
+            if(newDetector.Client is null)
+            {
+                throw new ArgumentException("Client must be set!");
+            }
             if (listDetector is null)
             {
                 throw new ArgumentException("Detector to update must already exit");
