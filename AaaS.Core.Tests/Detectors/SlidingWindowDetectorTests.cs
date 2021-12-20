@@ -34,7 +34,7 @@ namespace AaaS.Core.Tests.Detectors
                 Action = actionMock.Object,
                 Threshold = 2,
                 UseGreater = true,
-                CheckInterval = TimeSpan.FromMilliseconds(50)
+                CheckInterval = TimeSpan.FromMilliseconds(200)
             };
             await det.Start();
             await Task.Delay(10);
@@ -52,7 +52,7 @@ namespace AaaS.Core.Tests.Detectors
                 Action = actionMock.Object,
                 Threshold = 4,
                 UseGreater = false,
-                CheckInterval = TimeSpan.FromMilliseconds(50)
+                CheckInterval = TimeSpan.FromMilliseconds(200)
             };
             await det.Start();
             await Task.Delay(10);
