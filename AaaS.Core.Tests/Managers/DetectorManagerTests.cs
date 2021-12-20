@@ -25,6 +25,12 @@ namespace AaaS.Core.Tests.Managers
                 ApiKey = "xxx",
                 Id = 2,
                 Name = "Client 2"
+            },
+            new Client
+            {
+                ApiKey = "xxx",
+                Id = 3,
+                Name = "Client 3"
             }
         };
 
@@ -36,6 +42,13 @@ namespace AaaS.Core.Tests.Managers
                     Name = "Test Action",
                     RequestUrl = "test.me",
                     Client = clients[0]
+                },
+            new WebHookAction
+                {
+                    Id = 2,
+                    Name = "Test Action",
+                    RequestUrl = "test.me",
+                    Client = clients[1]
                 }
         };
 
@@ -49,6 +62,15 @@ namespace AaaS.Core.Tests.Managers
                 Action = actions[0],
                 TelemetryName = "Test Telemetry",
                 Name = "x"
+            },
+            new SimpleDetector
+            {
+                Id = 2,
+                CheckInterval = TimeSpan.FromSeconds(1),
+                Client = clients[1],
+                Action = actions[1],
+                TelemetryName = "Test Telemetry 2",
+                Name = "x2"
             }
         };
 
@@ -102,40 +124,40 @@ namespace AaaS.Core.Tests.Managers
                 Assert.Equal(expected, manager.FindDetectorById(4));
             }
 
-            //    [Theory]
-            //    [InlineData(2, 1)]
-            //    [InlineData(4, 1)]
-            //    [InlineData(2, 10)]
-            //    [InlineData(20, 10)]
-            //    public void TestFindByIdAndClientId(int clientId, int id)
-            //    {
-            //        BaseAction expected = actions.SingleOrDefault(x => x.Id == id && x.Client.Id == clientId);
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        Assert.Equal(expected, manager.FindActionById(clientId, id));
-            //    }
+            [Theory]
+            [InlineData(2, 1)]
+            [InlineData(4, 1)]
+            [InlineData(2, 10)]
+            [InlineData(20, 10)]
+            public void TestFindByIdAndClientId(int clientId, int id)
+            {
+                BaseDetector expected = detectors.SingleOrDefault(x => x.Id == id && x.Client.Id == clientId);
+                var manager = new DetectorManager(GetDefaultDetectorDaoMock().Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+                Assert.Equal(expected, manager.FindDetectorById(clientId, id));
+            }
 
-            //    [Fact]
-            //    public void TestFindAll()
-            //    {
-            //        var expected = actions;
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        Assert.Equal(expected, manager.GetAll());
-            //    }
+            [Fact]
+            public void TestGetAll()
+            {
+                var expected = detectors;
+                var manager = new DetectorManager(GetDefaultDetectorDaoMock().Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
 
-            //    [Theory]
-            //    [InlineData(2)]
-            //    [InlineData(3)]
-            //    [InlineData(4)]
-            //    public void TestFindAllFromClient(int clientId)
-            //    {
-            //        var expected = actions.Where(x => x.Client.Id == clientId);
-            //        var actionDaoMock = GetDefaultActionDaoMock();
-            //        var manager = new ActionManager(actionDaoMock.Object, null);
-            //        Assert.Equal(expected, manager.GetAllFromClient(clientId));
-            //    }
-            //}
+                var result = manager.GetAll();
+
+                Assert.Equal(expected, result);
+            }
+
+            [Theory]
+            [InlineData(2)]
+            [InlineData(3)]
+            [InlineData(4)]
+            public void TestGetAllFromClient(int clientId)
+            {
+                var expected = detectors.Where(x => x.Client.Id == clientId);
+                var manager = new DetectorManager(GetDefaultDetectorDaoMock().Object, GetDefaultActionManagerMock().Object, GetDefaultClientDaoMock().Object, GetDefaultMetricRepositoryMock().Object);
+
+                Assert.Equal(expected, manager.GetAllFromClient(clientId));
+            }
 
             //public class AddTests
             //{
