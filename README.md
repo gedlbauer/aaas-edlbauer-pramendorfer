@@ -22,10 +22,7 @@ Andreas Pramendorfer: 61h
 Die Testdaten befinden sich in folgendem OneDrive-Ordner: [OneDrive](https://1drv.ms/u/s!Apst1So_O6yE13HIkjOjpzPSjM5i?e=5JMQgM)
 
 Sie waren zu groß für die Moodle Abgabe. :wink: 
-## Projektstruktur!
-
-
-
+## Projektstruktur
 
 ![Projektstruktur Screenshot](/images/project.PNG)
 
