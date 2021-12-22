@@ -58,7 +58,7 @@ Eine einfache Konsolenanwendung welche das CLientSDK verwendet, um Beispieldaten
 
 Der folgende Graph stellt die Abhängigkeiten der Projekte dar:
 
-![test](https://i.imgur.com/E4VhOKe.png)
+![Projektabhängigkeiten](/images/dependencies.png)
 
 ## Datenhaltung
 
@@ -149,17 +149,17 @@ Die AaaS.Api liefert zwei Swagger Dokumente aus. Zwischen den Dokumenten kann in
 #### AaaS.Api Web
 Liefert die Schnittstelllen für AaaS.Web.
 
-![](https://i.imgur.com/IUATAgQ.png)
+![Web Swagger](/images/swagger-web-collapsed.PNG)
 
 #### Aaas.Api Clients
 Liefert die Schnittstellen für externe Anwendungen.
 
-![](https://i.imgur.com/OMiQ3J2.png)
+![External Swagger](/images/swagger-external-clients.PNG)
 
 ### Controller
 #### Telemtrie
 Um die Daten verschiedenen Telemtrietypen möglichst einfach exportieren zu können und den Code daurch *DRY* zu halten, wurde bei den Controllern eine Ableitungshierarchie entworfen. Alle geteilten Schnittstellen befinden sich in der abstrakten Klasse `TelemetryController`. Diese muss mit den generischen Typen ausgeprägt werden, um ein Mapping über den AutoMapper zu ermöglichen. Die Ableitungen liefern dann das ensprechende Repository und können den Controller um zusätliche Schnittstellen erweitern. 
-![](https://i.imgur.com/crrjK2w.png)
+![Telemetrie Controller](/images/classdiagram-controllers.png)
 
 #### Commands
 Die Schnittstellen für die Clients wurden in Command Controllern gesammelt. Daruch werden die Read und Write Operationen getrennt. Es ist dadurch auch möglich, sich einen Client über den Swagger zu erstellen, welcher nur die Operationen die von den externen Anwendungen benötigt werden exportiert.
