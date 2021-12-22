@@ -70,7 +70,7 @@ namespace AaaS.Api.Controllers
             var webHookAction = _mapper.Map<WebHookAction>(action);
             await webHookAction.ResolveNavigationProperties(User.GetId(), _clientDao);
             await _actionManager.AddActionAsync(webHookAction);
-            return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = webHookAction.Id }, value: webHookAction);
+            return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = webHookAction.Id }, value: _mapper.Map<WebHookActionDto>(webHookAction));
         }
 
         [HttpPut("webhook")]
@@ -95,7 +95,7 @@ namespace AaaS.Api.Controllers
             var mailAction = _mapper.Map<MailAction>(action);
             await mailAction.ResolveNavigationProperties(User.GetId(), _clientDao);
             await _actionManager.AddActionAsync(mailAction);
-            return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = mailAction.Id }, value: mailAction);
+            return CreatedAtAction(actionName: nameof(ById), routeValues: new { id = mailAction.Id }, value: _mapper.Map<MailActionDto>(mailAction));
         }
 
         [HttpPut("mail")]
