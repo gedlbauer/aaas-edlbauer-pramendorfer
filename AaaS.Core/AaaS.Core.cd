@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AaaS.Core.Detectors.AverageSlidingWindowDetector" Collapsed="true">
+    <Position X="16.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Detectors\AverageSlidingWindowDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Core.Detectors.CurrentValueSlidingWindowDetector" Collapsed="true">
+    <Position X="18.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Detectors\CurrentValueSlidingWindowDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Core.Detectors.MinMaxDetector" Collapsed="true">
+    <Position X="23.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAABAAIAAAEAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Detectors\MinMaxDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Core.Detectors.SlidingWindowDetector" Collapsed="true">
+    <Position X="18.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAgAABRAAA=</HashCode>
+      <FileName>Detectors\SlidingWindowDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Core.Detectors.SumSlidingWindowDetector" Collapsed="true">
+    <Position X="21" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Detectors\SumSlidingWindowDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Core.Detectors.BaseDetector" Collapsed="true">
+    <Position X="21" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAACAAIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Detectors\BaseDetector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AaaS.Core.Actions.BaseAction" Collapsed="true">
+    <Position X="11.5" Y="2" Width="1.5" />
+    <InheritanceLine Type="AaaS.Domain.AaaSAction" FixedToPoint="true">
+      <Path>
+        <Point X="14.75" Y="2.375" />
+        <Point X="13" Y="2.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Actions\BaseAction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AaaS.Core.Actions.MailAction" Collapsed="true">
+    <Position X="12.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAgAAAAAAAAgAAAAAACAAAAAAAACI=</HashCode>
+      <FileName>Actions\MailAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Core.Actions.WebHookAction" Collapsed="true">
+    <Position X="10.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Actions\WebHookAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AaaS.Domain.Detector&lt;T&gt;">
+    <Position X="25" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="AaaS.Domain.AaaSAction">
+    <Position X="14.75" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="AaaS.Core.Detectors.IDetector">
+    <Position X="21" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Detectors\IDetector.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="AaaS.Core.Actions.IAction">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Actions\IAction.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
