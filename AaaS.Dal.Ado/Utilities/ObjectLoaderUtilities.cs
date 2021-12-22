@@ -7,13 +7,21 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AaaS.Dal.Ado.Utilities
 {
     public static class ObjectLoaderUtilities
     {
-        public static IEnumerable<PropertyInfo> GetPropertiesToStoreAsObjectProperty<T, BaseType>(T obj)
+        private static readonly JsonSerializerOptions jsonOptions = new(JsonSerializerDefaults.General);
+
+        static ObjectLoaderUtilities()
+        {
+            jsonOptions.Converters.Add(new JsonTimeSpanConverter());
+        }
+
+        private static IEnumerable<PropertyInfo> GetPropertiesToStoreAsObjectProperty<T, BaseType>(T obj)
         {
             var baseProperties = typeof(BaseType).GetProperties();
             var properties = obj.GetType()
@@ -38,8 +46,21 @@ namespace AaaS.Dal.Ado.Utilities
                     .Where(i => i.GetParameters().Select(a => a.ParameterType).SequenceEqual(parameterTypes))
                     .Single();
                 var deserializer = deserializerMethod.MakeGenericMethod(propertyType);
-                var propertyValue = deserializer.Invoke(null, new object[] { property.Value, new JsonSerializerOptions(JsonSerializerDefaults.General) });
+                var propertyValue = deserializer.Invoke(null, new object[] { property.Value, jsonOptions });
                 actionType.GetProperty(property.Name).SetValue(objectToLoad, propertyValue);
+            }
+        }
+
+        public static async Task InsertProperties<T, BaseType>(int objectId, T obj, IObjectPropertyDao objectPropertyDao)
+        {
+            var properties = GetPropertiesToStoreAsObjectProperty<T, BaseType>(obj);
+            foreach (var property in properties)
+            {
+                var propName = property.Name;
+                var propTypeName = property.PropertyType.AssemblyQualifiedName;
+                var propValue = property.GetValue(obj);
+                var objectProperty = new ObjectProperty { ObjectId = objectId, Name = propName, TypeName = propTypeName, Value = JsonSerializer.Serialize(propValue, jsonOptions) };
+                await objectPropertyDao.InsertAsync(objectProperty);
             }
         }
 
@@ -61,7 +82,7 @@ namespace AaaS.Dal.Ado.Utilities
                         ObjectId = id,
                         Name = property.Name,
                         TypeName = property.PropertyType.AssemblyQualifiedName,
-                        Value = JsonSerializer.Serialize(property.GetValue(obj))
+                        Value = JsonSerializer.Serialize(property.GetValue(obj), jsonOptions)
                     };
                     if (await objectPropertyDao.FindByObjectIdAndNameAsync(objectProperty.ObjectId, objectProperty.Name) is not null)
                     {

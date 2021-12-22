@@ -64,20 +64,7 @@ namespace AaaS.Dal.Ado
                 new QueryParameter("@object_id", action.Id),
                 new QueryParameter("@client_id", action.Client.Id),
                 new QueryParameter("@name", action.Name));
-            await InsertProperties(action);
-        }
-
-        private async Task InsertProperties(T action)
-        {
-            var properties = ObjectLoaderUtilities.GetPropertiesToStoreAsObjectProperty<T, AaaSAction>(action);
-            foreach (var property in properties)
-            {
-                var propName = property.Name;
-                var propTypeName = property.PropertyType.AssemblyQualifiedName;
-                var propValue = property.GetValue(action);
-                var objectProperty = new ObjectProperty { ObjectId = action.Id, Name = propName, TypeName = propTypeName, Value = JsonSerializer.Serialize(propValue) };
-                await objectPropertyDao.InsertAsync(objectProperty);
-            }
+            await ObjectLoaderUtilities.InsertProperties<T, AaaSAction>(action.Id, action, objectPropertyDao);
         }
 
         private async Task LoadProperties(T action)
@@ -111,7 +98,7 @@ namespace AaaS.Dal.Ado
             var type = Type.GetType(typeName);
             var action = (T)Activator.CreateInstance(type);
             action.Id = (int)record["id"];
-            action.Name = (string) record["name"];
+            action.Name = (string)record["name"];
             action.Client = await clientDao.FindByIdAsync((int)record["client_id"]);
             if (action is not null)
                 await LoadProperties(action);

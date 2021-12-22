@@ -93,20 +93,7 @@ namespace AaaS.Dal.Ado
                 new QueryParameter("@action_id", detector.Action.Id),
                 new QueryParameter("@check_interval", detector.CheckInterval.TotalMilliseconds)
                 );
-            await InsertProperties(detector);
-        }
-
-        private async Task InsertProperties(TDetector detector)
-        {
-            var properties = ObjectLoaderUtilities.GetPropertiesToStoreAsObjectProperty<TDetector, Detector<AaaSAction>>(detector);
-            foreach (var property in properties)
-            {
-                var propName = property.Name;
-                var propTypeName = property.PropertyType.AssemblyQualifiedName;
-                var propValue = property.GetValue(detector);
-                var objectProperty = new ObjectProperty { ObjectId = detector.Id, Name = propName, TypeName = propTypeName, Value = JsonSerializer.Serialize(propValue) };
-                await objectPropertyDao.InsertAsync(objectProperty);
-            }
+            await ObjectLoaderUtilities.InsertProperties<TDetector, Detector<AaaSAction>>(detector.Id, detector, objectPropertyDao);
         }
 
         public async Task<TDetector> MapRowToDetector(IDataRecord record)
