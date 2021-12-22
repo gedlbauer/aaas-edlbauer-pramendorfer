@@ -164,6 +164,9 @@ Die Schnittstellen für die Clients wurden in Command Controllern gesammelt. Dar
 ## AaaS.ClientSDK
 Das ClientSDK bündelt die Funktionen von AaaS für externe Anwendungen. Zuerst wurde ein Client über die Swagger Definition automatisch generiert. Um die Handhabung zu vereinfachen wurde die Klasse `AaaSService` entworfen. Dieses Service kann mit einem ApiKey und einer Creator Id konfiguriert werden. Es übernimmt auch automatisch das Senden von Heartbeats. Über die Methoden `StartTiming()` und `StopAndInsertTiming()`, können CLients komfortabel Zeitmessungen durchführen. Um diese Funktionalitäten zu ermöglichen, musste diese Klasse mit dem Singelton Pattern umgesetzt werden. 
 
+## Build Pipeline
+Mithilfe von Github Actions wurde eine Build Pipeline umgesetzt. Diese buildet die Anwendung nach jedem Push auf den main Branch. Danach werden noch jene Tests ausgeführt, welche keine Datenbank benötigen. 
+
 ## Erste Schritte
 ### Datenbanken
 Um die Anwendungen Lauffähig zu machen, müssen zuerst die beiden MDF-Datenbankdateien `C:\temp\AaaSDb.mdf` und `C:\temp\AaaSTestDb.mdf` erzeugt werden. In dem beigefügten OneDrive liegen zwei leere MDF-Files. Diese können in das angegebene Verzeichnis kopiert werden.
