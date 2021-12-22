@@ -12,6 +12,11 @@ namespace AaaS.Api.MapperProfiles
             CreateMap<MailActionInsertDto, MailAction>();
             CreateMap<MailActionUpdateDto, MailAction>();
             CreateMap<WebHookActionUpdateDto, WebHookAction>();
+            CreateMap<BaseAction, ActionDto>()
+                .Include<MailAction, MailActionDto>()
+                .Include<WebHookAction, WebHookActionDto>();
+            CreateMap<MailAction, MailActionDto>();
+            CreateMap<WebHookAction, WebHookActionDto>();
         }
     }
 }
