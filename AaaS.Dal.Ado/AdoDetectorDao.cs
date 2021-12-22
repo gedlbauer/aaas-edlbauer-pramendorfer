@@ -119,6 +119,7 @@ namespace AaaS.Dal.Ado
             detector.CheckInterval = TimeSpan.FromMilliseconds((int)record["check_interval"]);
             detector.Client = await clientDao.FindByIdAsync((int)record["client_id"]);
             detector.Action = await actionDao.FindByIdAsync((int)record["action_id"]);
+            await ObjectLoaderUtilities.LoadPropertiesFromId<Detector<TAction>>(detector.Id, detector, objectPropertyDao);
             return detector;
         }
 

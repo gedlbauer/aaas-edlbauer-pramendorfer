@@ -25,9 +25,9 @@ namespace AaaS.Core.Detectors
         protected async override Task Detect()
         {
             var value = await CalculateCheckValue();
-            if ((UseGreater && value > Threshold) || value < Threshold)
+            if ((UseGreater && value > Threshold) || (!UseGreater && value < Threshold))
             {
-                await Action.Execute();
+                await Action?.Execute();
             }
         }
     }

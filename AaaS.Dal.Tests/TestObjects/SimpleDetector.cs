@@ -12,6 +12,7 @@ namespace AaaS.Dal.Tests.TestObjects
 {
     public class SimpleDetector : BaseDetector
     {
+        public int SimpleValue { get; set; }
         public SimpleDetector(MetricRepository metricRepository) : base(metricRepository) { }
 
         public SimpleDetector() : base(null) { }
