@@ -15,7 +15,7 @@ namespace AaaS.Api.Controllers
     [Route("api")]
     [ApiController]
     [Authorize]
-    public class MetricController : TelemetryController<Metric, Metric, MetricDto>
+    public class MetricController : TelemetryController<Metric, MetricDto>
     {
         public MetricController(IMetricRepository metricRepository, IMapper mapper) : base(metricRepository, mapper)
         {

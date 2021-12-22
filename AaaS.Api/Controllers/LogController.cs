@@ -14,7 +14,7 @@ namespace AaaS.Api.Controllers
     [Route("api")]
     [ApiController]
     [Authorize]
-    public class LogController : TelemetryController<Log, LogDto, LogDto>
+    public class LogController : TelemetryController<Log, LogDto>
     {
         private readonly ILogRepository _logRepository;
         public LogController(ILogRepository logRepository, IMapper mapper) : base(logRepository, mapper) {

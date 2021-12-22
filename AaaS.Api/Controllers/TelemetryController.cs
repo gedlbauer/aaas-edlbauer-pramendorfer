@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace AaaS.Api.Controllers
 {
 
-    public abstract class TelemetryController<T, TWrite, TRead> : ControllerBase where T : Telemetry
+    public abstract class TelemetryController<T, TRead> : ControllerBase where T : Telemetry
     {
         protected readonly ITelemetryRepository<T> _telemetryRepository;
         protected readonly IMapper _mapper;
