@@ -1,4 +1,5 @@
-﻿using AaaS.Api.Dtos.Client;
+﻿using AaaS.Api.Dtos.Action;
+using AaaS.Api.Dtos.Client;
 using AaaS.Api.JsonConverters;
 using AaaS.Domain;
 using Newtonsoft.Json;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace AaaS.Api.Dtos.Detector
 {
-    public class DetectorDto
+    public abstract class DetectorDto
     {
         public int Id { get; set; }
         public ClientDto Client { get; set; }
-        public AaaSAction Action { get; set; }
+        public ActionDto Action { get; set; }
         public string TelemetryName { get; set; }
         public TimeSpan CheckInterval { get; set; }
     }

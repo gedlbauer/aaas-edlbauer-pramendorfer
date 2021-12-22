@@ -35,15 +35,15 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<AaaSAction> GetAll()
+        public IEnumerable<ActionDto> GetAll()
         {
-            return _actionManager.GetAllFromClient(User.GetId());
+            return _mapper.Map<IEnumerable<ActionDto>>(_actionManager.GetAllFromClient(User.GetId()));
         }
 
         [HttpGet("{id}")]
-        public AaaSAction ById(int id)
+        public ActionDto ById(int id)
         {
-            return _actionManager.FindActionById(User.GetId(), id);
+            return _mapper.Map<ActionDto>(_actionManager.FindActionById(User.GetId(), id));
         }
 
         [HttpDelete("{id}")]
