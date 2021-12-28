@@ -8,5 +8,6 @@ namespace AaaS.Api.Dtos.Detector
     public class MinMaxDetectorUpdateDto : MinMaxDetectorInsertDto
     {
         public int Id { get; set; }
+        public bool IsRunning { get; set; }
     }
 }

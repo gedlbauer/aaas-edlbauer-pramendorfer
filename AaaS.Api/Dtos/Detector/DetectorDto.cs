@@ -17,5 +17,6 @@ namespace AaaS.Api.Dtos.Detector
         public ActionDto Action { get; set; }
         public string TelemetryName { get; set; }
         public TimeSpan CheckInterval { get; set; }
+        public bool IsRunning { get; set; }
     }
 }

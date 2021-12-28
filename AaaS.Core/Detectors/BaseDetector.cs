@@ -25,10 +25,10 @@ namespace AaaS.Core.Detectors
 
         public async Task Start()
         {
-            isRunning = true;
+            IsRunning = true;
             new Task(async () =>
             {
-                while (isRunning)
+                while (IsRunning)
                 {
                     await Detect();
                     await Task.Delay(CheckInterval);
@@ -38,7 +38,7 @@ namespace AaaS.Core.Detectors
 
         public void Stop()
         {
-            isRunning = false;
+            IsRunning = false;
         }
     }
 }

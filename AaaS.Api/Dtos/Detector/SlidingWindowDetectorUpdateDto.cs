@@ -8,5 +8,6 @@ namespace AaaS.Api.Dtos.Detector
     public class SlidingWindowDetectorUpdateDto : SlidingWindowDetectorInsertDto
     {
         public int Id { get; set; }
+        public bool IsRunning { get; set; }
     }
 }
