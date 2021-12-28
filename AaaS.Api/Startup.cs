@@ -85,7 +85,7 @@ namespace AaaS.Api
                     Type = "number"
                 });
             });
-   
+
             services.AddMvc(c =>
                 c.Conventions.Add(new ApiExplorerGroupPerNamespaceConvention())
             );
@@ -126,6 +126,12 @@ namespace AaaS.Api
                 });
             }
             app.UseHttpsRedirection();
+
+            app.UseCors(config =>
+                config.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+            );
 
             app.UseRouting();
 
