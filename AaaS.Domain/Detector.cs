@@ -15,5 +15,6 @@ namespace AaaS.Domain
         public T Action { get; set; }
         public string TelemetryName { get; set; }
         public TimeSpan CheckInterval { get; set; }
+        public string TypeName => GetType().Name;
     }
 }

@@ -11,5 +11,6 @@ namespace AaaS.Domain
         public int Id { get; set; }
         public string Name { get; set; }
         public Client Client { get; set; }
+        public string TypeName => GetType().Name;
     }
 }
