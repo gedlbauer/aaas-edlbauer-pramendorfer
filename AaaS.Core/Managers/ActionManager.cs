@@ -87,7 +87,7 @@ namespace AaaS.Core.Managers
             if (await _actionDao.UpdateAsync(action))
             {
                 var actionType = action.GetType();
-                foreach (var property in actionType.GetProperties())
+                foreach (var property in actionType.GetProperties().Where(prop => prop.CanWrite))
                 {
                     property.SetValue(listAction, property.GetValue(action));
                 }

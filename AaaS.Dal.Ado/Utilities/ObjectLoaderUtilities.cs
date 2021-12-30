@@ -27,7 +27,8 @@ namespace AaaS.Dal.Ado.Utilities
             var properties = obj.GetType()
                 .GetProperties()
                 .Where(prop => !baseProperties.Any(baseProp => baseProp.Name == prop.Name && (baseProp.PropertyType == prop.PropertyType || prop.PropertyType.IsSubclassOf(baseProp.PropertyType)))) // Properties from Base Class are already stored in Db Table
-                .Where(prop => Attribute.GetCustomAttribute(prop, typeof(VolatileAttribute)) is null); // Ignore Properties that are defined as Volatile
+                .Where(prop => Attribute.GetCustomAttribute(prop, typeof(VolatileAttribute)) is null) // Ignore Properties that are defined as Volatile
+                .Where(prop => prop.CanWrite);
             return properties;
         }
 

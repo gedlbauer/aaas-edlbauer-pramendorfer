@@ -151,7 +151,7 @@ namespace AaaS.Core.Managers
             if (await _detectorDao.UpdateAsync(newDetector))
             {
                 var detectorType = newDetector.GetType();
-                foreach (var property in detectorType.GetProperties())
+                foreach (var property in detectorType.GetProperties().Where(x => x.CanWrite))
                 {
                     property.SetValue(listDetector, property.GetValue(newDetector));
                 }
