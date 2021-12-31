@@ -17,9 +17,14 @@ namespace AaaS.Api.Controllers
     [Authorize]
     public class MetricController : TelemetryController<Metric, MetricDto>
     {
+        private readonly IMetricRepository _metricRepository;
         public MetricController(IMetricRepository metricRepository, IMapper mapper) : base(metricRepository, mapper)
         {
-
+            _metricRepository = metricRepository;
         }
+
+        [HttpGet("[controller]s/names")]
+        public IEnumerable<string> GetLogTypes()
+            => _metricRepository.FindAllMetricNamesFromClientAsync(User.GetId()).ToEnumerable();
     }
 }

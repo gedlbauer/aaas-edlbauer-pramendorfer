@@ -11,5 +11,6 @@ namespace AaaS.Core.Repositories
     {
         Task InsertCounterAsync(Metric metric);
         Task InsertMeasurementAsync(Metric metric);
+        IAsyncEnumerable<string> FindAllMetricNamesFromClientAsync(int clientId);
     }
 }

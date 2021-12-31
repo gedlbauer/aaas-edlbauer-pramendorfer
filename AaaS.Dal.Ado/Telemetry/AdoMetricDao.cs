@@ -48,11 +48,20 @@ namespace AaaS.Dal.Ado.Telemetry
 
         protected override async Task<int> UpdateDerivationAsync(Metric obj)
         {
-            const string SQL_UPDATE= "update metric set value=@val where telemetry_id=@id";
+            const string SQL_UPDATE = "update metric set value=@val where telemetry_id=@id";
             return await template.ExecuteAsync(
                 SQL_UPDATE,
                 new QueryParameter("@val", obj.Value),
                 new QueryParameter("@id", obj.Id));
+        }
+
+        public IAsyncEnumerable<string> FindNamesByClientAsync(int clientId)
+        {
+            const string SQL = "SELECT DISTINCT t.name FROM telemetry t RIGHT JOIN metric m on (t.id=m.telemetry_id) WHERE t.client_id=@cid";
+            return template.QueryAsync(SQL,
+                x => (string)x["name"],
+                new QueryParameter("@cid", clientId)
+            );
         }
     }
 }

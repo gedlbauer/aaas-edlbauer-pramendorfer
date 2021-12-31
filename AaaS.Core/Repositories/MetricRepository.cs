@@ -43,7 +43,10 @@ namespace AaaS.Core.Repositories
             telemetry.Value = (latestMetric?.Value ?? 0) + 1;
             await _metricDao.InsertAsync(telemetry);
         }
-        
-         
+
+        public IAsyncEnumerable<string> FindAllMetricNamesFromClientAsync(int clientId)
+        {
+            return _metricDao.FindNamesByClientAsync(clientId);
+        }
     }
 }
