@@ -24,7 +24,7 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpGet("[controller]s/names")]
-        public IEnumerable<string> GetLogTypes()
+        public IEnumerable<string> GetMetricNames()
             => _metricRepository.FindAllMetricNamesFromClientAsync(User.GetId()).ToEnumerable();
     }
 }

@@ -32,14 +32,17 @@ namespace AaaS.Api.Controllers
         }
 
         [HttpGet("[controller]s")]
-        public IEnumerable<TRead> GetTelemetries(string name)
+        public IEnumerable<TRead> GetTelemetries(string name, int? amount)
         {
             IEnumerable<T> telemetries;
             if (name != null)
                 telemetries = _telemetryRepository.FindByAllByNameAsync(User.GetId(), name).ToEnumerable();
             else
                 telemetries = _telemetryRepository.FindAllAsync(User.GetId()).ToEnumerable();
-
+            if(amount is not null)
+            {
+                telemetries = telemetries.Take(amount.Value);
+            }
             return _mapper.Map<IEnumerable<TRead>>(telemetries);
         }
 
