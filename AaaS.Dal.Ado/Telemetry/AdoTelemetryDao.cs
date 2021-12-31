@@ -53,10 +53,10 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public IAsyncEnumerable<T> FindAllByNameAsync(int clientId, string name)
             => template.QueryAsync(
-                Query + " where client_id=@cid and t.name=@name;",
+                Query + " where client_id=@cid and t.name like @name;",
                 MapRowToTelemetry,
                 new QueryParameter("@cid", clientId),
-                new QueryParameter("@name", name));
+                new QueryParameter("@name", name + '%'));
 
         public async Task<T> FindByIdAndClientAsync(int id, int clientId)
             => await template.QuerySingleAsync(
