@@ -9,7 +9,7 @@ namespace AaaS.Api.Dtos.Telemetry
     {
         public int Id { get; set; }
         public int TypeId { get; set; }
-
+        public string TypeName { get; set; }
         public DateTime Timestamp { get; set; }
         public string Name { get; set; }
         public int ClientId { get; set; }
