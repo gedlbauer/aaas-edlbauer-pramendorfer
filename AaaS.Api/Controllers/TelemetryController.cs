@@ -41,7 +41,7 @@ namespace AaaS.Api.Controllers
                 telemetries = _telemetryRepository.FindAllAsync(User.GetId()).ToEnumerable();
             if(amount is not null)
             {
-                telemetries = telemetries.Take(amount.Value);
+                telemetries = telemetries.Take(amount.Value).OrderBy(x => x.Timestamp);
             }
             return _mapper.Map<IEnumerable<TRead>>(telemetries);
         }

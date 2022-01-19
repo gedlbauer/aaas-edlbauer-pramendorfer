@@ -32,7 +32,7 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public IAsyncEnumerable<T> FindAllByClientAsync(int clientId)
             => template.QueryAsync(
-                Query + " where client_id=@cid",
+                Query + " where client_id=@cid order by t.id desc",
                 MapRowToTelemetry,
                 new QueryParameter("@cid", clientId));
 
@@ -53,7 +53,7 @@ namespace AaaS.Dal.Ado.Telemetry
 
         public IAsyncEnumerable<T> FindAllByNameAsync(int clientId, string name)
             => template.QueryAsync(
-                Query + " where client_id=@cid and t.name like @name;",
+                Query + " where client_id=@cid and t.name like @name order by t.id desc;",
                 MapRowToTelemetry,
                 new QueryParameter("@cid", clientId),
                 new QueryParameter("@name", name + '%'));
